@@ -1,0 +1,115 @@
+{
+  "simpleNumber": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+  "lowerCaseLetters": [
+    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w",
+    "x", "y", "z"
+  ],
+  "upperCaseLetters": [
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W",
+    "X", "Y", "Z"
+  ],
+  "specialCharacters": [
+    "~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "-", "=",
+    "{", "}", "|", "[", "]", "\\",
+    ":", "\"", ";", "'",
+    "<", ">", "?", ",", ".", "/",
+    " "
+  ],
+  "letters": [
+    "lowerCaseLetters",
+    "upperCaseLetters"
+  ],
+  "lettersOrNumber": [
+    "letters",
+    "simpleNumber"
+  ],
+  "lettersOrNumberOrUnderline": [
+    "letters",
+    "simpleNumber",
+    "_"
+  ],
+  "someLettersOrNumberOrUnderline": [
+    "",
+    "lettersOrNumberOrUnderline",
+    "lettersOrNumberOrUnderline someLettersOrNumberOrUnderline"
+  ],
+  "nonZeroSimpleNumber": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+  "zeroLeadNumber": ["simpleNumber", "simpleNumber zeroLeadNumber"],
+  "number": ["simpleNumber", "nonZeroSimpleNumber zeroLeadNumber"],
+  "escapeChar": ["\\"],
+  "doubleQuotes": ["\""],
+  "angleLeftBracket": ["<"],
+  "angleRightBracket": [">"],
+  "specialCharactersEscape": [
+    "~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "-", "=",
+    "{", "}", "|", "[", "]", "escapeChar escapeChar",
+    ":", "escapeChar doubleQuotes", ";", "'",
+    "<", ">", "?", ",", ".", "/",
+    " "
+  ],
+  "space": [" "],
+  "someSpace": [
+    "",
+    "space",
+    "space someSpace"
+  ],
+  "tab": ["\t"],
+  "newLine": ["\n"],
+  "blank": [
+    "space",
+    "tab",
+    "newLine"
+  ],
+  "someBlank": [
+    "",
+    "blank",
+    "blank someBlank"
+  ],
+  "characters": [
+    "simpleNumber",
+    "letters",
+    "specialCharacters"
+  ],
+  "charactersEscape": [
+    "simpleNumber",
+    "letters",
+    "specialCharactersEscape"
+  ],
+  "someCharactersEscape": [
+    "",
+    "charactersEscape",
+    "charactersEscape someCharactersEscape"
+  ],
+  "doubleQuotesString": ["doubleQuotes someCharactersEscape doubleQuotes"],
+  "string": ["doubleQuotesString"],
+  "include": ["raw:#include"],
+  "stdLib": ["angleLeftBracket someSpace string someSpace angleRightBracket"],
+  "var": [
+    "_",
+    "_ someLettersOrNumberOrUnderline",
+    "letters",
+    "letters someLettersOrNumberOrUnderline"
+  ],
+  "varType": [
+    "var"
+  ],
+  "leftVar": [
+    "var"
+  ],
+  "rightVar": [
+    "var",
+    "number"
+  ],
+  "varStatement": [
+    "someBlank varType someBlank leftVar someBlank ; someBlank",
+    "someBlank varType someBlank leftVar someBlank = someBlank rightVar someBlank ; someBlank"
+  ],
+  "someVarStatement": [
+    "",
+    "varStatement",
+    "varStatement someVarStatement"
+  ],
+  "grammar": [
+    "someVarStatement"
+  ]
+}
