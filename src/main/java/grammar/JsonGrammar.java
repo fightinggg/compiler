@@ -7,16 +7,18 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 文法
  *
  * @author wsx
  */
 @Data
-public class Grammar {
+public class JsonGrammar {
     /**
      * 产生式集合
+     * k->[v1,v2,v3]
+     * 所有的k必须为小写字母和大写字母组合，不允许使用其他的字符
+     *
      */
-    private Map<String, List<Production>> productionsTable;
+    private Map<String, List<String>> productionsTable;
 
     /**
      * 文法目标

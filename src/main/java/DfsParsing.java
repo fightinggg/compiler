@@ -39,7 +39,7 @@ public class DfsParsing implements Parsing {
             }
         } else { // 非终结符则展开
             Grammar grammar = syntaxTree.getGrammar();
-            for (Production production : grammar.getTable().get(productionRaw)) {
+            for (Production production : grammar.getProductionsTable().get(productionRaw)) {
                 List<SyntaxTree.Node> nodes = production.getDerive().stream()
                         .map(raw -> {
                             SyntaxTree.Node node = new SyntaxTree.Node();

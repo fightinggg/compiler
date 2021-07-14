@@ -1,14 +1,9 @@
 package grammar;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,27 +23,20 @@ public class JsonGrammarReader {
         }
 
 
-        JSONObject jsonObject = JSON.parseObject(new String(code));
-
-        Map<String, List<Production>> table = new HashMap<>();
-        for (String productionRaw : jsonObject.keySet()) {
-            JSONArray jsonArray = jsonObject.getJSONArray(productionRaw);
-
-            List<Production> productions = jsonArray.toJavaList(String.class).stream()
-                    .map(str -> " ".equals(str) ? Collections.singletonList(" ") : Arrays.asList(str.split(" ")))
-                    .map(lists -> {
-                        Production production = new Production();
-                        production.setDerive(lists);
-                        production.setFrom(productionRaw);
-                        return production;
-                    }).collect(Collectors.toList());
-
-            table.put(productionRaw, productions);
-        }
+        JsonGrammar jsonGrammar = JSON.parseObject(new String(code), JsonGrammar.class);
 
         Grammar grammar = new Grammar();
-        grammar.setTable(table);
-        grammar.setTarget("grammar");
+
+        grammar.setTarget(jsonGrammar.getTarget());
+        grammar.setKeys(jsonGrammar.getKeys());
+        Map<String, List<Production>> productions = jsonGrammar.getProductionsTable()
+                .entrySet()
+                .stream()
+                .map(o -> Map.entry(o.getKey(), ProductionFactory.fromStringList(o.getKey(), o.getValue())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        grammar.setProductionsTable(productions);
+
         return grammar;
     }
 }
