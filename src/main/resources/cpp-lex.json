@@ -96,15 +96,19 @@
       "number"
     ],
     "varStatement": [
-      "someBlank varType someBlank leftVar someBlank ; someBlank",
-      "someBlank varType someBlank leftVar someBlank = someBlank rightVar someBlank ; someBlank"
+      "varType someBlank leftVar someBlank ;",
+      "varType someBlank leftVar someBlank = someBlank rightVar someBlank ;"
     ],
-    "someVarStatement": [
+    "varStatementBlockNotEmpty": [
+      "varStatement",
+      "varStatement someBlank varStatementBlock"
+    ],
+    "varStatementBlock": [
       "",
-      "varStatement someVarStatement"
+      "varStatementBlockNotEmpty"
     ]
   },
-  "target": "someVarStatement",
+  "target": "someBlank varStatementBlockNotEmpty someBlank",
   "keys": [
 
   ]
