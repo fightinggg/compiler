@@ -1,4 +1,5 @@
 import grammar.Grammar;
+import grammar.GrammarOptimizer;
 import grammar.JsonGrammarReader;
 import org.junit.Test;
 import syntaxtree.SyntaxTree;
@@ -19,6 +20,7 @@ public class CompilerTests {
     @Test
     public void DfsParsingTest() {
         Grammar grammar = JsonGrammarReader.read("cpp-lex.json");
+        GrammarOptimizer.optimizer(grammar);
         //        System.out.println(grammar);
         SyntaxTree syntaxTree = new DfsParsing().parsing(cppCode, grammar);
         String dot = SyntaxTreeVisiable.toDot(syntaxTree);

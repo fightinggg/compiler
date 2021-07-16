@@ -1,51 +1,75 @@
 package grammar;
 
+import java.security.AllPermission;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * @author s
  */
 public class GrammarOptimizer {
 
-    Boolean findCanBeEmpty(Map<String,List<Production>> table,Set<String> canBeEmpty,Set<String> canNotEmpty,String target){
-        if(canBeEmpty.contains(target)){
-            return true;
-        }
-        if(canNotEmpty.contains(target)){
-            return false;
-        }
-        Boolean res = false;
-        if(target.length()<=1){
-            res = target.isEmpty();
-        }else{
-            for(Production production:table.get(target)){
-                if(production.getDerive().stream().allMatch(o->findCanBeEmpty(table,canBeEmpty,canNotEmpty,o))){
-                    res=true;
-                    break;
+    static void removeEmtpy(Grammar grammar) {
+        Map<String, Set<Production>> productionsTable = grammar.getProductionsTable();
+        boolean hasEmptyTrans = true;
+        while (hasEmptyTrans) {
+            Set<String> emptySet = new HashSet<>();
+            for (Map.Entry<String, Set<Production>> pair : productionsTable.entrySet()) {
+                if (pair.getValue().removeIf(production -> production.getDerive().isEmpty())) {
+                    emptySet.add(pair.getKey());
                 }
             }
+
+            for (Map.Entry<String, Set<Production>> pair : productionsTable.entrySet()) {
+                Set<Production> addProductions = new HashSet<>();
+                for (Production production : pair.getValue()) {
+                    int mask = 0;
+                    for (int i = 0; i < production.getDerive().size(); i++) {
+                        if (emptySet.contains(production.getDerive().get(i))) {
+                            mask |= 1 << i;
+                        }
+                    }
+                    if (mask == 0) {
+                        continue;
+                    }
+                    for (int subSet = mask; subSet > 0; subSet = (subSet - 1) & mask) {
+                        List<String> dervice = new ArrayList<>();
+                        for (int i = 0; i < production.getDerive().size(); i++) {
+                            if ((subSet & (1 << i)) == 0) {
+                                dervice.add(production.getDerive().get(i));
+                            }
+                        }
+                        Production addProduction = new Production();
+                        addProduction.setFrom(pair.getKey());
+                        addProduction.setDerive(dervice);
+                        addProductions.add(addProduction);
+                    }
+                }
+                pair.getValue().addAll(addProductions);
+            }
+            hasEmptyTrans = !emptySet.isEmpty();
         }
-        if(res){
-            canBeEmpty.add(target);
-        }else{
-            canNotEmpty.add(target);
-        }
-        return res;
+    }
+
+    private static void removeLeftRecursion(Grammar grammar) {
+
     }
 
 
-    public static Grammar optimizer(Grammar grammar) {
-        Map<String, List<Production>> productionsTable = grammar.getProductionsTable();
-
+    public static void optimizer(Grammar grammar) {
         // step.1 remove empty pattern
-        Set<String> canBeEmpty = new HashSet<>();
-        canBeEmpty
+        removeEmtpy(grammar);
 
 
-        // step.2 remove left dfs
+        // step.2 remove left recursion
+        removeLeftRecursion(grammar);
+
+
+
         // A -> B??
         // B -> C??
         // C -> D??
@@ -59,7 +83,6 @@ public class GrammarOptimizer {
 
         // step.3 left same factor
 
-        return null;
 
     }
 }

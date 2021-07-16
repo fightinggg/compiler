@@ -91,9 +91,24 @@
     "leftVar": [
       "var"
     ],
-    "rightVar": [
+    "rightVarUnit": [
       "var",
-      "number"
+      "number",
+      "functionInvoke"
+    ],
+    "addOrSubExpression": [
+      "rightVar someBlank + someBlank rightVarUnit",
+      "rightVar someBlank - someBlank rightVarUnit",
+    ],
+    "mulOrDelExpression": [
+      "mulOrDelExpression someBlank * someBlank rightVarUnit",
+      "mulOrDelExpression someBlank / someBlank rightVarUnit",
+      "( someBlank rightVar someBlank )"
+    ],
+    "rightVar": [
+      "rightVarUnit",
+      "addOrSubExpression",
+      "mulOrDelExpression"
     ],
     "varStatement": [
       "varType someBlank leftVar someBlank ;",

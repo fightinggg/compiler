@@ -18,7 +18,7 @@ public class JsonGrammar {
      * 所有的k必须为小写字母和大写字母组合，不允许使用其他的字符
      *
      */
-    private Map<String, List<String>> productionsTable;
+    private Map<String, Set<String>> productionsTable;
 
     /**
      * 文法目标

@@ -16,7 +16,7 @@ public class Grammar {
     /**
      * 产生式集合
      */
-    private Map<String, List<Production>> productionsTable;
+    private Map<String, Set<Production>> productionsTable;
 
     /**
      * 文法目标

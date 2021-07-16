@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -29,7 +30,7 @@ public class JsonGrammarReader {
 
         grammar.setTarget(jsonGrammar.getTarget());
         grammar.setKeys(jsonGrammar.getKeys());
-        Map<String, List<Production>> productions = jsonGrammar.getProductionsTable()
+        Map<String, Set<Production>> productions = jsonGrammar.getProductionsTable()
                 .entrySet()
                 .stream()
                 .map(o -> Map.entry(o.getKey(), ProductionFactory.fromStringList(o.getKey(), o.getValue())))
