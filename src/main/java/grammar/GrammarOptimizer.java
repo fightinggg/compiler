@@ -8,8 +8,6 @@ import java.util.Map;
  */
 public class GrammarOptimizer {
 
-
-
     public static Grammar optimizer(Grammar grammar) {
         Map<String, List<Production>> productionsTable = grammar.getProductionsTable();
 
@@ -34,3 +32,5 @@ public class GrammarOptimizer {
 
     }
 }
+
+
