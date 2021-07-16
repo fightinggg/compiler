@@ -91,6 +91,17 @@
     "leftVar": [
       "var"
     ],
+    "someVarJoinByCommaNotEmpty": [
+      "var",
+      "someVarJoinByCommaNotEmpty someBlank , someBlank var"
+    ],
+    "someVarJoinByComma": [
+      "",
+      "someVarJoinByCommaNotEmpty"
+    ],
+    "functionInvoke": [
+      "var someBlank ( someBlank someVarJoinByComma someBlank )"
+    ],
     "rightVarUnit": [
       "var",
       "number",
@@ -98,9 +109,11 @@
     ],
     "addOrSubExpression": [
       "rightVar someBlank + someBlank rightVarUnit",
-      "rightVar someBlank - someBlank rightVarUnit",
+      "rightVar someBlank - someBlank rightVarUnit"
     ],
     "mulOrDelExpression": [
+      "rightVarUnit someBlank * someBlank rightVarUnit",
+      "rightVarUnit someBlank / someBlank rightVarUnit",
       "mulOrDelExpression someBlank * someBlank rightVarUnit",
       "mulOrDelExpression someBlank / someBlank rightVarUnit",
       "( someBlank rightVar someBlank )"
