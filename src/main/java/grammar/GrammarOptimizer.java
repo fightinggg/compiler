@@ -1,7 +1,10 @@
 package grammar;
 
+import com.sun.nio.file.ExtendedWatchEventModifier;
+
 import java.security.AllPermission;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +16,14 @@ import java.util.function.Predicate;
  */
 public class GrammarOptimizer {
 
+    /**
+     * n = 非终结符的个数
+     * m = 产生式的总数
+     * k = 产生式右边的长度
+     * 则时间复杂度为 O(n*m*2^k)
+     *
+     * @param grammar
+     */
     static void removeEmtpy(Grammar grammar) {
         Map<String, Set<Production>> productionsTable = grammar.getProductionsTable();
         boolean hasEmptyTrans = true;
@@ -56,6 +67,20 @@ public class GrammarOptimizer {
     }
 
     private static void removeLeftRecursion(Grammar grammar) {
+        Map<String, Set<Production>> productionsTable = grammar.getProductionsTable();
+
+        Map<String, Set<String>> firstMap = new HashMap<>();
+
+        for (Map.Entry<String, Set<Production>> pair : productionsTable.entrySet()) {
+            HashSet<String> first = new HashSet<>();
+            for (Production production : pair.getValue()) {
+                String begin = production.getDerive().get(0);
+                while (firstMap.containsKey(begin)) {
+                    begin =
+                }
+            }
+
+        }
 
     }
 
@@ -67,7 +92,6 @@ public class GrammarOptimizer {
 
         // step.2 remove left recursion
         removeLeftRecursion(grammar);
-
 
 
         // A -> B??
