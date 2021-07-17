@@ -1,30 +1,23 @@
 package grammar;
 
-import lombok.Data;
-
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
- * 文法
- *
- * @author wsx
+ * 文法四要素
+ * 1. 终结符集合
+ * 2. 非终结符集合
+ * 3. 产生式集合
+ * 4。目标
  */
-@Data
-public class Grammar {
-    /**
-     * 产生式集合
-     */
-    private Map<String, Set<Production>> productionsTable;
+public interface Grammar {
 
-    /**
-     * 文法目标
-     */
-    private String target;
+    Set<String> allTerminal();
 
-    /**
-     * 产生式重点关注对象
-     */
-    private Set<String> keys;
+    Set<String> allNotTerminal();
+
+    Set<Production> allProduction();
+
+    String target();
+
+    boolean isTerminal(String symbol);
 }

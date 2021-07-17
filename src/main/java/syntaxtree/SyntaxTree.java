@@ -1,6 +1,6 @@
 package syntaxtree;
 
-import grammar.Grammar;
+import grammar.NormalGrammar;
 import grammar.Production;
 import lombok.Data;
 
@@ -21,6 +21,6 @@ public class SyntaxTree {
         private List<Node> son;
     }
 
-    private Grammar grammar;
+    private NormalGrammar normalGrammar;
     private Node root;
 }

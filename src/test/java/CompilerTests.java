@@ -1,4 +1,4 @@
-import grammar.Grammar;
+import grammar.NormalGrammar;
 import grammar.GrammarOptimizer;
 import grammar.JsonGrammarReader;
 import org.junit.Test;
@@ -19,10 +19,10 @@ public class CompilerTests {
 
     @Test
     public void DfsParsingTest() {
-        Grammar grammar = JsonGrammarReader.read("cpp-lex.json");
-        GrammarOptimizer.optimizer(grammar);
+        NormalGrammar normalGrammar = JsonGrammarReader.read("cpp-lex.json");
+        GrammarOptimizer.optimizer(normalGrammar);
         //        System.out.println(grammar);
-        SyntaxTree syntaxTree = new DfsParsing().parsing(cppCode, grammar);
+        SyntaxTree syntaxTree = new DfsParsing().parsing(cppCode, normalGrammar);
         String dot = SyntaxTreeVisiable.toDot(syntaxTree);
         try (OutputStream outputStream = new FileOutputStream("target/dot.txt")) {
             outputStream.write(dot.getBytes(StandardCharsets.UTF_8));

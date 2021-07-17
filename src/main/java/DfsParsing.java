@@ -1,4 +1,4 @@
-import grammar.Grammar;
+import grammar.NormalGrammar;
 import grammar.Production;
 import syntaxtree.SyntaxTree;
 
@@ -38,8 +38,8 @@ public class DfsParsing implements Parsing {
                 }
             }
         } else { // 非终结符则展开
-            Grammar grammar = syntaxTree.getGrammar();
-            for (Production production : grammar.getProductionsTable().get(productionRaw)) {
+            NormalGrammar normalGrammar = syntaxTree.getNormalGrammar();
+            for (Production production : normalGrammar.getProductionsTable().get(productionRaw)) {
                 List<SyntaxTree.Node> nodes = production.getDerive().stream()
                         .map(raw -> {
                             SyntaxTree.Node node = new SyntaxTree.Node();
@@ -67,12 +67,12 @@ public class DfsParsing implements Parsing {
     }
 
     @Override
-    public SyntaxTree parsing(String code, Grammar grammar) {
+    public SyntaxTree parsing(String code, NormalGrammar normalGrammar) {
         SyntaxTree st = new SyntaxTree();
-        st.setGrammar(grammar);
+        st.setNormalGrammar(normalGrammar);
 
         SyntaxTree.Node node = new SyntaxTree.Node();
-        node.setRaw(grammar.getTarget());
+        node.setRaw(normalGrammar.getTarget());
         st.setRoot(node);
 
         Stack<SyntaxTree.Node> stack = new Stack<>();

@@ -1,15 +1,7 @@
 package grammar;
 
-import com.sun.nio.file.ExtendedWatchEventModifier;
-
-import java.security.AllPermission;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Predicate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author s
@@ -22,25 +14,25 @@ public class GrammarOptimizer {
      * k = 产生式右边的长度
      * 则时间复杂度为 O(n*m*2^k)
      *
-     * @param grammar
+     * @param normalGrammar
      */
-    static void removeEmtpy(Grammar grammar) {
-        Map<String, Set<Production>> productionsTable = grammar.getProductionsTable();
+    static void removeEmtpy(NormalGrammar normalGrammar) {
+        Map<String, Set<List<String>>> productionsTable = normalGrammar.getProductionsTable();
         boolean hasEmptyTrans = true;
         while (hasEmptyTrans) {
             Set<String> emptySet = new HashSet<>();
-            for (Map.Entry<String, Set<Production>> pair : productionsTable.entrySet()) {
-                if (pair.getValue().removeIf(production -> production.getDerive().isEmpty())) {
+            for (Map.Entry<String, Set<List<String>>> pair : productionsTable.entrySet()) {
+                if (pair.getValue().removeIf(production -> production.isEmpty())) {
                     emptySet.add(pair.getKey());
                 }
             }
 
-            for (Map.Entry<String, Set<Production>> pair : productionsTable.entrySet()) {
-                Set<Production> addProductions = new HashSet<>();
-                for (Production production : pair.getValue()) {
+            for (Map.Entry<String, Set<List<String>>> pair : productionsTable.entrySet()) {
+                Set<List<String>> addProductions = new HashSet<>();
+                for (List<String> production : pair.getValue()) {
                     int mask = 0;
-                    for (int i = 0; i < production.getDerive().size(); i++) {
-                        if (emptySet.contains(production.getDerive().get(i))) {
+                    for (int i = 0; i < production.size(); i++) {
+                        if (emptySet.contains(production.get(i))) {
                             mask |= 1 << i;
                         }
                     }
@@ -49,15 +41,15 @@ public class GrammarOptimizer {
                     }
                     for (int subSet = mask; subSet > 0; subSet = (subSet - 1) & mask) {
                         List<String> dervice = new ArrayList<>();
-                        for (int i = 0; i < production.getDerive().size(); i++) {
+                        for (int i = 0; i < production.size(); i++) {
                             if ((subSet & (1 << i)) == 0) {
-                                dervice.add(production.getDerive().get(i));
+                                dervice.add(production.get(i));
                             }
                         }
-                        Production addProduction = new Production();
-                        addProduction.setFrom(pair.getKey());
-                        addProduction.setDerive(dervice);
-                        addProductions.add(addProduction);
+                        List<String> addList<String> = new List<String>();
+                        addList<String>.setFrom(pair.getKey());
+                        addList<String>.setDerive(dervice);
+                        addProductions.add(addList<String>);
                     }
                 }
                 pair.getValue().addAll(addProductions);
@@ -66,32 +58,70 @@ public class GrammarOptimizer {
         }
     }
 
-    private static void removeLeftRecursion(Grammar grammar) {
-        Map<String, Set<Production>> productionsTable = grammar.getProductionsTable();
+    private static void removeLeftRecursion(NormalGrammar normalGrammar) {
+        final String prefix = "REMOVE_LEFT_RECURSION";
+        int index = 0;
 
-        Map<String, Set<String>> firstMap = new HashMap<>();
+        Map<String, Set<List<String>>> productionsTable = normalGrammar.getProductionsTable();
 
-        for (Map.Entry<String, Set<Production>> pair : productionsTable.entrySet()) {
-            HashSet<String> first = new HashSet<>();
-            for (Production production : pair.getValue()) {
-                String begin = production.getDerive().get(0);
-                while (firstMap.containsKey(begin)) {
-                    begin =
+        Set<String> hasScan = new HashSet<>();
+        for (Map.Entry<String, Set<List<String>>> pair : productionsTable.entrySet()) {
+
+            Stack<List<String>> collect = pair.getValue().stream().collect(Collectors.toCollection(Stack::new));
+            Set<List<String>> newList<String>s = new HashSet<>();
+            productionsTable.remove(pair.getKey());
+
+            while (!collect.isEmpty()) {
+                List<String> top = collect.pop();
+                String first = top.getDerive().get(0);
+                if (hasScan.contains(first)) {
+
+                } else if (first.equals(top.getFrom())) {
+                    List<String> currentLoop = top.getDerive();
+                    // A -> A B1 B2 B3... | C1 C2 C3... | D1 D2 D3... | E1 E2 E3... | ...
+
+                    // oldA -> C1 C2 C3... | D1 D2 D3... | E1 E2 E3... | ...
+                    // B -> B1 B2 B3...
+                    // A -> A B | oldA
+
+
+                    // oldA -> C1 | C2 | C3 | ...
+                    // atLeastOneB -> B | B atLeastOneB
+                    // A -> oldA | oldA atLeastOneB
+
+
+                    String oldA = prefix + "_" + (++index);
+                    String B = prefix + "_" + (++index);
+                    String A = top.getFrom();
+
+                    String bDerive = String.join(" ",currentLoop.subList(1, currentLoop.size()));
+                    productionsTable.put(B, List<String>Factory.fromStringSet(B, Set.of(bDerive)));
+
+                    productionsTable.put(A, List<String>Factory.fromStringSet(A, Set.of(A + " " + B, oldA)));
+
+
+
+                } else {
+                    newList<String>s.add(top);
                 }
             }
 
+            productionsTable.put(pair.getKey(), newList<String>s);
+            hasScan.add(pair.getKey());
         }
-
     }
 
 
-    public static void optimizer(Grammar grammar) {
+}
+
+
+    public static void optimizer(NormalGrammar normalGrammar) {
         // step.1 remove empty pattern
-        removeEmtpy(grammar);
+        removeEmtpy(normalGrammar);
 
 
         // step.2 remove left recursion
-        removeLeftRecursion(grammar);
+        removeLeftRecursion(normalGrammar);
 
 
         // A -> B??

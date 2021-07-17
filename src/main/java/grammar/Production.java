@@ -1,26 +1,15 @@
 package grammar;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import java.util.List;
-import java.util.Set;
 
 /**
+ * 这个对象是不可变对象
  * 产生式
  *
  * @author wsx
  */
-@Data
-public class Production {
-    /**
-     * 左边
-     */
-    private String from;
+public interface Production {
+    String leftSymbol();
 
-    /**
-     * 右边
-     */
-    private List<String> derive;
-
+    List<String> rightSymbol();
 }

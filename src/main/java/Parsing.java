@@ -1,4 +1,4 @@
-import grammar.Grammar;
+import grammar.NormalGrammar;
 import syntaxtree.SyntaxTree;
 
 /**
@@ -11,8 +11,8 @@ public interface Parsing {
      * 从源代码解析语法树
      *
      * @param code
-     * @param grammar
+     * @param normalGrammar
      * @return
      */
-    SyntaxTree parsing(String code, Grammar grammar);
+    SyntaxTree parsing(String code, NormalGrammar normalGrammar);
 }
