@@ -19,12 +19,12 @@ public class NormalGrammar implements Grammar {
     /**
      * 产生式集合
      */
-    private Map<String, Set<Production>> productionsTable;
+    private final Map<String, Set<Production>> productionsTable;
 
     /**
      * 文法目标
      */
-    private String target;
+    private final String target;
 
     public NormalGrammar(Map<String, Set<Production>> productionsTable, String target) {
         this.productionsTable = productionsTable;

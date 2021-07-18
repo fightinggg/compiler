@@ -134,9 +134,12 @@
     "varStatementBlock": [
       "",
       "varStatementBlockNotEmpty"
+    ],
+    "target": [
+      "someBlank varStatementBlockNotEmpty someBlank"
     ]
   },
-  "target": "someBlank varStatementBlockNotEmpty someBlank",
+  "target": "target",
   "keys": [
 
   ]

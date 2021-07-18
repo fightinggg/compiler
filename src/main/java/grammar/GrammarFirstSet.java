@@ -12,6 +12,7 @@ public class GrammarFirstSet {
      * 2. X->ABCDE... 是一个产生式， 则FIRST(X)=FIRST(A), 如果此时A可为空，则把FIRST(B)加入到FIRST(X)，依次递推<br/>
      * 3. 如果X可以为空，则FIRST(X)也包含空<br/>
      * <br/>
+     *
      * @param grammar 文法
      * @return first集
      */
@@ -27,7 +28,8 @@ public class GrammarFirstSet {
         // 空first入队
         firstSetQueue.addAll(emptySet.stream().map(o -> Map.entry(o, "")).collect(Collectors.toSet()));
         // 终结符入队
-        firstSetQueue.addAll(grammar.allTerminal().stream().map(o -> Map.entry(o, o)).collect(Collectors.toSet()));
+        Set<String> allTerminal = grammar.allTerminal();
+        firstSetQueue.addAll(allTerminal.stream().map(o -> Map.entry(o, o)).collect(Collectors.toSet()));
 
         List<Map.Entry<String, String>> allDepends = productions.stream()
                 .filter(o -> !o.rightSymbol().isEmpty())
@@ -59,12 +61,17 @@ public class GrammarFirstSet {
             Map.Entry<String, String> release = firstSetQueue.poll();
             dependsBy.getOrDefault(release.getKey(), new ArrayList<>())
                     .forEach(dependsKv -> {
-                        firstSet.putIfAbsent(dependsKv.getKey(),new HashSet<>());
+                        firstSet.putIfAbsent(dependsKv.getKey(), new HashSet<>());
                         if (firstSet.get(dependsKv.getKey()).add(release.getValue())) {
                             firstSetQueue.add(Map.entry(dependsKv.getKey(), release.getValue()));
                         }
                     });
         }
+
+        emptySet.forEach(o -> firstSet.putIfAbsent(o, new HashSet<>()));
+        emptySet.forEach(o -> firstSet.get(o).add(""));
+        allTerminal.forEach(o -> firstSet.putIfAbsent(o, new HashSet<>()));
+        allTerminal.forEach(o -> firstSet.get(o).add(o));
 
         return firstSet;
     }

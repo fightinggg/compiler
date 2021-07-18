@@ -1,10 +1,7 @@
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import grammar.Grammar;
-import grammar.GrammarFirstSet;
-import grammar.NormalGrammar;
-import grammar.JsonGrammarReader;
+import grammar.*;
 import org.junit.Test;
 import syntaxtree.SyntaxTree;
 import syntaxtree.visiable.SyntaxTreeVisiable;
@@ -26,8 +23,8 @@ public class CompilerTests {
     @Test
     public void DfsParsingTest() {
         Grammar grammar = JsonGrammarReader.read("cpp-lex.json");
-        Map<String, Set<String>> firstSet = GrammarFirstSet.firstSet(grammar);
-        System.out.println(JSON.toJSONString(firstSet, SerializerFeature.PrettyFormat));
+        Map<String, Set<String>> followSet = GrammarFollowSet.followSet(grammar);
+        System.out.println(JSON.toJSONString(followSet, SerializerFeature.PrettyFormat));
 
         String s;
     }

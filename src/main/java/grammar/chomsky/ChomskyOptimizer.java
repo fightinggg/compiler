@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  * https://zh.wikipedia.org/wiki/%E4%B9%94%E5%A7%86%E6%96%AF%E5%9F%BA%E8%8C%83%E5%BC%8F
  */
 public class ChomskyOptimizer {
-    public static ChomskyGrammar optimizer(Grammar grammar) {
+    public static ChomskyGrammar optimizer(Grammar<Production> grammar) {
         String prefix = "ChomskyOptimizer";
         Integer index = 0;
 
