@@ -6,7 +6,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 文法
@@ -24,9 +26,19 @@ public class NormalGrammar implements Grammar {
      */
     private String target;
 
+    public NormalGrammar(Map<String, Set<Production>> productionsTable, String target) {
+        this.productionsTable = productionsTable;
+        this.target = target;
+    }
+
     @Override
     public Set<String> allTerminal() {
-        throw new RuntimeException();
+        return productionsTable.values()
+                .stream()
+                .flatMap(Collection::stream)
+                .flatMap(o -> o.rightSymbol().stream())
+                .filter(o -> o.length() <= 1)
+                .collect(Collectors.toSet());
     }
 
     @Override

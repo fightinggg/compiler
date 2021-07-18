@@ -5,6 +5,9 @@ import com.alibaba.fastjson.JSON;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -12,12 +15,12 @@ import java.util.stream.Collectors;
  */
 public class JsonGrammarReader {
 
-    static List<String> string2List(String s){
-        if(s.isEmpty()){
+    static List<String> string2List(String s) {
+        if (s.isEmpty()) {
             return new ArrayList<>();
-        }else if(s.length()==1){
+        } else if (s.length() == 1) {
             return new ArrayList<>(List.of(s));
-        }else{
+        } else {
             return new ArrayList<>(Arrays.asList(s.split(" ")));
         }
     }
@@ -35,20 +38,14 @@ public class JsonGrammarReader {
 
         JsonGrammar jsonGrammar = JSON.parseObject(new String(code), JsonGrammar.class);
 
-        NormalGrammar normalGrammar = new NormalGrammar();
 
-        normalGrammar.setTarget(jsonGrammar.getTarget());
-        normalGrammar.setKeys(jsonGrammar.getKeys());
-
-
-        Map<String, Set< List<String>>> productions = jsonGrammar.getProductionsTable()
+        Map<String, Set<Production>> productions = jsonGrammar.getProductionsTable()
                 .entrySet()
                 .stream()
-                .map(o -> Map.entry(o.getKey(), o.getValue().stream().map(JsonGrammarReader::string2List).collect(Collectors.toSet())))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .flatMap(o -> o.getValue().stream().map(v -> new NormalProduction(o.getKey(), string2List(v))))
+                .collect(Collectors.groupingBy(NormalProduction::leftSymbol, Collectors.toSet()));
 
-        normalGrammar.setProductionsTable(productions);
 
-        return normalGrammar;
+        return new NormalGrammar(productions, jsonGrammar.getTarget());
     }
 }

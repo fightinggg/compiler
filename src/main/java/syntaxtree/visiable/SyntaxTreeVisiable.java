@@ -10,7 +10,7 @@ public class SyntaxTreeVisiable {
 
 
         if (node.getSon() != null) {
-            String raw = node.getProduction().getFrom() + " => " + String.join(" ", node.getProduction().getDerive());
+            String raw = node.getProduction().leftSymbol() + " => " + String.join(" ", node.getProduction().rightSymbol());
             stringBuilder.append(res).append("[ label=\"").append(raw).append("\"]").append("\n");
             for (SyntaxTree.Node son : node.getSon()) {
                 int sonid = dfs(son, id, stringBuilder);

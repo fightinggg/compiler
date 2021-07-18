@@ -1,9 +1,12 @@
 package grammar;
 
+import lombok.ToString;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@ToString
 public class NormalProduction implements Production {
     private final String left;
     private final List<String> right;

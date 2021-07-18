@@ -1,5 +1,9 @@
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import grammar.Grammar;
+import grammar.GrammarFirstSet;
 import grammar.NormalGrammar;
-import grammar.GrammarOptimizer;
 import grammar.JsonGrammarReader;
 import org.junit.Test;
 import syntaxtree.SyntaxTree;
@@ -9,6 +13,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.Set;
 
 public class CompilerTests {
 
@@ -19,15 +25,10 @@ public class CompilerTests {
 
     @Test
     public void DfsParsingTest() {
-        NormalGrammar normalGrammar = JsonGrammarReader.read("cpp-lex.json");
-        GrammarOptimizer.optimizer(normalGrammar);
-        //        System.out.println(grammar);
-        SyntaxTree syntaxTree = new DfsParsing().parsing(cppCode, normalGrammar);
-        String dot = SyntaxTreeVisiable.toDot(syntaxTree);
-        try (OutputStream outputStream = new FileOutputStream("target/dot.txt")) {
-            outputStream.write(dot.getBytes(StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Grammar grammar = JsonGrammarReader.read("cpp-lex.json");
+        Map<String, Set<String>> firstSet = GrammarFirstSet.firstSet(grammar);
+        System.out.println(JSON.toJSONString(firstSet, SerializerFeature.PrettyFormat));
+
+        String s;
     }
 }

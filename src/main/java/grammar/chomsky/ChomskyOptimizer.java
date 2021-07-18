@@ -83,8 +83,9 @@ public class ChomskyOptimizer {
         // 引入A'
         // A' -> D1 D2 | D3 D4 | D5 D6 | ...
         // A -> A' someB
-        for(Production production:productions){
-            if(production)
-        }
+//        for(Production production:productions){
+//            if(production)
+//        }
+        return null;
     }
 }
