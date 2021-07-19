@@ -17,6 +17,8 @@ public interface Grammar {
 
     Set<Production> allProduction();
 
+    Set<Production> allProduction(String left);
+
     String target();
 
     boolean isTerminal(String symbol);

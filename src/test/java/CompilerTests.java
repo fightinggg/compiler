@@ -2,6 +2,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import grammar.*;
+import grammar.augment.AugmentProductionItem;
 import org.junit.Test;
 import syntaxtree.SyntaxTree;
 import syntaxtree.visiable.SyntaxTreeVisiable;
@@ -26,6 +27,7 @@ public class CompilerTests {
         Map<String, Set<String>> followSet = GrammarFollowSet.followSet(grammar);
         System.out.println(JSON.toJSONString(followSet, SerializerFeature.PrettyFormat));
 
+        System.out.println(JSON.toJSONString(AugmentProductionItem.itemSetDFA(grammar), SerializerFeature.PrettyFormat));
         String s;
     }
 }

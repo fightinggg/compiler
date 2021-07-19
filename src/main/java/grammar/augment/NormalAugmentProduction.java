@@ -12,19 +12,21 @@ import java.util.List;
 public class NormalAugmentProduction extends NormalProduction implements AugmentProduction {
     private final int pos;
 
-
-    public NormalAugmentProduction(String left, List<String> right) {
-        super(left, right);
-        pos = 0;
-    }
-
-    public NormalAugmentProduction(String left, List<String> right, int pos) {
-        super(left, right);
-        this.pos = pos;
+    public NormalAugmentProduction(Production production) {
+        this(production, 0);
     }
 
     public NormalAugmentProduction(Production production, int pos) {
-        super(production.leftSymbol(), production.rightSymbol());
+        this(production.leftSymbol(), production.rightSymbol(), pos);
+    }
+
+    public NormalAugmentProduction(String left, List<String> right) {
+        this(left, right, 0);
+    }
+
+
+    public NormalAugmentProduction(String left, List<String> right, int pos) {
+        super(left, right);
         this.pos = pos;
     }
 

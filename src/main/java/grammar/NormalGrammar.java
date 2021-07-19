@@ -43,7 +43,12 @@ public class NormalGrammar implements Grammar {
 
     @Override
     public Set<String> allNotTerminal() {
-        throw new RuntimeException();
+        return productionsTable.values()
+                .stream()
+                .flatMap(Collection::stream)
+                .flatMap(o -> o.rightSymbol().stream())
+                .filter(o -> o.length() > 1)
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -51,6 +56,11 @@ public class NormalGrammar implements Grammar {
         return productionsTable.values().stream()
                 .flatMap(Collection::stream)
                 .collect(Collectors.toUnmodifiableSet());
+    }
+
+    @Override
+    public Set<Production> allProduction(String left) {
+        return productionsTable.get(left).stream().collect(Collectors.toUnmodifiableSet());
     }
 
     @Override

@@ -37,6 +37,12 @@ public class ChomskyGrammar implements Grammar {
     }
 
     @Override
+    public Set<Production> allProduction(String left) {
+        return productionsTable.get(left).stream()
+                .collect(Collectors.toUnmodifiableSet());
+    }
+
+    @Override
     public String target() {
         return target;
     }
