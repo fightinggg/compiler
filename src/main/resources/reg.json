@@ -21,6 +21,25 @@
     "lowerCaseLetterSeq": ["lowerCaseLetter sub lowerCaseLetter"],
     "upperCaseLetterSeq": ["upperCaseLetter sub upperCaseLetter"],
     "letterSeq": ["lowerCaseLetterSeq", "upperCaseLetterSeq"],
-    "unit": ["number", "lowerCaseLetter", "upperCaseLetter", "escape", "specialChar"]
-  }
+    "char": ["number","lowerCaseLetter","upperCaseLetter","escape","specialChar"],
+    "someChar": [
+      "",
+      "someChar char"
+    ],
+    "unit": ["number", "lowerCaseLetter", "upperCaseLetter", "escape", "specialChar",
+      "unit star","unit add","unit questionMark","leftSquareBracket someChar rightSquareBracket",
+      "leftBracket unitSeq rightBracket"
+    ],
+    "atLeastOneUnit": [
+      "unit",
+      "atLeastOneUnit unit"
+    ],
+    "unitSeq": [
+      "atLeastOneUnit",
+      "unitSeq or atLeastOneUnit"
+    ]
+  },
+  "target": "unitSeq",
+  "keys": [
+  ]
 }

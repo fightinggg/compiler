@@ -1,0 +1,15 @@
+package com.example.grammar;
+
+import java.util.List;
+
+/**
+ * 这个对象是不可变对象
+ * 产生式
+ *
+ * @author wsx
+ */
+public interface Production {
+    String leftSymbol();
+
+    List<String> rightSymbol();
+}
