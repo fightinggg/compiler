@@ -1,16 +1,12 @@
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import grammar.*;
+import grammar.augment.AugmentProduction;
 import grammar.augment.AugmentProductionItem;
+import grammar.visiable.AugmentProductionItemSetVisiable;
+import grammar.visiable.DotUtils;
 import org.junit.Test;
-import syntaxtree.SyntaxTree;
-import syntaxtree.visiable.SyntaxTreeVisiable;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,7 +23,13 @@ public class CompilerTests {
         Map<String, Set<String>> followSet = GrammarFollowSet.followSet(grammar);
         System.out.println(JSON.toJSONString(followSet, SerializerFeature.PrettyFormat));
 
-        System.out.println(JSON.toJSONString(AugmentProductionItem.itemSetDFA(grammar), SerializerFeature.PrettyFormat));
+        Map<Set<AugmentProduction>, Map<String, Set<AugmentProduction>>> map =
+                AugmentProductionItem.itemSetDFA(grammar);
+
+        String dotCode = AugmentProductionItemSetVisiable.toDot(map);
+
+        DotUtils.writeDotFile("target/augmentStateDFA.dot", dotCode);
+
         String s;
     }
 }

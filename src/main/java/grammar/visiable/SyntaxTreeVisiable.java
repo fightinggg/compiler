@@ -1,4 +1,4 @@
-package syntaxtree.visiable;
+package grammar.visiable;
 
 import syntaxtree.SyntaxTree;
 

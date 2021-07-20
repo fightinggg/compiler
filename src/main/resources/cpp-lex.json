@@ -1,106 +1,35 @@
 {
+  "tokens": {
+    "number": "0|[1-9]\\d+",
+    "someLettersOrNumberOrUnderline": "[\\w\\d]",
+    "doubleQuotes": "\"",
+    "angleLeftBracket": "<",
+    "angleRightBracket": ">",
+    "blank": "\\s+",
+    "string": "\"[\\s\\d]*\"",
+    "include": "#include",
+    "symbol": "[_\\w][_\\w\\d]*",
+    "comma": ",",
+    "leftBracket": "(",
+    "rightBracket": ")"
+  },
   "productionsTable": {
-    "simpleNumber": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
-    "lowerCaseLetters": [
-      "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w",
-      "x", "y", "z"
+    "type": [
+      "symbol"
     ],
-    "upperCaseLetters": [
-      "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W",
-      "X", "Y", "Z"
+    "leftSymbol": [
+      "symbol"
     ],
-    "specialCharacters": [
-      "~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "-", "=",
-      "{", "}", "|", "[", "]", "\\",
-      ":", "\"", ";", "'",
-      "<", ">", "?", ",", ".", "/",
-      " "
+    "someSymbolJoinByCommaNotEmpty": [
+      "symbol",
+      "someSymbolJoinByCommaNotEmpty comma symbol"
     ],
-    "letters": [
-      "lowerCaseLetters",
-      "upperCaseLetters"
-    ],
-    "lettersOrNumber": [
-      "letters",
-      "simpleNumber"
-    ],
-    "lettersOrNumberOrUnderline": [
-      "letters",
-      "simpleNumber",
-      "_"
-    ],
-    "someLettersOrNumberOrUnderline": [
+    "someSymbolJoinByComma": [
       "",
-      "lettersOrNumberOrUnderline someLettersOrNumberOrUnderline"
-    ],
-    "nonZeroSimpleNumber": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
-    "zeroLeadNumber": ["simpleNumber", "simpleNumber zeroLeadNumber"],
-    "number": ["simpleNumber", "nonZeroSimpleNumber zeroLeadNumber"],
-    "escapeChar": ["\\"],
-    "doubleQuotes": ["\""],
-    "angleLeftBracket": ["<"],
-    "angleRightBracket": [">"],
-    "specialCharactersEscape": [
-      "~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "-", "=",
-      "{", "}", "|", "[", "]", "escapeChar escapeChar",
-      ":", "escapeChar doubleQuotes", ";", "'",
-      "<", ">", "?", ",", ".", "/",
-      " "
-    ],
-    "space": [" "],
-    "someSpace": [
-      "",
-      "space someSpace"
-    ],
-    "tab": ["\t"],
-    "newLine": ["\n"],
-    "blank": [
-      "space",
-      "tab",
-      "newLine"
-    ],
-    "someBlank": [
-      "",
-      "blank someBlank"
-    ],
-    "characters": [
-      "simpleNumber",
-      "letters",
-      "specialCharacters"
-    ],
-    "charactersEscape": [
-      "simpleNumber",
-      "letters",
-      "specialCharactersEscape"
-    ],
-    "someCharactersEscape": [
-      "",
-      "charactersEscape someCharactersEscape"
-    ],
-    "doubleQuotesString": ["doubleQuotes someCharactersEscape doubleQuotes"],
-    "string": ["doubleQuotesString"],
-    "include": ["raw:#include"],
-    "stdLib": ["angleLeftBracket someSpace string someSpace angleRightBracket"],
-    "var": [
-      "_ someLettersOrNumberOrUnderline",
-      "letters someLettersOrNumberOrUnderline"
-    ],
-    "varType": [
-      "var"
-    ],
-    "leftVar": [
-      "var"
-    ],
-    "someVarJoinByCommaNotEmpty": [
-      "var",
-      "someVarJoinByCommaNotEmpty someBlank , someBlank var"
-    ],
-    "someVarJoinByComma": [
-      "",
-      "someVarJoinByCommaNotEmpty"
+      "someSymbolJoinByCommaNotEmpty"
     ],
     "functionInvoke": [
-      "var someBlank ( someBlank someVarJoinByComma someBlank )"
+      "symbol leftBracket someSymbolJoinByComma rightBracket"
     ],
     "rightVarUnit": [
       "var",
@@ -141,6 +70,5 @@
   },
   "target": "target",
   "keys": [
-
   ]
 }
