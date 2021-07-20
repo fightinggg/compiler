@@ -18,18 +18,18 @@ public class GrammarFollowSet {
      * FOLLOW Z += FOLLOW A
      * if Z can empty, FOLLOW Y += FOLLOW A
      *
-     * @param grammar
+     * @param grammarConfig
      * @return
      */
-    public static Map<String, Set<String>> followSet(Grammar grammar) {
+    public static Map<String, Set<String>> followSet(GrammarConfig grammarConfig) {
 
-        Map<String, Set<String>> firstSet = GrammarFirstSet.firstSet(grammar);
+        Map<String, Set<String>> firstSet = GrammarFirstSet.firstSet(grammarConfig);
 
         Map<String, Set<String>> followSet = new HashMap<>();
 
-        followSet.put(grammar.target(), new HashSet<>(Set.of(FOLLOW_END)));
+        followSet.put(grammarConfig.target(), new HashSet<>(Set.of(FOLLOW_END)));
 
-        grammar.allProduction()
+        grammarConfig.allProduction()
                 .forEach(production -> {
                     List<String> list = production.rightSymbol();
                     for (int i = 0; i + 1 < list.size(); i++) {
@@ -42,8 +42,8 @@ public class GrammarFollowSet {
                 });
 
 
-        Set<String> emptySet = GrammarEmptySet.emptySet(grammar);
-        Set<Map.Entry<String, String>> allDepends = grammar.allProduction().stream()
+        Set<String> emptySet = GrammarEmptySet.emptySet(grammarConfig);
+        Set<Map.Entry<String, String>> allDepends = grammarConfig.allProduction().stream()
                 .filter(o -> !o.rightSymbol().isEmpty())
                 .flatMap(production -> {
                     List<String> list = production.rightSymbol();

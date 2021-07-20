@@ -1,21 +1,16 @@
 package grammar;
 
-import lombok.Data;
-
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 文法
  *
  * @author wsx
  */
-public class NormalGrammar implements Grammar {
+public class NormalGrammarConfig implements GrammarConfig {
     /**
      * 产生式集合
      */
@@ -26,7 +21,7 @@ public class NormalGrammar implements Grammar {
      */
     private final String target;
 
-    public NormalGrammar(Map<String, Set<Production>> productionsTable, String target) {
+    public NormalGrammarConfig(Map<String, Set<Production>> productionsTable, String target) {
         this.productionsTable = productionsTable;
         this.target = target;
     }

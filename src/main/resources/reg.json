@@ -1,0 +1,26 @@
+{
+  "tokens": {
+    "info": "这一块不做词法分析，只有定义，仅供参考",
+    "number": "",
+    "lowerCaseLetter": "",
+    "upperCaseLetter": "",
+    "escape": "转义字符",
+    "specialChar": "特殊符号（不包括关键词）",
+    "leftBracket": "关键词 (",
+    "rightBracket": "关键词 )",
+    "or": "关键词 |",
+    "leftSquareBracket": "关键词 [",
+    "rightSquareBracket": "关键词 ]",
+    "star": "关键词 *",
+    "add": "关键词 +",
+    "questionMark": "关键词 ?",
+    "sub": "关键词 -"
+  },
+  "productionsTable": {
+    "numberSeq": ["number sub number"],
+    "lowerCaseLetterSeq": ["lowerCaseLetter sub lowerCaseLetter"],
+    "upperCaseLetterSeq": ["upperCaseLetter sub upperCaseLetter"],
+    "letterSeq": ["lowerCaseLetterSeq", "upperCaseLetterSeq"],
+    "unit": ["number", "lowerCaseLetter", "upperCaseLetter", "escape", "specialChar"]
+  }
+}

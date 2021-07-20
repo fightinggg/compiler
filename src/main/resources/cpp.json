@@ -11,7 +11,13 @@
     "symbol": "[_\\w][_\\w\\d]*",
     "comma": ",",
     "leftBracket": "(",
-    "rightBracket": ")"
+    "rightBracket": ")",
+    "add": "+",
+    "sub": "-",
+    "mul": "*",
+    "div": "/",
+    "eq": "=",
+    "semicolon": ";"
   },
   "productionsTable": {
     "type": [
@@ -31,41 +37,41 @@
     "functionInvoke": [
       "symbol leftBracket someSymbolJoinByComma rightBracket"
     ],
-    "rightVarUnit": [
-      "var",
+    "rightSymbolUnit": [
+      "symbol",
       "number",
       "functionInvoke"
     ],
     "addOrSubExpression": [
-      "rightVar someBlank + someBlank rightVarUnit",
-      "rightVar someBlank - someBlank rightVarUnit"
+      "rightSymbol add rightSymbolUnit",
+      "rightSymbol sub rightSymbolUnit"
     ],
     "mulOrDelExpression": [
-      "rightVarUnit someBlank * someBlank rightVarUnit",
-      "rightVarUnit someBlank / someBlank rightVarUnit",
-      "mulOrDelExpression someBlank * someBlank rightVarUnit",
-      "mulOrDelExpression someBlank / someBlank rightVarUnit",
-      "( someBlank rightVar someBlank )"
+      "rightSymbolUnit mul rightSymbolUnit",
+      "rightSymbolUnit div rightSymbolUnit",
+      "mulOrDelExpression mul rightSymbolUnit",
+      "mulOrDelExpression div rightSymbolUnit",
+      "leftBracket rightSymbol rightBracket"
     ],
-    "rightVar": [
-      "rightVarUnit",
+    "rightSymbol": [
+      "rightSymbolUnit",
       "addOrSubExpression",
       "mulOrDelExpression"
     ],
-    "varStatement": [
-      "varType someBlank leftVar someBlank ;",
-      "varType someBlank leftVar someBlank = someBlank rightVar someBlank ;"
+    "symbolStatement": [
+      "type leftSymbol semicolon",
+      "type leftSymbol eq rightSymbol semicolon"
     ],
-    "varStatementBlockNotEmpty": [
-      "varStatement",
-      "varStatement someBlank varStatementBlock"
+    "symbolStatementBlockNotEmpty": [
+      "symbolStatement",
+      "symbolStatement symbolStatementBlockNotEmpty"
     ],
-    "varStatementBlock": [
+    "symbolStatementBlock": [
       "",
-      "varStatementBlockNotEmpty"
+      "symbolStatementBlockNotEmpty"
     ],
     "target": [
-      "someBlank varStatementBlockNotEmpty someBlank"
+      "symbolStatementBlock"
     ]
   },
   "target": "target",

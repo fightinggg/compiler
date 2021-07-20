@@ -1,6 +1,6 @@
 package grammar.chomsky;
 
-import grammar.Grammar;
+import grammar.GrammarConfig;
 import grammar.Production;
 
 import java.util.Collection;
@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ChomskyGrammar implements Grammar {
+public class ChomskyGrammarConfig implements GrammarConfig {
     /**
      * 产生式集合
      */

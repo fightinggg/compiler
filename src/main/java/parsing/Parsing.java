@@ -1,4 +1,6 @@
-import grammar.NormalGrammar;
+package parsing;
+
+import grammar.NormalGrammarConfig;
 import syntaxtree.SyntaxTree;
 
 /**
@@ -14,5 +16,5 @@ public interface Parsing {
      * @param normalGrammar
      * @return
      */
-    SyntaxTree parsing(String code, NormalGrammar normalGrammar);
+    SyntaxTree parsing(String code, NormalGrammarConfig normalGrammar);
 }

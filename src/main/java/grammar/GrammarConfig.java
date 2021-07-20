@@ -9,7 +9,7 @@ import java.util.Set;
  * 3. 产生式集合
  * 4。目标
  */
-public interface Grammar {
+public interface GrammarConfig {
 
     Set<String> allTerminal();
 

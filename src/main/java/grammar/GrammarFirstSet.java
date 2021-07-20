@@ -1,7 +1,6 @@
 package grammar;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class GrammarFirstSet {
@@ -13,22 +12,22 @@ public class GrammarFirstSet {
      * 3. 如果X可以为空，则FIRST(X)也包含空<br/>
      * <br/>
      *
-     * @param grammar 文法
+     * @param grammarConfig 文法
      * @return first集
      */
-    public static Map<String, Set<String>> firstSet(Grammar grammar) {
+    public static Map<String, Set<String>> firstSet(GrammarConfig grammarConfig) {
         // 获取产生式集合
-        Set<Production> productions = grammar.allProduction();
+        Set<Production> productions = grammarConfig.allProduction();
 
         // 寻找可以为空的非终极符
-        Set<String> emptySet = GrammarEmptySet.emptySet(grammar);
+        Set<String> emptySet = GrammarEmptySet.emptySet(grammarConfig);
 
         Queue<Map.Entry<String, String>> firstSetQueue = new ArrayDeque<>();
 
         // 空first入队
         firstSetQueue.addAll(emptySet.stream().map(o -> Map.entry(o, "")).collect(Collectors.toSet()));
         // 终结符入队
-        Set<String> allTerminal = grammar.allTerminal();
+        Set<String> allTerminal = grammarConfig.allTerminal();
         firstSetQueue.addAll(allTerminal.stream().map(o -> Map.entry(o, o)).collect(Collectors.toSet()));
 
         List<Map.Entry<String, String>> allDepends = productions.stream()
