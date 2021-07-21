@@ -11,23 +11,51 @@
     "or": "关键词 |",
     "leftSquareBracket": "关键词 [",
     "rightSquareBracket": "关键词 ]",
+    "leftCurlyBracket": "关键词 {",
+    "rightCurlyBracket": "关键词 }",
     "star": "关键词 *",
     "add": "关键词 +",
     "questionMark": "关键词 ?",
-    "sub": "关键词 -"
+    "sub": "关键词 -",
+    "dot": "关键词 ."
   },
   "productionsTable": {
-    "numberSeq": ["number sub number"],
-    "lowerCaseLetterSeq": ["lowerCaseLetter sub lowerCaseLetter"],
-    "upperCaseLetterSeq": ["upperCaseLetter sub upperCaseLetter"],
-    "letterSeq": ["lowerCaseLetterSeq", "upperCaseLetterSeq"],
-    "char": ["number","lowerCaseLetter","upperCaseLetter","escape","specialChar"],
+    "numberSeq": [
+      "number sub number"
+    ],
+    "lowerCaseLetterSeq": [
+      "lowerCaseLetter sub lowerCaseLetter"
+    ],
+    "upperCaseLetterSeq": [
+      "upperCaseLetter sub upperCaseLetter"
+    ],
+    "letterSeq": [
+      "lowerCaseLetterSeq",
+      "upperCaseLetterSeq"
+    ],
+    "char": [
+      "number",
+      "lowerCaseLetter",
+      "upperCaseLetter",
+      "escape",
+      "specialChar"
+    ],
     "someChar": [
       "",
       "someChar char"
     ],
-    "unit": ["number", "lowerCaseLetter", "upperCaseLetter", "escape", "specialChar",
-      "unit star","unit add","unit questionMark","leftSquareBracket someChar rightSquareBracket",
+    "unit": [
+      "number",
+      "lowerCaseLetter",
+      "upperCaseLetter",
+      "escape",
+      "specialChar",
+      "unit star",
+      "unit add",
+      "unit questionMark",
+      "unit leftCurlyBracket number rightCurlyBracket",
+      "unit leftCurlyBracket number comma number rightCurlyBracket",
+      "leftSquareBracket someChar rightSquareBracket",
       "leftBracket unitSeq rightBracket"
     ],
     "atLeastOneUnit": [

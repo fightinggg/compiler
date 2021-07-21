@@ -7,8 +7,14 @@ import com.example.grammar.augment.AugmentProduction;
 import com.example.grammar.augment.AugmentProductionItem;
 import com.example.grammar.visiable.AugmentProductionItemSetVisiable;
 import com.example.grammar.visiable.DotUtils;
+import com.example.lang.reg.RegLexicalAnalysisImpl;
+import com.example.lexical.LexicalAnalysis;
+import com.example.lexical.LexicalConfig;
+import com.example.lexical.LexicalConfigReader;
+import com.example.lexical.Token;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,7 +26,31 @@ public class CompilerTests {
             "\n";
 
     @Test
-    public void DfsParsingTest() {
+    public void cppTest() {
+        GrammarConfig grammarConfig = GrammarReader.read("cpp.json");
+        Map<String, Set<String>> followSet = GrammarFollowSet.followSet(grammarConfig);
+        System.out.println(JSON.toJSONString(followSet, SerializerFeature.PrettyFormat));
+
+        Map<Set<AugmentProduction>, Map<String, Set<AugmentProduction>>> map =
+                AugmentProductionItem.itemSetDFA(grammarConfig);
+
+        String dotCode = AugmentProductionItemSetVisiable.toDot(map);
+
+        DotUtils.writeDotFile("target/augmentStateDFA.dot", dotCode);
+
+    }
+
+
+    @Test
+    public void RegTest() {
+
+        String code = "abc+def*{1}(123)\\(\\)";
+        LexicalConfig lexicalConfig = LexicalConfigReader.read("reg.json");
+        LexicalAnalysis lexicalAnalysis = new RegLexicalAnalysisImpl();
+        List<Token> tokes = lexicalAnalysis.parsing(code, lexicalConfig);
+        System.out.println(JSON.toJSONString(tokes.stream().map(Object::toString).toList(),
+                SerializerFeature.PrettyFormat));
+
         GrammarConfig grammarConfig = GrammarReader.read("reg.json");
         Map<String, Set<String>> followSet = GrammarFollowSet.followSet(grammarConfig);
         System.out.println(JSON.toJSONString(followSet, SerializerFeature.PrettyFormat));
