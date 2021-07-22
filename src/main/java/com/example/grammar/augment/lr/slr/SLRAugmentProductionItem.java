@@ -10,7 +10,7 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 public class SLRAugmentProductionItem {
-    public static Set<SLRAugmentProduction> _closure(GrammarConfig grammarConfig, List<SLRAugmentProduction> productions) {
+    private static Set<SLRAugmentProduction> _closure(GrammarConfig grammarConfig, List<SLRAugmentProduction> productions) {
         Set<SLRAugmentProduction> collect = grammarConfig.allProduction()
                 .stream()
                 .filter(production ->
@@ -30,7 +30,7 @@ public class SLRAugmentProductionItem {
 
     private static Map<Set<SLRAugmentProduction>, Set<SLRAugmentProduction>> closureMemory = new HashMap<>();
 
-    public static Set<SLRAugmentProduction> closure(GrammarConfig grammarConfig, List<SLRAugmentProduction> productions) {
+    private static Set<SLRAugmentProduction> closure(GrammarConfig grammarConfig, List<SLRAugmentProduction> productions) {
         Set<SLRAugmentProduction> SLRAugmentProductions = _closure(grammarConfig, productions);
         Set<SLRAugmentProduction> findResult = closureMemory.get(SLRAugmentProductions);
         if (findResult == null) {
@@ -42,7 +42,7 @@ public class SLRAugmentProductionItem {
     }
 
 
-    public static Set<SLRAugmentProduction> itemGoto(GrammarConfig grammarConfig, Set<SLRAugmentProduction> from, String symbol) {
+    private static Set<SLRAugmentProduction> itemGoto(GrammarConfig grammarConfig, Set<SLRAugmentProduction> from, String symbol) {
         List<SLRAugmentProduction> halfTarget = from.stream()
                 .filter(o -> o.pos() != o.rightSymbol().size())
                 .filter(production -> production.rightSymbol().get(production.pos()).equals(symbol))
@@ -52,7 +52,7 @@ public class SLRAugmentProductionItem {
     }
 
 
-    public static Map<Set<SLRAugmentProduction>, Map<String, Set<SLRAugmentProduction>>> itemSetDFA(GrammarConfig grammarConfig) {
+    public static Map<Set<SLRAugmentProduction>, Map<String, Set<SLRAugmentProduction>>> itemSetDfa(GrammarConfig grammarConfig) {
         Map<Set<SLRAugmentProduction>, Map<String, Set<SLRAugmentProduction>>> res = new HashMap<>();
 
         Stack<Set<SLRAugmentProduction>> stack = new Stack<>();

@@ -62,6 +62,6 @@ public class GrammarConfigImpl implements GrammarConfig {
 
     @Override
     public boolean isTerminal(String symbol) {
-        throw new RuntimeException();
+        return terminal.contains(symbol);
     }
 }
