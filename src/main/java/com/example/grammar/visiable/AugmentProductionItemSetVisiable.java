@@ -1,7 +1,7 @@
 package com.example.grammar.visiable;
 
 import com.alibaba.fastjson.JSON;
-import com.example.grammar.augment.AugmentProduction;
+import com.example.grammar.augment.lr.slr.SLRAugmentProduction;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class AugmentProductionItemSetVisiable {
 
 
-    public static String toDot(Map<Set<AugmentProduction>, Map<String, Set<AugmentProduction>>> map) {
+    public static String toDot(Map<Set<SLRAugmentProduction>, Map<String, Set<SLRAugmentProduction>>> map) {
         String nodes = map.keySet().stream()
                 .map(o -> "\"%d\"[ label = %s]".formatted(o.hashCode(),
                         JSON.toJSONString(o.stream().map(Object::toString).collect(Collectors.joining("\n")))))

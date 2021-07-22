@@ -1,4 +1,4 @@
-package com.example.grammar.augment;
+package com.example.grammar.augment.lr.slr;
 
 import com.alibaba.fastjson.JSON;
 import com.example.grammar.Production;
@@ -9,23 +9,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
-public class AugmentProductionImpl extends ProductionImpl implements AugmentProduction {
+public class SLRAugmentProductionImpl extends ProductionImpl implements SLRAugmentProduction {
     private final int pos;
 
-    public AugmentProductionImpl(Production production) {
+    public SLRAugmentProductionImpl(Production production) {
         this(production, 0);
     }
 
-    public AugmentProductionImpl(Production production, int pos) {
+    public SLRAugmentProductionImpl(Production production, int pos) {
         this(production.leftSymbol(), production.rightSymbol(), pos);
     }
 
-    public AugmentProductionImpl(String left, List<String> right) {
+    public SLRAugmentProductionImpl(String left, List<String> right) {
         this(left, right, 0);
     }
 
 
-    public AugmentProductionImpl(String left, List<String> right, int pos) {
+    public SLRAugmentProductionImpl(String left, List<String> right, int pos) {
         super(left, right);
         this.pos = pos;
     }

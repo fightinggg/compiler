@@ -3,8 +3,8 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.example.grammar.GrammarConfig;
 import com.example.grammar.GrammarFollowSet;
 import com.example.grammar.GrammarReader;
-import com.example.grammar.augment.AugmentProduction;
-import com.example.grammar.augment.AugmentProductionItem;
+import com.example.grammar.augment.lr.slr.SLRAugmentProduction;
+import com.example.grammar.augment.lr.slr.SLRAugmentProductionItem;
 import com.example.grammar.visiable.AugmentProductionItemSetVisiable;
 import com.example.grammar.visiable.DotUtils;
 import com.example.lang.reg.RegLexicalAnalysisImpl;
@@ -31,8 +31,8 @@ public class CompilerTests {
         Map<String, Set<String>> followSet = GrammarFollowSet.followSet(grammarConfig);
         System.out.println(JSON.toJSONString(followSet, SerializerFeature.PrettyFormat));
 
-        Map<Set<AugmentProduction>, Map<String, Set<AugmentProduction>>> map =
-                AugmentProductionItem.itemSetDFA(grammarConfig);
+        Map<Set<SLRAugmentProduction>, Map<String, Set<SLRAugmentProduction>>> map =
+                SLRAugmentProductionItem.itemSetDFA(grammarConfig);
 
         String dotCode = AugmentProductionItemSetVisiable.toDot(map);
 
@@ -55,8 +55,8 @@ public class CompilerTests {
         Map<String, Set<String>> followSet = GrammarFollowSet.followSet(grammarConfig);
         System.out.println(JSON.toJSONString(followSet, SerializerFeature.PrettyFormat));
 
-        Map<Set<AugmentProduction>, Map<String, Set<AugmentProduction>>> map =
-                AugmentProductionItem.itemSetDFA(grammarConfig);
+        Map<Set<SLRAugmentProduction>, Map<String, Set<SLRAugmentProduction>>> map =
+                SLRAugmentProductionItem.itemSetDFA(grammarConfig);
 
         String dotCode = AugmentProductionItemSetVisiable.toDot(map);
 
