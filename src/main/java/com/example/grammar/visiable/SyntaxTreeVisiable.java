@@ -10,15 +10,19 @@ public class SyntaxTreeVisiable {
 
 
         if (node.getSon() != null) {
-            String raw = node.getProduction().leftSymbol() + " => " + String.join(" ", node.getProduction().rightSymbol());
-            stringBuilder.append(res).append("[ label=\"").append(raw).append("\"]").append("\n");
+            String nodeString = "%d[ label = \"%s -> [%s]\" ] \n ".formatted(
+                    res,
+                    node.getProduction().leftSymbol(),
+                    String.join(",", node.getProduction().rightSymbol()));
+
+            stringBuilder.append(nodeString);
             for (SyntaxTree.Node son : node.getSon()) {
                 int sonid = dfs(son, id, stringBuilder);
-                stringBuilder.append(res).append(" -> ").append(sonid).append("\n");
+                stringBuilder.append("%d -> %d \n".formatted(res, sonid));
             }
         } else {
             String raw = node.getRaw();
-            stringBuilder.append(res).append("[ label=\"").append(raw).append("\"]").append("\n");
+            stringBuilder.append("%d[ label = \"%s\"]\n".formatted(res, raw));
         }
         return res;
     }
@@ -29,6 +33,6 @@ public class SyntaxTreeVisiable {
         integers[0] = 0;
         StringBuilder stringBuilder = new StringBuilder();
         dfs(syntaxTree.getRoot(), integers, stringBuilder);
-        return "digraph { \n" + stringBuilder + "}";
+        return "digraph { \n%s}".formatted(stringBuilder);
     }
 }

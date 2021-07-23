@@ -65,9 +65,12 @@
     "unitSeq": [
       "atLeastOneUnit",
       "unitSeq or atLeastOneUnit"
+    ],
+    "target": [
+      "unitSeq"
     ]
   },
-  "target": "unitSeq",
+  "target": "target",
   "keys": [
   ]
 }

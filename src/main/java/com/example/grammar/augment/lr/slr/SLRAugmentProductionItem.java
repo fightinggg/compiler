@@ -94,4 +94,12 @@ public class SLRAugmentProductionItem {
         return res;
     }
 
+    public static Set<SLRAugmentProduction> begin(GrammarConfig grammarConfig) {
+        List<SLRAugmentProduction> begin = grammarConfig.allProduction(grammarConfig.target())
+                .stream()
+                .map(SLRAugmentProductionImpl::new)
+                .collect(Collectors.toList());
+
+        return closure(grammarConfig, begin);
+    }
 }

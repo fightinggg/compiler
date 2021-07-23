@@ -4,14 +4,20 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-@ToString
 @EqualsAndHashCode
 public class ProductionImpl implements Production {
     private final String left;
     private final List<String> right;
 
-    public ProductionImpl(String left, List<String> right){
+    public ProductionImpl(Production production) {
+        this.left = production.leftSymbol();
+        // 不可变对象
+        this.right = production.rightSymbol();
+    }
+
+    public ProductionImpl(String left, List<String> right) {
         this.left = left;
         // 不可变对象
         this.right = right.stream().toList();
@@ -25,5 +31,10 @@ public class ProductionImpl implements Production {
     @Override
     public List<String> rightSymbol() {
         return right;
+    }
+
+    @Override
+    public String toString() {
+        return left + " -> " + String.join(" ", right);
     }
 }
