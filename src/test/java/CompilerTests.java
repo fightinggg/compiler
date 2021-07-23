@@ -51,7 +51,7 @@ public class CompilerTests {
     @Test
     public void RegTest() {
 
-        String code = "abc+def*{1}(123)\\(\\)";
+        String code = "a|bc+de|f*{1}(123)\\(\\)";
         LexicalConfig lexicalConfig = LexicalConfigReader.read("reg.json");
         LexicalAnalysis lexicalAnalysis = new RegLexicalAnalysisImpl();
         List<Token> tokes = lexicalAnalysis.parsing(code, lexicalConfig);
