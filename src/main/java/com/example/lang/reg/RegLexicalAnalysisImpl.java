@@ -1,5 +1,6 @@
 package com.example.lang.reg;
 
+import com.example.grammar.GrammarFollowSet;
 import com.example.lexical.LexicalAnalysis;
 import com.example.lexical.LexicalConfig;
 import com.example.lexical.Token;
@@ -49,6 +50,8 @@ public class RegLexicalAnalysisImpl implements LexicalAnalysis {
                 list.add(new TokenImpl(map.get(code.charAt(i)), String.valueOf(code.charAt(i))));
             }
         }
-        return list.stream().collect(Collectors.toUnmodifiableList());
+        list.add(new TokenImpl(Token.END, Token.END));
+
+        return list.stream().toList();
     }
 }

@@ -14,6 +14,7 @@ import com.example.grammar.visiable.AugmentProductionItemSetVisiable;
 import com.example.grammar.visiable.DotUtils;
 import com.example.grammar.visiable.SyntaxTreeVisiable;
 import com.example.lang.reg.RegLexicalAnalysisImpl;
+import com.example.lang.reg.RegSyntaxTree2Nfa;
 import com.example.lexical.LexicalAnalysis;
 import com.example.lexical.LexicalConfig;
 import com.example.lexical.LexicalConfigReader;
@@ -81,6 +82,9 @@ public class CompilerTests {
         String s = SyntaxTreeVisiable.toDot(syntaxTree);
 
         DotUtils.writeDotFile("target/syntaxtree.dot", s);
+
+
+        RegSyntaxTree2Nfa.toNfa(syntaxTree);
 
     }
 }

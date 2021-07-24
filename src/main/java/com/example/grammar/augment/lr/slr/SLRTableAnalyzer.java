@@ -6,6 +6,7 @@ import com.example.grammar.Production;
 import com.example.grammar.ProductionImpl;
 import com.example.grammar.augment.lr.LRTable;
 import com.example.grammar.augment.lr.LRTableAnalyzer;
+import com.example.lexical.Token;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -70,7 +71,7 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
                     followSet.get(leftSymbol).forEach(o -> actionTable.get(currentId).put(o, action));
                 } else if (pos == rightSymbol.size() && leftSymbol.equals(grammarConfig.target())) {
                     // ③
-                    actionTable.get(currentId).put(GrammarFollowSet.FOLLOW_END, new LRTable.Action(LRTable.Action.ACC, 0));
+                    actionTable.get(currentId).put(Token.END, new LRTable.Action(LRTable.Action.ACC, 0));
                 }
             });
         });

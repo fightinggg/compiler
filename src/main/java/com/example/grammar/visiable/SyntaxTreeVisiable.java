@@ -21,7 +21,7 @@ public class SyntaxTreeVisiable {
                 stringBuilder.append("%d -> %d \n".formatted(res, sonid));
             }
         } else {
-            String raw = node.getRaw();
+            String raw = node.getToken().raw();
             stringBuilder.append("%d[ label = \"%s\"]\n".formatted(res, raw));
         }
         return res;

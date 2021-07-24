@@ -1,11 +1,11 @@
 package com.example.grammar;
 
+import com.example.lexical.Token;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class GrammarFollowSet {
-
-    public static final String FOLLOW_END = "$FOLLOW_END";
 
     /**
      * A -> BCDEFG...XYZ
@@ -27,7 +27,7 @@ public class GrammarFollowSet {
 
         Map<String, Set<String>> followSet = new HashMap<>();
 
-        followSet.put(grammarConfig.target(), new HashSet<>(Set.of(FOLLOW_END)));
+        followSet.put(grammarConfig.target(), new HashSet<>(Set.of(Token.END)));
 
         grammarConfig.allProduction()
                 .forEach(production -> {
