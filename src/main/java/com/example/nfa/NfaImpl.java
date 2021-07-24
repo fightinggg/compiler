@@ -1,6 +1,5 @@
 package com.example.nfa;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 import java.util.Map;
@@ -15,14 +14,24 @@ public class NfaImpl<STATE, SYMBOL> implements Nfa<STATE, SYMBOL> {
     private final Set<STATE> stateSet;
     private final Set<SYMBOL> symbolSet;
     private final Map<STATE, Map<SYMBOL, Set<STATE>>> transMap;
-    private final STATE initState;
+    private final STATE startStateSet;
     private final Set<STATE> terminalState;
 
-    public NfaImpl(Set<STATE> stateSet, Set<SYMBOL> symbolSet, Map<STATE, Map<SYMBOL, Set<STATE>>> transMap, STATE initState, Set<STATE> terminalState) {
+    private Map<SYMBOL, Set<STATE>> deepCopy(Map<SYMBOL, Set<STATE>> mp) {
+        Map<SYMBOL, Set<STATE>> copy = mp.entrySet().stream()
+                .map(o -> Map.entry(o.getKey(), Set.copyOf(o.getValue())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        return Map.copyOf(copy);
+    }
+
+    public NfaImpl(Set<STATE> stateSet, Set<SYMBOL> symbolSet, Map<STATE, Map<SYMBOL, Set<STATE>>> transMap, STATE startStateSet, Set<STATE> terminalState) {
         this.stateSet = stateSet.stream().collect(Collectors.toUnmodifiableSet());
         this.symbolSet = symbolSet.stream().collect(Collectors.toUnmodifiableSet());
-        this.transMap = transMap; // 在下面实现了不可变
-        this.initState = initState;
+        Map<STATE, Map<SYMBOL, Set<STATE>>> copy = transMap.entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), deepCopy(entry.getValue())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        this.transMap = Map.copyOf(copy);
+        this.startStateSet = startStateSet;
         this.terminalState = terminalState.stream().collect(Collectors.toUnmodifiableSet());
     }
 
@@ -38,16 +47,21 @@ public class NfaImpl<STATE, SYMBOL> implements Nfa<STATE, SYMBOL> {
 
     @Override
     public Set<STATE> trans(STATE state, SYMBOL symbol) {
-        return transMap.get(state).get(symbol).stream().collect(Collectors.toUnmodifiableSet());
+        return transMap.get(state).get(symbol);
     }
 
     @Override
-    public STATE initState() {
-        return initState;
+    public Map<STATE, Map<SYMBOL, Set<STATE>>> allTrans() {
+        return transMap;
     }
 
     @Override
-    public Set<STATE> terminalState() {
+    public STATE startStateSet() {
+        return startStateSet;
+    }
+
+    @Override
+    public Set<STATE> endStateSet() {
         return terminalState;
     }
 }

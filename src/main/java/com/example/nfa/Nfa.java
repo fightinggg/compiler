@@ -1,5 +1,6 @@
 package com.example.nfa;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -16,7 +17,9 @@ public interface Nfa<STATE, SYMBOL> {
 
     Set<STATE> trans(STATE state, SYMBOL symbol);
 
-    STATE initState();
+    Map<STATE, Map<SYMBOL, Set<STATE>>> allTrans();
 
-    Set<STATE> terminalState();
+    STATE startStateSet();
+
+    Set<STATE> endStateSet();
 }
