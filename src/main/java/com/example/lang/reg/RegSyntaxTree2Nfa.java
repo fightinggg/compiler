@@ -80,8 +80,8 @@ public class RegSyntaxTree2Nfa {
                 }),
                 Map.entry(new ProductionImpl("someChar -> someChar char"), (rt, sonList) -> {
                     List<Nfa<Object, String>> someCharNfaList = new ArrayList<>((List<Nfa<Object, String>>) sonList.get(0).get("someCharNfaList"));
-                    someCharNfaList.add((Nfa<Object, String>) sonList.get(0).get("nfa"));
-                    rt.put("someCharNfaList", NfaUtils.oneChar(EMPTY));
+                    someCharNfaList.add((Nfa<Object, String>) sonList.get(1).get("nfa"));
+                    rt.put("someCharNfaList", someCharNfaList);
                 }),
                 Map.entry(new ProductionImpl("unit -> char"), (rt, sonList) -> {
                     rt.put("nfa", sonList.get(0).get("nfa"));
