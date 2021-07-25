@@ -10,15 +10,17 @@ import com.example.grammar.augment.lr.LRTableAnalyzer;
 import com.example.grammar.augment.lr.slr.SLRAugmentProduction;
 import com.example.grammar.augment.lr.slr.SLRAugmentProductionItem;
 import com.example.grammar.augment.lr.slr.SLRTableAnalyzer;
-import com.example.grammar.visiable.AugmentProductionItemSetVisiable;
-import com.example.grammar.visiable.DotUtils;
-import com.example.grammar.visiable.SyntaxTreeVisiable;
+import com.example.visiable.AugmentProductionItemSetVisiable;
+import com.example.visiable.DotUtils;
+import com.example.visiable.NfaVisiable;
+import com.example.visiable.SyntaxTreeVisiable;
 import com.example.lang.reg.RegLexicalAnalysisImpl;
 import com.example.lang.reg.RegSyntaxTree2Nfa;
 import com.example.lexical.LexicalAnalysis;
 import com.example.lexical.LexicalConfig;
 import com.example.lexical.LexicalConfigReader;
 import com.example.lexical.Token;
+import com.example.nfa.Nfa;
 import com.example.syntaxtree.SyntaxTree;
 import org.junit.Test;
 
@@ -52,7 +54,7 @@ public class CompilerTests {
     @Test
     public void RegTest() {
 
-        String code = "a|bc+de|f*{1}(123)\\(\\)";
+        String code = "a|bc+de|f*(123)[456]?\\(\\)";
         LexicalConfig lexicalConfig = LexicalConfigReader.read("reg.json");
         LexicalAnalysis lexicalAnalysis = new RegLexicalAnalysisImpl();
         List<Token> tokes = lexicalAnalysis.parsing(code, lexicalConfig);
@@ -84,7 +86,14 @@ public class CompilerTests {
         DotUtils.writeDotFile("target/syntaxtree.dot", s);
 
 
-        RegSyntaxTree2Nfa.toNfa(syntaxTree);
+        Nfa<Object, String> nfa = RegSyntaxTree2Nfa.toNfa(syntaxTree);
+
+        String nfaString = NfaVisiable.nfa2Dot(nfa);
+
+        DotUtils.writeDotFile("target/nfa.dot", nfaString);
+
+
+        System.out.println(nfa);
 
     }
 }

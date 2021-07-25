@@ -1,6 +1,5 @@
-package com.example.grammar.visiable;
+package com.example.visiable;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;

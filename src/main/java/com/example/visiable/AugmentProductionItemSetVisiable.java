@@ -1,4 +1,4 @@
-package com.example.grammar.visiable;
+package com.example.visiable;
 
 import com.alibaba.fastjson.JSON;
 import com.example.grammar.augment.lr.slr.SLRAugmentProduction;

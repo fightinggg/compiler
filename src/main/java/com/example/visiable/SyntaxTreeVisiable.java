@@ -1,4 +1,4 @@
-package com.example.grammar.visiable;
+package com.example.visiable;
 
 
 import com.example.syntaxtree.SyntaxTree;

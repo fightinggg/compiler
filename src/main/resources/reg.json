@@ -45,16 +45,11 @@
       "someChar char"
     ],
     "unit": [
-      "number",
-      "lowerCaseLetter",
-      "upperCaseLetter",
-      "escape",
-      "specialChar",
+      "char",
       "unit star",
       "unit add",
       "unit questionMark",
       "unit leftCurlyBracket number rightCurlyBracket",
-      "unit leftCurlyBracket number comma number rightCurlyBracket",
       "leftSquareBracket someChar rightSquareBracket",
       "leftBracket unitSeq rightBracket"
     ],

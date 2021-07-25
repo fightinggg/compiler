@@ -22,4 +22,6 @@ public interface Nfa<STATE, SYMBOL> {
     STATE startStateSet();
 
     Set<STATE> endStateSet();
+
+    Nfa<STATE, SYMBOL> deepCopy();
 }

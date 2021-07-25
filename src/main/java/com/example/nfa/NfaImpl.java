@@ -2,6 +2,8 @@ package com.example.nfa;
 
 import lombok.Builder;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -47,7 +49,7 @@ public class NfaImpl<STATE, SYMBOL> implements Nfa<STATE, SYMBOL> {
 
     @Override
     public Set<STATE> trans(STATE state, SYMBOL symbol) {
-        return transMap.get(state).get(symbol);
+        return transMap.getOrDefault(state, new HashMap<>()).getOrDefault(symbol, new HashSet<>());
     }
 
     @Override
@@ -63,5 +65,11 @@ public class NfaImpl<STATE, SYMBOL> implements Nfa<STATE, SYMBOL> {
     @Override
     public Set<STATE> endStateSet() {
         return terminalState;
+    }
+
+    @Override
+    public Nfa<STATE, SYMBOL> deepCopy() {
+        // TODO
+        return null;
     }
 }
