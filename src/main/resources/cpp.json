@@ -1,6 +1,6 @@
 {
   "tokens": {
-    "number": "0|[1-9]\\d+",
+    "number": "0|[1\\-9]\\d+",
     "someLettersOrNumberOrUnderline": "[\\w\\d]",
     "doubleQuotes": "\"",
     "angleLeftBracket": "<",
@@ -10,11 +10,11 @@
     "include": "#include",
     "symbol": "[_\\w][_\\w\\d]*",
     "comma": ",",
-    "leftBracket": "(",
-    "rightBracket": ")",
-    "add": "+",
-    "sub": "-",
-    "mul": "*",
+    "leftBracket": "\\(",
+    "rightBracket": "\\)",
+    "add": "\\+",
+    "sub": "\\-",
+    "mul": "\\*",
     "div": "/",
     "eq": "=",
     "semicolon": ";"

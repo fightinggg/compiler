@@ -26,7 +26,7 @@ public class NfaUtils {
         Set<Object> stateSet = nfa.stateSet();
         Set<SYMBOL> symbolSet = new HashSet<>(nfa.symbolSet());
         symbolSet.add(symbol);
-        Object startState = nfa.startStateSet();
+        Object startState = nfa.startState();
         Set<Object> endStateSet = nfa.endStateSet();
         Map<Object, Map<SYMBOL, Set<Object>>> trans = new HashMap<>(nfa.allTrans());
         endStateSet.forEach(
@@ -38,7 +38,9 @@ public class NfaUtils {
                     trans.put(endState, nwTransMap);
                 }
         );
-        return new NfaImpl<>(stateSet, symbolSet, trans, startState, endStateSet);
+        final NfaImpl<Object, SYMBOL> res = new NfaImpl<>(stateSet, symbolSet, trans, startState, endStateSet);
+        res.setEndStateInvoke(res.endStateInvokeMap());
+        return res;
     }
 
 
@@ -53,7 +55,7 @@ public class NfaUtils {
         symbolSet.addAll(nfa2.symbolSet());
         symbolSet.add(symbol);
 
-        Object startState = nfa1.startStateSet();
+        Object startState = nfa1.startState();
         Set<Object> endStateSet = nfa2.endStateSet();
         Map<Object, Map<SYMBOL, Set<Object>>> trans = new HashMap<>(nfa1.allTrans());
         trans.putAll(nfa2.allTrans());
@@ -61,14 +63,16 @@ public class NfaUtils {
         nfa1.endStateSet().forEach(
                 endState -> {
                     Set<Object> terminalTrans = trans.getOrDefault(endState, new HashMap<>()).getOrDefault(symbol, new HashSet<>());
-                    Set<Object> nwTrans = Stream.concat(terminalTrans.stream(), Stream.of(nfa2.startStateSet())).collect(Collectors.toSet());
+                    Set<Object> nwTrans = Stream.concat(terminalTrans.stream(), Stream.of(nfa2.startState())).collect(Collectors.toSet());
                     Map<SYMBOL, Set<Object>> nwTransMap = new HashMap<>(trans.getOrDefault(endState, new HashMap<>()));
                     nwTransMap.put(symbol, nwTrans);
                     trans.put(endState, nwTransMap);
                 }
         );
 
-        return new NfaImpl<>(stateSet, symbolSet, trans, startState, endStateSet);
+        final NfaImpl<Object, SYMBOL> res = new NfaImpl<>(stateSet, symbolSet, trans, startState, endStateSet);
+        res.setEndStateInvoke(nfa2.endStateInvokeMap());
+        return res;
     }
 
     public static <SYMBOL> Nfa<Object, SYMBOL> parallel(Nfa<Object, SYMBOL> nfa1, Nfa<Object, SYMBOL> nfa2, SYMBOL symbol) {
@@ -89,9 +93,14 @@ public class NfaUtils {
         Set<Object> endStateSet = Stream.concat(nfa1.endStateSet().stream(), nfa2.endStateSet().stream()).collect(Collectors.toSet());
         Map<Object, Map<SYMBOL, Set<Object>>> trans = new HashMap<>(nfa1.allTrans());
         trans.putAll(nfa2.allTrans());
-        trans.put(startState, Map.of(symbol, Set.of(nfa1.startStateSet(), nfa2.startStateSet())));
+        trans.put(startState, Map.of(symbol, Set.of(nfa1.startState(), nfa2.startState())));
 
-        return new NfaImpl<>(stateSet, symbolSet, trans, startState, endStateSet);
+        final NfaImpl<Object, SYMBOL> res = new NfaImpl<>(stateSet, symbolSet, trans, startState, endStateSet);
+        final Map<Object, Function<List<SYMBOL>, Object>> collect = Stream.concat(nfa1.endStateInvokeMap().entrySet().stream(), nfa2.endStateInvokeMap().entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        res.setEndStateInvoke(collect);
+        return res;
     }
 
     public static <SYMBOL> Nfa<Object, SYMBOL> series(List<Nfa<Object, SYMBOL>> nfas, SYMBOL symbol) {
@@ -105,7 +114,7 @@ public class NfaUtils {
     public static <SYMBOL> Nfa<Object, SYMBOL> parallel(List<Nfa<Object, SYMBOL>> nfas, SYMBOL symbol) {
         Nfa<Object, SYMBOL> res = nfas.get(0);
         for (int i = 1; i < nfas.size(); i++) {
-            res = series(res, nfas.get(i), symbol);
+            res = parallel(res, nfas.get(i), symbol);
         }
         return res;
     }

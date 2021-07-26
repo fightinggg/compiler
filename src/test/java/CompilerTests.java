@@ -10,16 +10,13 @@ import com.example.grammar.augment.lr.LRTableAnalyzer;
 import com.example.grammar.augment.lr.slr.SLRAugmentProduction;
 import com.example.grammar.augment.lr.slr.SLRAugmentProductionItem;
 import com.example.grammar.augment.lr.slr.SLRTableAnalyzer;
+import com.example.lexical.*;
 import com.example.visiable.AugmentProductionItemSetVisiable;
 import com.example.visiable.DotUtils;
 import com.example.visiable.NfaVisiable;
 import com.example.visiable.SyntaxTreeVisiable;
 import com.example.lang.reg.RegLexicalAnalysisImpl;
-import com.example.lang.reg.RegSyntaxTree2Nfa;
-import com.example.lexical.LexicalAnalysis;
-import com.example.lexical.LexicalConfig;
-import com.example.lexical.LexicalConfigReader;
-import com.example.lexical.Token;
+import com.example.lang.reg.RegSyntaxDirectedTranslation;
 import com.example.nfa.Nfa;
 import com.example.syntaxtree.SyntaxTree;
 import org.junit.Test;
@@ -37,16 +34,15 @@ public class CompilerTests {
 
     @Test
     public void cppTest() {
+        // 1. 获取词法和文法配置
+        LexicalConfig lexicalConfig = LexicalConfigReader.read("cpp.json");
         GrammarConfig grammarConfig = GrammarReader.read("cpp.json");
-        Map<String, Set<String>> followSet = GrammarFollowSet.followSet(grammarConfig);
-        System.out.println(JSON.toJSONString(followSet, SerializerFeature.PrettyFormat));
 
-        Map<Set<SLRAugmentProduction>, Map<String, Set<SLRAugmentProduction>>> map =
-                SLRAugmentProductionItem.itemSetDfa(grammarConfig);
+        // 2. 根据文法构建SLR语法分析器
+        LRTable lrTable = new SLRTableAnalyzer().analyze(grammarConfig);
 
-        String dotCode = AugmentProductionItemSetVisiable.toDot(map);
-
-        DotUtils.writeDotFile("target/augmentStateDFA.dot", dotCode);
+        // 3. 执行词法分析
+        List<Token> tokes = new LexicalAnalysisImpl().parsing(cppCode, lexicalConfig);
 
     }
 
@@ -86,7 +82,7 @@ public class CompilerTests {
         DotUtils.writeDotFile("target/syntaxtree.dot", s);
 
 
-        Nfa<Object, String> nfa = RegSyntaxTree2Nfa.toNfa(syntaxTree);
+        Nfa<Object, String> nfa = RegSyntaxDirectedTranslation.toNfa(syntaxTree);
 
         String nfaString = NfaVisiable.nfa2Dot(nfa);
 

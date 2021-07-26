@@ -34,6 +34,9 @@ public class LRAnalyzerImpl implements LRAnalyzer {
 
             Map<String, LRTable.Action> currentActionTable = lrTable.getActionTable().get(stack.peek().getState());
             LRTable.Action action = currentActionTable.get(token.type());
+            if (action == null) {
+                throw new RuntimeException("could not analtze %s".formatted(tokenList.toString()));
+            }
             if (action.getAc().equals("s")) {
                 stack.push(new StackNode(action.getJump(), new SyntaxTree.Node(token, null, null)));
                 System.out.println(stack + " read " + token.raw() + " push " + action.getJump());

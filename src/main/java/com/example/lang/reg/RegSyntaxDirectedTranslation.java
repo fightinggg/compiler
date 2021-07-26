@@ -16,7 +16,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class RegSyntaxTree2Nfa {
+public class RegSyntaxDirectedTranslation {
     public static final String EMPTY = "$empty";
 
 

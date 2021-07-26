@@ -1,23 +1,24 @@
 package com.example.nfa;
 
 import lombok.Builder;
+import lombok.Setter;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
  * 不可变Nfa
  */
-@Builder
 public class NfaImpl<STATE, SYMBOL> implements Nfa<STATE, SYMBOL> {
     private final Set<STATE> stateSet;
     private final Set<SYMBOL> symbolSet;
     private final Map<STATE, Map<SYMBOL, Set<STATE>>> transMap;
     private final STATE startStateSet;
     private final Set<STATE> terminalState;
+
+    @Setter
+    private Map<STATE, Function<List<SYMBOL>, Object>> endStateInvoke = new HashMap<>();
 
     private Map<SYMBOL, Set<STATE>> deepCopy(Map<SYMBOL, Set<STATE>> mp) {
         Map<SYMBOL, Set<STATE>> copy = mp.entrySet().stream()
@@ -58,13 +59,23 @@ public class NfaImpl<STATE, SYMBOL> implements Nfa<STATE, SYMBOL> {
     }
 
     @Override
-    public STATE startStateSet() {
+    public STATE startState() {
         return startStateSet;
     }
 
     @Override
     public Set<STATE> endStateSet() {
         return terminalState;
+    }
+
+    @Override
+    public Function<List<SYMBOL>, Object> endStateInvoke(STATE state) {
+        return endStateInvoke.getOrDefault(state, symbols -> null);
+    }
+
+    @Override
+    public Map<STATE, Function<List<SYMBOL>, Object>> endStateInvokeMap() {
+        return endStateInvoke;
     }
 
     @Override
