@@ -15,14 +15,14 @@ public class NfaVisiable {
         nfa.allTrans().forEach((start, edges) -> edges.forEach((edge, toList) -> toList.forEach(to -> {
             String fromString = "\"%d\"".formatted(start.hashCode());
             String toString = "\"%d\"".formatted(to.hashCode());
-            edgeList.add(List.of(fromString, toString, JSON.toJSONString(edge)));
+            edgeList.add(List.of(fromString, toString, edge));
         })));
 
         String edgesString = edgeList.stream()
                 .collect(Collectors.groupingBy(strings -> List.of(strings.get(0), strings.get(1))))
                 .entrySet().stream()
                 .map(edge -> List.of(edge.getKey().get(0), edge.getKey().get(1), edge.getValue().stream().map(o -> o.get(2)).collect(Collectors.joining(","))))
-                .map(o -> " %s -> %s [ label = %s]".formatted(o.get(0), o.get(1), o.get(2)))
+                .map(o -> " %s -> %s [ label = %s]".formatted(o.get(0), o.get(1), JSON.toJSONString(o.get(2))))
                 .collect(Collectors.joining("\n"));
 
 

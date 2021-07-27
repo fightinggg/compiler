@@ -72,21 +72,16 @@ public class RegSyntaxDirectedTranslation {
                     rt.put("nfa", NfaUtils.oneChar(sonList.get(0).get("value")));
                 }),
                 Map.entry(new ProductionImpl("char -> blankSet"), (rt, sonList) -> {
-                    List<Nfa<Object, String>> nfas = Arrays.stream(" \n\t".split(""))
-                            .map(NfaUtils::oneChar).toList();
-                    rt.put("nfa", NfaUtils.parallel(nfas, Nfa.EMPTY_TRANS));
+                    Nfa<Object, String> nfa = NfaUtils.someCharParallel(Arrays.stream(" \n\t".split("")).toList());
+                    rt.put("nfa", nfa);
                 }),
                 Map.entry(new ProductionImpl("char -> simpleNumberSet"), (rt, sonList) -> {
-//                    List<Nfa<Object, String>> nfas = Arrays.stream("0123456789".split(""))
-                    List<Nfa<Object, String>> nfas = Arrays.stream("012".split(""))
-                            .map(NfaUtils::oneChar).toList();
-                    rt.put("nfa", NfaUtils.parallel(nfas, Nfa.EMPTY_TRANS));
+                    Nfa<Object, String> nfa = NfaUtils.someCharParallel(Arrays.stream("0123456789".split("")).toList());
+                    rt.put("nfa", nfa);
                 }),
                 Map.entry(new ProductionImpl("char -> letterSet"), (rt, sonList) -> {
-//                    List<Nfa<Object, String>> nfas = Arrays.stream("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""))
-                    List<Nfa<Object, String>> nfas = Arrays.stream("abc".split(""))
-                            .map(NfaUtils::oneChar).toList();
-                    rt.put("nfa", NfaUtils.parallel(nfas, Nfa.EMPTY_TRANS));
+                    Nfa<Object, String> nfa = NfaUtils.someCharParallel(Arrays.stream("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")).toList());
+                    rt.put("nfa", nfa);
                 }),
                 Map.entry(new ProductionImpl("char -> specialChar"), (rt, sonList) -> {
                     rt.put("nfa", NfaUtils.oneChar(sonList.get(0).get("value")));

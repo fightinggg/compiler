@@ -19,6 +19,18 @@ public class NfaUtils {
         return new NfaImpl<>(stateSet, symbolSet, trans, startState, endStateSet);
     }
 
+    public static <SYMBOL> Nfa<Object, SYMBOL> someCharParallel(List<SYMBOL> symbols) {
+        Object startState = new Object();
+        Object endState = new Object();
+        Set<Object> stateSet = Set.of(startState, endState);
+        Set<SYMBOL> symbolSet = Set.copyOf(new HashSet<>(symbols));
+
+        Map<Object, Map<SYMBOL, Set<Object>>> trans = Map.of(startState,
+                Map.copyOf(symbols.stream().collect(Collectors.toMap(o -> o, o -> Set.of(endState)))));
+        Set<Object> endStateSet = Set.of(endState);
+        return new NfaImpl<>(stateSet, symbolSet, trans, startState, endStateSet);
+    }
+
     /**
      * start --symbol--> [end]
      */
