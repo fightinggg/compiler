@@ -3,13 +3,13 @@ package com.example.lang.reg;
 import com.example.grammar.Production;
 import com.example.grammar.ProductionImpl;
 import com.example.lexical.Token;
-import com.example.lexical.TokenImpl;
 import com.example.nfa.Nfa;
 import com.example.nfa.NfaUtils;
 import com.example.sdt.SyntaxDirectedTranslation;
 import com.example.syntaxtree.SyntaxTree;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class RegSyntaxDirectedTranslation {
-    public static final String EMPTY = "$empty";
 
 
     public static Nfa<Object, String> toNfa(SyntaxTree syntaxTree) {
@@ -29,7 +28,7 @@ public class RegSyntaxDirectedTranslation {
                             .mapToObj(String::valueOf)
                             .map(NfaUtils::oneChar)
                             .collect(Collectors.toList());
-                    Nfa<Object, String> parallel = NfaUtils.parallel(nfaList, EMPTY);
+                    Nfa<Object, String> parallel = NfaUtils.parallel(nfaList, Nfa.EMPTY_TRANS);
                     rt.put("nfa", parallel);
                 }),
                 Map.entry(new ProductionImpl("lowerCaseLetterSeq -> lowerCaseLetter sub lowerCaseLetter"), (rt, sonList) -> {
@@ -40,7 +39,7 @@ public class RegSyntaxDirectedTranslation {
                             .map(String::valueOf)
                             .map(NfaUtils::oneChar)
                             .collect(Collectors.toList());
-                    Nfa<Object, String> parallel = NfaUtils.parallel(nfaList, EMPTY);
+                    Nfa<Object, String> parallel = NfaUtils.parallel(nfaList, Nfa.EMPTY_TRANS);
                     rt.put("nfa", parallel);
                 }),
                 Map.entry(new ProductionImpl("lowerCaseLetterSeq -> upperCaseLetter sub upperCaseLetter"), (rt, sonList) -> {
@@ -51,7 +50,7 @@ public class RegSyntaxDirectedTranslation {
                             .map(String::valueOf)
                             .map(NfaUtils::oneChar)
                             .collect(Collectors.toList());
-                    Nfa<Object, String> parallel = NfaUtils.parallel(nfaList, EMPTY);
+                    Nfa<Object, String> parallel = NfaUtils.parallel(nfaList, Nfa.EMPTY_TRANS);
                     rt.put("nfa", parallel);
                 }),
                 Map.entry(new ProductionImpl("letterSeq -> lowerCaseLetterSeq"), (rt, sonList) -> {
@@ -72,11 +71,26 @@ public class RegSyntaxDirectedTranslation {
                 Map.entry(new ProductionImpl("char -> escape"), (rt, sonList) -> {
                     rt.put("nfa", NfaUtils.oneChar(sonList.get(0).get("value")));
                 }),
+                Map.entry(new ProductionImpl("char -> blankSet"), (rt, sonList) -> {
+                    List<Nfa<Object, String>> nfas = Arrays.stream(" \n\t".split(""))
+                            .map(NfaUtils::oneChar).toList();
+                    rt.put("nfa", NfaUtils.parallel(nfas, Nfa.EMPTY_TRANS));
+                }),
+                Map.entry(new ProductionImpl("char -> simpleNumberSet"), (rt, sonList) -> {
+                    List<Nfa<Object, String>> nfas = Arrays.stream("0123456789".split(""))
+                            .map(NfaUtils::oneChar).toList();
+                    rt.put("nfa", NfaUtils.parallel(nfas, Nfa.EMPTY_TRANS));
+                }),
+                Map.entry(new ProductionImpl("char -> letterSet"), (rt, sonList) -> {
+                    List<Nfa<Object, String>> nfas = Arrays.stream("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""))
+                            .map(NfaUtils::oneChar).toList();
+                    rt.put("nfa", NfaUtils.parallel(nfas, Nfa.EMPTY_TRANS));
+                }),
                 Map.entry(new ProductionImpl("char -> specialChar"), (rt, sonList) -> {
                     rt.put("nfa", NfaUtils.oneChar(sonList.get(0).get("value")));
                 }),
                 Map.entry(new ProductionImpl("someChar -> "), (rt, sonList) -> {
-                    rt.put("someCharNfaList", List.of(NfaUtils.oneChar(EMPTY)));
+                    rt.put("someCharNfaList", List.of(NfaUtils.oneChar(Nfa.EMPTY_TRANS)));
                 }),
                 Map.entry(new ProductionImpl("someChar -> someChar char"), (rt, sonList) -> {
                     List<Nfa<Object, String>> someCharNfaList = new ArrayList<>((List<Nfa<Object, String>>) sonList.get(0).get("someCharNfaList"));
@@ -88,26 +102,26 @@ public class RegSyntaxDirectedTranslation {
                 }),
                 Map.entry(new ProductionImpl("unit -> unit star"), (rt, sonList) -> {
                     Nfa<Object, String> nfa = (Nfa<Object, String>) sonList.get(0).get("nfa");
-                    rt.put("nfa", NfaUtils.selfLoop(nfa, EMPTY));
+                    rt.put("nfa", NfaUtils.selfLoop(nfa, Nfa.EMPTY_TRANS));
                 }),
                 Map.entry(new ProductionImpl("unit -> unit add"), (rt, sonList) -> {
                     Nfa<Object, String> nfa = (Nfa<Object, String>) sonList.get(0).get("nfa");
-                    rt.put("nfa", NfaUtils.series(nfa, NfaUtils.selfLoop(nfa, EMPTY), EMPTY));
+                    rt.put("nfa", NfaUtils.series(nfa, NfaUtils.selfLoop(nfa, Nfa.EMPTY_TRANS), Nfa.EMPTY_TRANS));
                 }),
                 Map.entry(new ProductionImpl("unit -> unit questionMark"), (rt, sonList) -> {
                     Nfa<Object, String> nfa = (Nfa<Object, String>) sonList.get(0).get("nfa");
-                    rt.put("nfa", NfaUtils.parallel(nfa, NfaUtils.oneChar(EMPTY), EMPTY));
+                    rt.put("nfa", NfaUtils.parallel(nfa, NfaUtils.oneChar(Nfa.EMPTY_TRANS), Nfa.EMPTY_TRANS));
                 }),
                 Map.entry(new ProductionImpl("unit -> unit leftCurlyBracket number rightCurlyBracket"), (rt, sonList) -> {
                     Nfa<Object, String> nfa = (Nfa<Object, String>) sonList.get(0).get("nfa");
                     List<Nfa<Object, String>> nfaList = IntStream.range(0, Integer.valueOf((String) sonList.get(2).get("value")))
                             .mapToObj(i -> nfa)
                             .collect(Collectors.toList());
-                    rt.put("nfa", NfaUtils.series(nfaList, EMPTY));
+                    rt.put("nfa", NfaUtils.series(nfaList, Nfa.EMPTY_TRANS));
                 }),
                 Map.entry(new ProductionImpl("unit -> leftSquareBracket someChar rightSquareBracket"), (rt, sonList) -> {
                     List<Nfa<Object, String>> someCharNfaList = (List<Nfa<Object, String>>) sonList.get(1).get("someCharNfaList");
-                    rt.put("nfa", NfaUtils.parallel(someCharNfaList, EMPTY));
+                    rt.put("nfa", NfaUtils.parallel(someCharNfaList, Nfa.EMPTY_TRANS));
                 }),
                 Map.entry(new ProductionImpl("unit -> leftBracket unitSeq rightBracket"), (rt, sonList) -> {
                     rt.put("nfa", sonList.get(1).get("nfa"));
@@ -118,7 +132,7 @@ public class RegSyntaxDirectedTranslation {
                 Map.entry(new ProductionImpl("atLeastOneUnit -> atLeastOneUnit unit"), (rt, sonList) -> {
                     Nfa<Object, String> nfa1 = (Nfa<Object, String>) sonList.get(0).get("nfa");
                     Nfa<Object, String> nfa2 = (Nfa<Object, String>) sonList.get(1).get("nfa");
-                    rt.put("nfa", NfaUtils.series(nfa1, nfa2, EMPTY));
+                    rt.put("nfa", NfaUtils.series(nfa1, nfa2, Nfa.EMPTY_TRANS));
                 }),
                 Map.entry(new ProductionImpl("unitSeq -> atLeastOneUnit"), (rt, sonList) -> {
                     rt.put("nfa", sonList.get(0).get("nfa"));
@@ -126,7 +140,7 @@ public class RegSyntaxDirectedTranslation {
                 Map.entry(new ProductionImpl("unitSeq -> unitSeq or atLeastOneUnit"), (rt, sonList) -> {
                     Nfa<Object, String> nfa1 = (Nfa<Object, String>) sonList.get(0).get("nfa");
                     Nfa<Object, String> nfa2 = (Nfa<Object, String>) sonList.get(2).get("nfa");
-                    rt.put("nfa", NfaUtils.parallel(nfa1, nfa2, EMPTY));
+                    rt.put("nfa", NfaUtils.parallel(nfa1, nfa2, Nfa.EMPTY_TRANS));
                 }),
                 Map.entry(new ProductionImpl("target -> unitSeq"), (rt, sonList) -> {
                     rt.put("nfa", sonList.get(0).get("nfa"));
@@ -149,7 +163,10 @@ public class RegSyntaxDirectedTranslation {
                 Map.entry("add", (mp, token) -> mp.put("value", token.raw())),
                 Map.entry("questionMark", (mp, token) -> mp.put("value", token.raw())),
                 Map.entry("sub", (mp, token) -> mp.put("value", token.raw())),
-                Map.entry("dot", (mp, token) -> mp.put("value", token.raw()))
+                Map.entry("dot", (mp, token) -> mp.put("value", token.raw())),
+                Map.entry("blankSet", (mp, token) -> mp.put("value", token.raw())),
+                Map.entry("simpleNumberSet", (mp, token) -> mp.put("value", token.raw())),
+                Map.entry("letterSet", (mp, token) -> mp.put("value", token.raw()))
         );
 
         return SyntaxDirectedTranslation.translation(syntaxTree, innerNodeConfig, leafConfig);

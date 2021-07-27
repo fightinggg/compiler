@@ -2,9 +2,9 @@ package com.example.lexical;
 
 
 import com.example.lang.reg.Reg;
-import com.example.lang.reg.RegSyntaxDirectedTranslation;
 import com.example.nfa.Nfa;
 import com.example.nfa.NfaImpl;
+import com.example.nfa.NfaMatcher;
 import com.example.nfa.NfaUtils;
 import com.example.visiable.DotUtils;
 import com.example.visiable.NfaVisiable;
@@ -29,12 +29,23 @@ public class LexicalAnalysisImpl implements LexicalAnalysis {
                     return nfa;
                 }).collect(Collectors.toList());
 
-        final Nfa<Object, String> parallel = NfaUtils.parallel(nfaList, RegSyntaxDirectedTranslation.EMPTY);
+        final Nfa<Object, String> nfa = NfaUtils.parallel(nfaList, Nfa.EMPTY_TRANS);
 
-        final String nfa = NfaVisiable.nfa2Dot(parallel);
+        final String nfaDot = NfaVisiable.nfa2Dot(nfa);
 
-        DotUtils.writeDotFile("target/cppNfaRegs.dot", nfa);
+        DotUtils.writeDotFile("target/cppNfaRegs.dot", nfaDot);
 
+
+        final NfaMatcher<Object, String> matcher = new NfaMatcher<>(nfa, Nfa.EMPTY_TRANS);
+
+        for (int i = 0; i < code.length(); i++) {
+            final Map.Entry<Boolean, Object> eat = matcher.eat(String.valueOf(code.charAt(i)));
+            if (eat.getKey()) {
+                System.out.println(eat.getValue());
+                i--;
+            } else {
+            }
+        }
 
         return null;
     }

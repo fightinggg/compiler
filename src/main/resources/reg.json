@@ -4,7 +4,7 @@
     "number": "",
     "lowerCaseLetter": "",
     "upperCaseLetter": "",
-    "escape": "转义字符",
+    "escape": "转义字符(不包含关键词)",
     "specialChar": "特殊符号（不包括关键词）",
     "leftBracket": "关键词 (",
     "rightBracket": "关键词 )",
@@ -17,7 +17,10 @@
     "add": "关键词 +",
     "questionMark": "关键词 ?",
     "sub": "关键词 -",
-    "dot": "关键词 ."
+    "dot": "关键词 .",
+    "blankSet": "关键词 \\s",
+    "simpleNumberSet": "关键词 \\d",
+    "letterSet": "关键词 \\w"
   },
   "productionsTable": {
     "numberSeq": [
@@ -38,6 +41,9 @@
       "lowerCaseLetter",
       "upperCaseLetter",
       "escape",
+      "blankSet",
+      "simpleNumberSet",
+      "letterSet",
       "specialChar"
     ],
     "someChar": [

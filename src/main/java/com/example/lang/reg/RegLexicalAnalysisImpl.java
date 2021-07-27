@@ -41,11 +41,18 @@ public class RegLexicalAnalysisImpl implements LexicalAnalysis {
         map.put('-', "sub");
         map.put('.', "dot");
 
+        Map<Character, String> escapeMap = Map.ofEntries(
+                Map.entry('s', "blankSet"),
+                Map.entry('w', "letterSet"),
+                Map.entry('d', "simpleNumberSet")
+        );
+
         List<Token> list = new ArrayList<>();
         for (int i = 0; i < code.length(); i++) {
             if (code.charAt(i) == '\\') {
                 i++;
-                list.add(new TokenImpl("escape", String.valueOf(code.charAt(i))));
+                list.add(new TokenImpl(escapeMap.getOrDefault(code.charAt(i), "escape"),
+                        String.valueOf(code.charAt(i))));
             } else {
                 list.add(new TokenImpl(map.get(code.charAt(i)), String.valueOf(code.charAt(i))));
             }

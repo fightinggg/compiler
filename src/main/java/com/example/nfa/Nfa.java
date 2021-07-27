@@ -14,6 +14,8 @@ import java.util.function.Function;
  * 5. 一个终结状态集合<br/>
  */
 public interface Nfa<STATE, SYMBOL> {
+    String EMPTY_TRANS = "$empty";
+
     Set<STATE> stateSet();
 
     Set<SYMBOL> symbolSet();

@@ -1,0 +1,71 @@
+{
+  "tokens": {
+    "select": "select",
+    "star": "*",
+    "from": "from",
+    "symbol": "[_\\w][_\\w\\d]*",
+    "where": "where",
+    "blank": "\\s",
+    "comma": ",",
+    "number": "0|[1\\-9]\\d+",
+    "leftBracket": "\\(",
+    "rightBracket": "\\)",
+    "equal": "=",
+    "gt": ">",
+    "lt": "<",
+    "string": "\"[\\s\\d]*\"",
+    "and": "and",
+    "or": "or"
+  },
+  "productionsTable": {
+    "someBlank": [
+      "",
+      "someBlank blank"
+    ],
+    "columns": [
+      "star",
+      "symbol",
+      "columns someBlank comma someBlank star",
+      "columns someBlank comma someBlank symbol"
+    ],
+    "sql": [
+      "select someBlank columns someBlank from someBlank symbol someBlank sqlParams",
+      "select someBlank columns someBlank from someBlank leftBracket someBlank sql someBlank rightBracket someBlank sqlParams"
+    ],
+    "sqlParams": [
+      "sqlLimit",
+      "sqlWhere",
+      "sqlParams someBlank sqlLimit",
+      "sqlParams someBlank sqlWhere"
+    ],
+    "sqlLimit": [
+      "limit someBlank number"
+    ],
+    "sqlWhere": [
+      "where someBlank condition"
+    ],
+    "condition": [
+      "symbol someBlank compare someBlank rightSymbol",
+      "leftBracket someBlank conditionSeq someBlank rightBracket"
+    ],
+    "conditionSeq": [
+      "condition",
+      "condition someBlank conditionOperator someBlank symbol someBlank compare someBlank rightSymbol"
+    ],
+    "rightSymbol": [
+      "number",
+      "string",
+      "symbol"
+    ],
+    "conditionOperator": [
+      "and",
+      "or"
+    ],
+    "target": [
+      "sql"
+    ]
+  },
+  "target": "target",
+  "keys": [
+  ]
+}
