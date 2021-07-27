@@ -77,12 +77,14 @@ public class RegSyntaxDirectedTranslation {
                     rt.put("nfa", NfaUtils.parallel(nfas, Nfa.EMPTY_TRANS));
                 }),
                 Map.entry(new ProductionImpl("char -> simpleNumberSet"), (rt, sonList) -> {
-                    List<Nfa<Object, String>> nfas = Arrays.stream("0123456789".split(""))
+//                    List<Nfa<Object, String>> nfas = Arrays.stream("0123456789".split(""))
+                    List<Nfa<Object, String>> nfas = Arrays.stream("012".split(""))
                             .map(NfaUtils::oneChar).toList();
                     rt.put("nfa", NfaUtils.parallel(nfas, Nfa.EMPTY_TRANS));
                 }),
                 Map.entry(new ProductionImpl("char -> letterSet"), (rt, sonList) -> {
-                    List<Nfa<Object, String>> nfas = Arrays.stream("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""))
+//                    List<Nfa<Object, String>> nfas = Arrays.stream("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""))
+                    List<Nfa<Object, String>> nfas = Arrays.stream("abc".split(""))
                             .map(NfaUtils::oneChar).toList();
                     rt.put("nfa", NfaUtils.parallel(nfas, Nfa.EMPTY_TRANS));
                 }),

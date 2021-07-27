@@ -2,10 +2,7 @@ package com.example.lexical;
 
 
 import com.example.lang.reg.Reg;
-import com.example.nfa.Nfa;
-import com.example.nfa.NfaImpl;
-import com.example.nfa.NfaMatcher;
-import com.example.nfa.NfaUtils;
+import com.example.nfa.*;
 import com.example.visiable.DotUtils;
 import com.example.visiable.NfaVisiable;
 
@@ -29,7 +26,10 @@ public class LexicalAnalysisImpl implements LexicalAnalysis {
                     return nfa;
                 }).collect(Collectors.toList());
 
-        final Nfa<Object, String> nfa = NfaUtils.parallel(nfaList, Nfa.EMPTY_TRANS);
+        Nfa<Object, String> nfa = NfaUtils.parallel(nfaList, Nfa.EMPTY_TRANS);
+
+        nfa = Nfa2Dfa.toDfa(nfa);
+
 
         final String nfaDot = NfaVisiable.nfa2Dot(nfa);
 

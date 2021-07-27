@@ -20,7 +20,7 @@ public class NfaMatcher<STATE, SYMBOL> {
         this.currentStateSet = cluster(Set.of(nfa.startState()));
     }
 
-    private Set<STATE> cluster(Set<STATE> set) {
+    public Set<STATE> cluster(Set<STATE> set) {
         Set<STATE> cluster = new HashSet<>(set);
         Queue<STATE> queue = new ArrayDeque<>(set);
         Set<STATE> hasVis = new HashSet<>();
