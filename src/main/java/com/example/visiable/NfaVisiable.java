@@ -30,7 +30,7 @@ public class NfaVisiable {
                         public Object apply(Integer integer) {
                             return integer / 10;
                         }
-                    })).values().stream().map(o -> o.stream().map(c -> (char) c.intValue()).toList())
+                    })).values().stream().map(o -> o.stream().map(edgeSymbol::get).toList())
                             .map(Object::toString)
                             .map(o -> String.join(",", o))
                             .collect(Collectors.joining("\n"));
