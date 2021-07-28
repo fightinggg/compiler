@@ -1,5 +1,6 @@
 package com.example.lexical;
 
+import com.alibaba.fastjson.JSON;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -14,7 +15,7 @@ public class TokenImpl implements Token {
 
     @Override
     public String toString() {
-        return "%s(%s)".formatted(raw, type);
+        return "%s(%s)".formatted(JSON.toJSONString(raw), type);
     }
 
     @Override

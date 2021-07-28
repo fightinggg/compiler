@@ -112,7 +112,7 @@ public class RegSyntaxDirectedTranslation {
                 }),
                 Map.entry(new ProductionImpl("unit -> unit star"), (rt, sonList) -> {
                     Nfa<Object, String> nfa = (Nfa<Object, String>) sonList.get(0).get("nfa");
-                    rt.put("nfa", NfaUtils.selfLoop(nfa, Nfa.EMPTY_TRANS));
+                    rt.put("nfa", NfaUtils.parallel(NfaUtils.selfLoop(nfa, Nfa.EMPTY_TRANS), NfaUtils.oneChar(Nfa.EMPTY_TRANS), Nfa.EMPTY_TRANS));
                 }),
                 Map.entry(new ProductionImpl("unit -> unit add"), (rt, sonList) -> {
                     Nfa<Object, String> nfa = (Nfa<Object, String>) sonList.get(0).get("nfa");

@@ -1,7 +1,22 @@
 {
   "tokens": {
-
-    "symbol": "[_\\w][_\\w\\d]*"
+    "number": "0|[123456789]\\d*",
+    "doubleQuotes": "\"",
+    "angleLeftBracket": "<",
+    "angleRightBracket": ">",
+    "blank": "\\s+",
+    "string": "\"[\\s\\d]*\"",
+    "include": "#include",
+    "symbol": "[_\\w][_\\w\\d]*",
+    "comma": ",",
+    "leftBracket": "\\(",
+    "rightBracket": "\\)",
+    "add": "\\+",
+    "sub": "\\-",
+    "mul": "\\*",
+    "div": "/",
+    "eq": "=",
+    "semicolon": ";"
   },
   "productionsTable": {
     "type": [

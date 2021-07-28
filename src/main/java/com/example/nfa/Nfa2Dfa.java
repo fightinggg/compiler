@@ -76,7 +76,7 @@ public class Nfa2Dfa {
                 dfaStateMap.get(start),
                 dfaTerminal);
         dfa.setEndStateInvoke(dfaEndStateInvoker);
-        return nfa;
+        return dfa;
 
 
     }
