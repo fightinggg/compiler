@@ -1,5 +1,6 @@
 package com.example.grammar.augment.lr.slr;
 
+import com.alibaba.fastjson.JSON;
 import com.example.grammar.GrammarConfig;
 import com.example.grammar.GrammarFollowSet;
 import com.example.grammar.Production;
@@ -32,6 +33,11 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
     @Override
     public LRTable analyze(GrammarConfig grammarConfig) {
         Map<String, Set<String>> followSet = GrammarFollowSet.followSet(grammarConfig);
+        final String followSetTxt = followSet.entrySet().stream()
+                .map(kv -> kv.getKey() + " -> " + String.join(" , ", JSON.toJSONString(kv.getValue())))
+                .collect(Collectors.joining("\n"));
+        FileUtils.writeFile("target/%s-followset.txt".formatted(grammarConfig.name()), followSetTxt);
+
         List<Production> productions = grammarConfig.allProduction().stream().map(ProductionImpl::new).collect(Collectors.toList());
         Map<Production, Integer> productionId = IntStream.range(0, productions.size())
                 .mapToObj(i -> Map.entry(productions.get(i), i))
@@ -70,7 +76,9 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
                     // ②
                     LRTable.Action action = new LRTable.Action("r", productionId.get(new ProductionImpl(slrAugmentProduction)));
                     followSet.get(leftSymbol).forEach(o -> {
-                        assert !actionTable.get(currentId).containsKey(o);
+                        if (!actionTable.get(currentId).containsKey(o)) {
+                            throw new RuntimeException("grammar %s is not slr grammar".formatted(grammarConfig.name()));
+                        }
                     });
                     followSet.get(leftSymbol).forEach(o -> actionTable.get(currentId).put(o, action));
                 } else if (pos == rightSymbol.size() && leftSymbol.equals(grammarConfig.target())) {
