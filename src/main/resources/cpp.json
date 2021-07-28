@@ -1,23 +1,7 @@
 {
   "tokens": {
-    "number": "0|[1\\-9]\\d+",
-    "someLettersOrNumberOrUnderline": "[\\w\\d]",
-    "doubleQuotes": "\"",
-    "angleLeftBracket": "<",
-    "angleRightBracket": ">",
-    "blank": "\\s+",
-    "string": "\"[\\s\\d]*\"",
-    "include": "#include",
-    "symbol": "[_\\w][_\\w\\d]*",
-    "comma": ",",
-    "leftBracket": "\\(",
-    "rightBracket": "\\)",
-    "add": "\\+",
-    "sub": "\\-",
-    "mul": "\\*",
-    "div": "/",
-    "eq": "=",
-    "semicolon": ";"
+
+    "symbol": "[_\\w][_\\w\\d]*"
   },
   "productionsTable": {
     "type": [

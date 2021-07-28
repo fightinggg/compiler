@@ -46,9 +46,9 @@
       "letterSet",
       "specialChar"
     ],
-    "someChar": [
-      "",
-      "someChar char"
+    "atLeastOneChar": [
+      "char",
+      "atLeastOneChar char"
     ],
     "unit": [
       "char",
@@ -56,7 +56,7 @@
       "unit add",
       "unit questionMark",
       "unit leftCurlyBracket number rightCurlyBracket",
-      "leftSquareBracket someChar rightSquareBracket",
+      "leftSquareBracket atLeastOneChar rightSquareBracket",
       "leftBracket unitSeq rightBracket"
     ],
     "atLeastOneUnit": [

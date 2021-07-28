@@ -61,55 +61,50 @@ public class RegSyntaxDirectedTranslation {
                 }),
                 Map.entry(new ProductionImpl("char -> number"), (rt, sonList) -> {
                     rt.put("nfa", NfaUtils.oneChar(sonList.get(0).get("value")));
-                    rt.put("value", List.of(sonList.get(0).get("value")));
+                    rt.put("valueList", List.of(sonList.get(0).get("value")));
                 }),
                 Map.entry(new ProductionImpl("char -> lowerCaseLetter"), (rt, sonList) -> {
                     rt.put("nfa", NfaUtils.oneChar(sonList.get(0).get("value")));
-                    rt.put("value", List.of(sonList.get(0).get("value")));
+                    rt.put("valueList", List.of(sonList.get(0).get("value")));
                 }),
                 Map.entry(new ProductionImpl("char -> upperCaseLetter"), (rt, sonList) -> {
                     rt.put("nfa", NfaUtils.oneChar(sonList.get(0).get("value")));
-                    rt.put("value", List.of(sonList.get(0).get("value")));
+                    rt.put("valueList", List.of(sonList.get(0).get("value")));
                 }),
                 Map.entry(new ProductionImpl("char -> escape"), (rt, sonList) -> {
                     rt.put("nfa", NfaUtils.oneChar(sonList.get(0).get("value")));
-                    rt.put("value", List.of(sonList.get(0).get("value")));
+                    rt.put("valueList", List.of(sonList.get(0).get("value")));
                 }),
                 Map.entry(new ProductionImpl("char -> blankSet"), (rt, sonList) -> {
                     final List<String> values = Arrays.stream(" \n\t".split("")).toList();
                     Nfa<Object, String> nfa = NfaUtils.someCharParallel(values);
                     rt.put("nfa", nfa);
-                    rt.put("value", values);
+                    rt.put("valueList", values);
                 }),
                 Map.entry(new ProductionImpl("char -> simpleNumberSet"), (rt, sonList) -> {
                     final List<String> values = Arrays.stream("0123456789".split("")).toList();
                     Nfa<Object, String> nfa = NfaUtils.someCharParallel(values);
                     rt.put("nfa", nfa);
-                    rt.put("value", values);
+                    rt.put("valueList", values);
                 }),
                 Map.entry(new ProductionImpl("char -> letterSet"), (rt, sonList) -> {
                     final List<String> values = Arrays.stream("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")).toList();
                     Nfa<Object, String> nfa = NfaUtils.someCharParallel(values);
                     rt.put("nfa", nfa);
-                    rt.put("value", values);
+                    rt.put("valueList", values);
                 }),
                 Map.entry(new ProductionImpl("char -> specialChar"), (rt, sonList) -> {
                     rt.put("nfa", NfaUtils.oneChar(sonList.get(0).get("value")));
-                    rt.put("value", List.of(sonList.get(0).get("value")));
+                    rt.put("valueList", List.of(sonList.get(0).get("value")));
                 }),
-                Map.entry(new ProductionImpl("someChar -> "), (rt, sonList) -> {
-                    rt.put("someCharNfaList", List.of(NfaUtils.oneChar(Nfa.EMPTY_TRANS)));
-                    rt.put("value", List.of(Nfa.EMPTY_TRANS));
+                Map.entry(new ProductionImpl("atLeastOneChar -> char"), (rt, sonList) -> {
+                    rt.put("valueList", sonList.get(0).get("valueList"));
                 }),
-                Map.entry(new ProductionImpl("someChar -> someChar char"), (rt, sonList) -> {
-                    List<Nfa<Object, String>> someCharNfaList = new ArrayList<>((List<Nfa<Object, String>>) sonList.get(0).get("someCharNfaList"));
-                    someCharNfaList.add((Nfa<Object, String>) sonList.get(1).get("nfa"));
-                    rt.put("someCharNfaList", someCharNfaList);
-
-                    List<String> values = (List<String>) sonList.get(0).get("value");
+                Map.entry(new ProductionImpl("atLeastOneChar -> atLeastOneChar char"), (rt, sonList) -> {
+                    List<String> values = (List<String>) sonList.get(0).get("valueList");
                     values = new ArrayList<>(values);
-                    values.addAll((List<String>) sonList.get(1).get("value"));
-                    rt.put("value", values);
+                    values.addAll((List<String>) sonList.get(1).get("valueList"));
+                    rt.put("valueList", values);
 
                 }),
                 Map.entry(new ProductionImpl("unit -> char"), (rt, sonList) -> {
@@ -134,8 +129,8 @@ public class RegSyntaxDirectedTranslation {
                             .collect(Collectors.toList());
                     rt.put("nfa", NfaUtils.series(nfaList, Nfa.EMPTY_TRANS));
                 }),
-                Map.entry(new ProductionImpl("unit -> leftSquareBracket someChar rightSquareBracket"), (rt, sonList) -> {
-                    final List<String> values = (List<String>) sonList.get(1).get("value");
+                Map.entry(new ProductionImpl("unit -> leftSquareBracket atLeastOneChar rightSquareBracket"), (rt, sonList) -> {
+                    final List<String> values = (List<String>) sonList.get(1).get("valueList");
                     rt.put("nfa", NfaUtils.someCharParallel(values));
                 }),
                 Map.entry(new ProductionImpl("unit -> leftBracket unitSeq rightBracket"), (rt, sonList) -> {

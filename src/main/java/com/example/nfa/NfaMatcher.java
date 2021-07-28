@@ -57,7 +57,7 @@ public class NfaMatcher<STATE, SYMBOL> {
             nextEnd = null;
         }
 
-        if (nextEnd != currentEnd && currentEnd != null) {
+        if (nextStateSet.isEmpty() && currentEnd != null) {
             final Map.Entry<Boolean, Object> res = Map.entry(true, nfa.endStateInvoke(currentEnd).apply(eatList));
             clear();
             return res;
