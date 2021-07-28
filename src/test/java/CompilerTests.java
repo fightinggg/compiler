@@ -1,5 +1,3 @@
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.example.grammar.GrammarConfig;
 import com.example.grammar.GrammarFollowSet;
 import com.example.grammar.GrammarReader;
@@ -11,8 +9,7 @@ import com.example.grammar.augment.lr.slr.SLRAugmentProduction;
 import com.example.grammar.augment.lr.slr.SLRAugmentProductionItem;
 import com.example.grammar.augment.lr.slr.SLRTableAnalyzer;
 import com.example.lexical.*;
-import com.example.visiable.AugmentProductionItemSetVisiable;
-import com.example.visiable.DotUtils;
+import com.example.visiable.FileUtils;
 import com.example.visiable.NfaVisiable;
 import com.example.visiable.SyntaxTreeVisiable;
 import com.example.lang.reg.RegLexicalAnalysisImpl;
@@ -64,9 +61,9 @@ public class CompilerTests {
         Map<Set<SLRAugmentProduction>, Map<String, Set<SLRAugmentProduction>>> map =
                 SLRAugmentProductionItem.itemSetDfa(grammarConfig);
 
-        String dotCode = AugmentProductionItemSetVisiable.toDot(map);
-
-        DotUtils.writeDotFile("target/augmentStateDFA.dot", dotCode);
+//        String dotCode = AugmentProductionItemSetVisiable.toDot(map, null);
+//
+//        DotUtils.writeDotFile("target/augmentStateDFA.dot", dotCode);
 
 
         LRTableAnalyzer lrTableAnalyzer = new SLRTableAnalyzer();
@@ -79,14 +76,14 @@ public class CompilerTests {
 
         String s = SyntaxTreeVisiable.toDot(syntaxTree);
 
-        DotUtils.writeDotFile("target/syntaxtree.dot", s);
+        FileUtils.writeFile("target/syntaxtree.dot", s);
 
 
         Nfa<Object, String> nfa = RegSyntaxDirectedTranslation.toNfa(syntaxTree);
 
         String nfaString = NfaVisiable.nfa2Dot(nfa);
 
-        DotUtils.writeDotFile("target/nfa.dot", nfaString);
+        FileUtils.writeFile("target/nfa.dot", nfaString);
 
 
         System.out.println(nfa);

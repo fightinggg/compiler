@@ -19,6 +19,8 @@ public class NfaImpl<STATE, SYMBOL> implements Nfa<STATE, SYMBOL> {
 
     @Setter
     private Map<STATE, Function<List<SYMBOL>, Object>> endStateInvoke = new HashMap<>();
+    @Setter
+    private Map<STATE, Integer> endStateInvokeOrder = new HashMap<>();
 
     private Map<SYMBOL, Set<STATE>> deepCopy(Map<SYMBOL, Set<STATE>> mp) {
         Map<SYMBOL, Set<STATE>> copy = mp.entrySet().stream()
@@ -76,6 +78,16 @@ public class NfaImpl<STATE, SYMBOL> implements Nfa<STATE, SYMBOL> {
     @Override
     public Map<STATE, Function<List<SYMBOL>, Object>> endStateInvokeMap() {
         return endStateInvoke;
+    }
+
+    @Override
+    public Integer endStateInvokeOrder(STATE state) {
+        return endStateInvokeOrder.get(state);
+    }
+
+    @Override
+    public Map<STATE, Integer> endStateOrderMap() {
+        return endStateInvokeOrder;
     }
 
     @Override

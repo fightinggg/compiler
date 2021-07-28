@@ -73,6 +73,12 @@ public class NfaMatcher<STATE, SYMBOL> {
         }
     }
 
+    public Map.Entry<Boolean, Object> end() {
+        final Map.Entry<Boolean, Object> res = Map.entry(true, nfa.endStateInvoke(currentEnd).apply(eatList));
+        clear();
+        return res;
+    }
+
     private void clear() {
 //        this.nfa = nfa;
         this.eatList = new ArrayList<>();

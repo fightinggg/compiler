@@ -53,6 +53,6 @@ public class GrammarReader {
         symbol.removeAll(notTerminal);
 
 
-        return new GrammarConfigImpl(productions, languageConfig.getTarget(), symbol);
+        return new GrammarConfigImpl(productions, languageConfig.getTarget(), symbol, languageConfig.getName());
     }
 }

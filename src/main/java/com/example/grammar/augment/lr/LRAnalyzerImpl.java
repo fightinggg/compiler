@@ -39,7 +39,7 @@ public class LRAnalyzerImpl implements LRAnalyzer {
             }
             if (action.getAc().equals("s")) {
                 stack.push(new StackNode(action.getJump(), new SyntaxTree.Node(token, null, null)));
-                System.out.println(stack + " read " + token.raw() + " push " + action.getJump());
+                // System.out.println(stack + " read " + token.raw() + " push " + action.getJump());
             } else if (action.getAc().equals("r")) {
                 Production production = lrTable.getProductions().get(action.getJump());
                 List<SyntaxTree.Node> pops = new ArrayList<>();
@@ -47,13 +47,13 @@ public class LRAnalyzerImpl implements LRAnalyzer {
                 Collections.reverse(pops);
                 Map<String, Integer> currentGoto = lrTable.getGotoTable().get(stack.peek().getState());
                 stack.push(new StackNode(currentGoto.get(production.leftSymbol()), new SyntaxTree.Node(token, production, pops)));
-                System.out.println(stack + " find " + token.raw() + "pop some and push "
-                        + currentGoto.get(production.leftSymbol()));
-                System.out.println(production);
+                //System.out.println(stack + " find " + token.raw() + "pop some and push "
+                //        + currentGoto.get(production.leftSymbol()));
+                //System.out.println(production);
 
                 i--;
             } else if (action.getAc().equals(LRTable.Action.ACC)) {
-                System.out.println("wow parse success!!");
+                //System.out.println("wow parse success!!");
             } else {
                 throw new RuntimeException();
             }

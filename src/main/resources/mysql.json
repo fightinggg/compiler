@@ -1,13 +1,13 @@
 {
   "tokens": {
     "select": "select",
-    "star": "*",
+    "star": "\\*",
     "from": "from",
-    "symbol": "[_\\w][_\\w\\d]*",
+    "or": "or",
     "where": "where",
-    "blank": "\\s",
+    "blank": "\\s+",
     "comma": ",",
-    "number": "0|[1\\-9]\\d+",
+    "number": "0|[123456789]\\d*",
     "leftBracket": "\\(",
     "rightBracket": "\\)",
     "equal": "=",
@@ -15,7 +15,25 @@
     "lt": "<",
     "string": "\"[\\s\\d]*\"",
     "and": "and",
-    "or": "or"
+    "symbol": "[_\\w][_\\w\\d]*"
+  },
+  "tokenOrders": {
+    "select": 1,
+    "star": 2,
+    "from": 3,
+    "or": 4,
+    "where": 5,
+    "blank": 6,
+    "comma": 7,
+    "number": 8,
+    "leftBracket":9 ,
+    "rightBracket": 10,
+    "equal": 11,
+    "gt": 12,
+    "lt": 13,
+    "string": 14,
+    "and": 15,
+    "symbol": 16
   },
   "productionsTable": {
     "someBlank": [
@@ -67,5 +85,6 @@
   },
   "target": "target",
   "keys": [
-  ]
+  ],
+  "name": "mysql"
 }

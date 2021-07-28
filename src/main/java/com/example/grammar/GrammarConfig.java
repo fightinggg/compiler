@@ -10,6 +10,7 @@ import java.util.Set;
  * 4。目标
  */
 public interface GrammarConfig {
+    String name();
 
     Set<String> allTerminal();
 

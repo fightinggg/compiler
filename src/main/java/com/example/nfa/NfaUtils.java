@@ -108,10 +108,15 @@ public class NfaUtils {
         trans.put(startState, Map.of(symbol, Set.of(nfa1.startState(), nfa2.startState())));
 
         final NfaImpl<Object, SYMBOL> res = new NfaImpl<>(stateSet, symbolSet, trans, startState, endStateSet);
-        final Map<Object, Function<List<SYMBOL>, Object>> collect = Stream.concat(nfa1.endStateInvokeMap().entrySet().stream(), nfa2.endStateInvokeMap().entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        res.setEndStateInvoke(collect);
+        final Map<Object, Function<List<SYMBOL>, Object>> endStateInvokes = Stream.concat(nfa1.endStateInvokeMap().entrySet().stream(), nfa2.endStateInvokeMap().entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        res.setEndStateInvoke(endStateInvokes);
+
+        final Map<Object, Integer> endStateOrders = Stream.concat(nfa1.endStateOrderMap().entrySet().stream(), nfa2.endStateOrderMap().entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        res.setEndStateInvokeOrder(endStateOrders);
+
         return res;
     }
 

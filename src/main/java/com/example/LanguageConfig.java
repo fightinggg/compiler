@@ -11,6 +11,12 @@ public class LanguageConfig {
      * tokens的定义
      */
     Map<String, String> tokens;
+
+    /**
+     * tokens的优先级
+     */
+    Map<String, Integer> tokenOrders;
+
     /**
      * 产生式集合
      * k->[v1,v2,v3]
@@ -27,4 +33,6 @@ public class LanguageConfig {
      * 产生式重点关注对象
      */
     private Set<String> keys;
+
+    private String name;
 }

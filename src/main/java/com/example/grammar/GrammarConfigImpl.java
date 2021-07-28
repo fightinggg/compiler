@@ -23,10 +23,19 @@ public class GrammarConfigImpl implements GrammarConfig {
      */
     private final String target;
 
-    public GrammarConfigImpl(Map<String, Set<Production>> productionsTable, String target, Set<String> terminal) {
+    private final String name;
+
+
+    public GrammarConfigImpl(Map<String, Set<Production>> productionsTable, String target, Set<String> terminal, String name) {
         this.productionsTable = productionsTable;
         this.target = target;
         this.terminal = terminal.stream().collect(Collectors.toUnmodifiableSet());
+        this.name = name;
+    }
+
+    @Override
+    public String name() {
+        return name;
     }
 
     @Override

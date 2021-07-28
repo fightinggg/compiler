@@ -55,27 +55,32 @@ public class Nfa2Dfa {
                 .filter(entry -> entry.getKey().stream().anyMatch(nfa.endStateSet()::contains))
                 .map(Map.Entry::getValue)
                 .collect(Collectors.toUnmodifiableSet());
-        final Map<Object, Function<List<String>, Object>> dfaEndStateInvoker = dfaStateMap.entrySet().stream()
-                .filter(entry -> entry.getKey().stream().anyMatch(nfa.endStateSet()::contains))
-                .map(o -> {
-                    final List<Function<List<String>, Object>> invokers = o.getKey().stream().filter(nfa.endStateSet()::contains).map(nfa::endStateInvoke).toList();
-                    if (invokers.size() == 1) {
-                        return Map.entry(o.getValue(), invokers.get(0));
-                    } else {
-                        System.out.println("warn more than one invoker in dfa");
-                        return Map.entry(o.getValue(), (Function<List<String>, Object>) strings -> {
-                            throw new RuntimeException("could not deal with %s, because more than one invoker in dfa, they are %s".formatted(strings, invokers));
-                        });
-                    }
-                })
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
 
         final NfaImpl<Object, String> dfa = new NfaImpl<>(new HashSet<>(dfaStateMap.values()),
                 dfaSymbolSet,
                 trans,
                 dfaStateMap.get(start),
                 dfaTerminal);
+
+        final Map<Object, Function<List<String>, Object>> dfaEndStateInvoker = dfaStateMap.entrySet().stream()
+                .filter(entry -> entry.getKey().stream().anyMatch(nfa.endStateSet()::contains))
+                .map(o -> {
+                    final Function<List<String>, Object> invoker = o.getKey().stream()
+                            .filter(nfa.endStateSet()::contains)
+                            .min(Comparator.comparing(nfa::endStateInvokeOrder))
+                            .map(nfa::endStateInvoke)
+                            .orElse(strings -> {
+                                throw new RuntimeException("could not found invoker");
+                            });
+
+                    return Map.entry(o.getValue(), invoker);
+                })
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         dfa.setEndStateInvoke(dfaEndStateInvoker);
+
+        dfa.setEndStateInvokeOrder(new HashMap<>());
+
         return dfa;
 
 

@@ -7,9 +7,10 @@ import com.example.grammar.ProductionImpl;
 import com.example.grammar.augment.lr.LRTable;
 import com.example.grammar.augment.lr.LRTableAnalyzer;
 import com.example.lexical.Token;
+import com.example.visiable.AugmentProductionItemSetVisiable;
+import com.example.visiable.FileUtils;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -38,15 +39,18 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
 
         // 1.
         Map<Set<SLRAugmentProduction>, Map<String, Set<SLRAugmentProduction>>> itemSetDfa = SLRAugmentProductionItem.itemSetDfa(grammarConfig);
-        Map<Set<SLRAugmentProduction>, Integer> itemId = new HashMap<>();
-        final int[] idBegin = {0};
-        itemSetDfa.keySet().forEach(slrAugmentProductions -> itemId.put(slrAugmentProductions, idBegin[0]++));
-
+        List<Set<SLRAugmentProduction>> itemSetList = itemSetDfa.keySet().stream().toList();
+        Map<Set<SLRAugmentProduction>, Integer> itemId = IntStream.range(0, itemSetDfa.size())
+                .mapToObj(i -> Map.entry(itemSetList.get(i), i))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         List<Map<String, Integer>> gotoTable = itemSetDfa.keySet().stream()
                 .map(o -> new HashMap<String, Integer>()).collect(Collectors.toList());
         List<Map<String, LRTable.Action>> actionTable = itemSetDfa.keySet().stream()
                 .map(o -> new HashMap<String, LRTable.Action>()).collect(Collectors.toList());
+
+        FileUtils.writeFile("target/%s-slr-itemset.dot".formatted(grammarConfig.name()), AugmentProductionItemSetVisiable.toDot(itemSetDfa, itemId));
+        FileUtils.writeFile("target/%s-slr-itemset.txt".formatted(grammarConfig.name()), AugmentProductionItemSetVisiable.toTxt(itemSetDfa, itemId));
 
         // 2.
         itemSetDfa.forEach((itemSet, trans) -> {

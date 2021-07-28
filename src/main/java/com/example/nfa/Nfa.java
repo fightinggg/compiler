@@ -32,5 +32,9 @@ public interface Nfa<STATE, SYMBOL> {
 
     Map<STATE, Function<List<SYMBOL>, Object>> endStateInvokeMap();
 
+    Integer endStateInvokeOrder(STATE state);
+
+    Map<STATE, Integer> endStateOrderMap();
+
     Nfa<STATE, SYMBOL> deepCopy();
 }

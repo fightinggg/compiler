@@ -20,6 +20,11 @@ public class ChomskyGrammarConfig implements GrammarConfig {
     private String target;
 
     @Override
+    public String name() {
+        return null;
+    }
+
+    @Override
     public Set<String> allTerminal() {
         throw new RuntimeException();
     }
