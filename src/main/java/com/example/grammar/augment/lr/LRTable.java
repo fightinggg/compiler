@@ -61,7 +61,7 @@ public class LRTable {
                 .map(Stream::toList)
                 .toList();
 
-        return TableUtils.tableToString(productionHead) + TableUtils.tableToString(table);
+        return TableUtils.tableToString(productionHead, null, null) + TableUtils.tableToString(table, null, null);
 
     }
 }

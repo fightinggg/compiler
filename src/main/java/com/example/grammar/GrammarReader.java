@@ -47,6 +47,7 @@ public class GrammarReader {
                 .stream()
                 .flatMap(Collection::stream)
                 .flatMap(o -> Arrays.stream(o.split(" ")))
+                .filter(o -> o.length() != 0)
                 .collect(Collectors.toSet());
 
         Set<String> notTerminal = languageConfig.getProductionsTable().keySet();

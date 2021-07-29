@@ -92,16 +92,25 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
 
             trans.keySet().stream()
                     .filter(o -> !grammarConfig.isTerminal(o))
-                    .map(grammarConfig::symbolId)
-                    .forEach(nonTerminalId -> gotoTable[currentId][nonTerminalId] = itemId.get(trans.get(nonTerminalId)));
+                    .forEach(nonTerminal -> gotoTable[currentId][grammarConfig.symbolId(nonTerminal)] = itemId.get(trans.get(nonTerminal)));
         });
 
 
+        // 把actionTable转化为二维的表格
         final List<List<String>> table = Arrays.stream(actionTable)
-                .map(o -> Arrays.stream(o).map(list -> list.stream().map(Objects::toString).collect(Collectors.joining(","))).toList())
+                .map(o -> Arrays.stream(o).map(list -> list.stream().map(Objects::toString).collect(Collectors.joining(","))).collect(Collectors.toList()))
                 .toList();
+        // 复写gotoTable
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (!grammarConfig.isTerminal(grammarConfig.allSymbol()[j])) {
+                    String goTo = gotoTable[i][j] == null ? "" : gotoTable[i][j].toString();
+                    table.get(i).set(j, goTo);
+                }
+            }
+        }
+        FileUtils.writeFile("target/%s-slrtable.tsv".formatted(grammarConfig.name()), TableUtils.tableToString(table, null, Arrays.asList(grammarConfig.allSymbol())));
 
-        FileUtils.writeFile("target/%s-slrtable.txt".formatted(grammarConfig.name()), TableUtils.tableToString(table));
 
         LRTable.Action[][] simpleActionTable = new LRTable.Action[row][col];
         for (int i = 0; i < row; i++) {
