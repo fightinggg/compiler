@@ -78,7 +78,7 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
                 } else if (pos == rightSymbol.size() && !leftSymbol.equals(grammarConfig.target())) {
                     // ②
                     LRTable.Action action = new LRTable.Action("r", grammarConfig.productionId(new ProductionImpl(slrAugmentProduction)));
-                    followSet.get(leftSymbol).stream().map(grammarConfig::symbolId).forEach(o -> actionTable[currentId][o].add(action));
+                    followSet.get(leftSymbol).stream().filter(o -> !o.equals("")).map(grammarConfig::symbolId).forEach(o -> actionTable[currentId][o].add(action));
                 } else if (pos == rightSymbol.size() && leftSymbol.equals(grammarConfig.target())) {
                     // ③
                     actionTable[currentId][grammarConfig.symbolId(Token.END)].add(new LRTable.Action(LRTable.Action.ACC, 0));
@@ -109,6 +109,8 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
                 }
             }
         }
+        List<List<String>> productionListTable = Arrays.stream(grammarConfig.allProduction()).map(Objects::toString).map(List::of).toList();
+        FileUtils.writeFile("target/%s-production.tsv".formatted(grammarConfig.name()), TableUtils.tableToString(productionListTable, null, null));
         FileUtils.writeFile("target/%s-slrtable.tsv".formatted(grammarConfig.name()), TableUtils.tableToString(table, null, Arrays.asList(grammarConfig.allSymbol())));
 
 
