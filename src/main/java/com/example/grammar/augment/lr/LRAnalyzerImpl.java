@@ -1,19 +1,12 @@
 package com.example.grammar.augment.lr;
 
-import com.example.grammar.GrammarFollowSet;
 import com.example.grammar.Production;
-import com.example.grammar.ProductionImpl;
-import com.example.grammar.augment.lr.slr.SLRAugmentProduction;
 import com.example.lexical.Token;
-import com.example.lexical.TokenImpl;
 import com.example.syntaxtree.SyntaxTree;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class LRAnalyzerImpl implements LRAnalyzer {
 
@@ -32,8 +25,8 @@ public class LRAnalyzerImpl implements LRAnalyzer {
         for (int i = 0; i < tokenList.size(); i++) {
             Token token = tokenList.get(i);
 
-            Map<String, LRTable.Action> currentActionTable = lrTable.getActionTable().get(stack.peek().getState());
-            LRTable.Action action = currentActionTable.get(token.type());
+            final Integer tokenId = lrTable.getSymbolId().get(token.type());
+            LRTable.Action action = lrTable.getActionTable()[stack.peek().getState()][tokenId];
             if (action == null) {
                 throw new RuntimeException("could not analtze %s".formatted(tokenList.toString()));
             }
@@ -41,12 +34,13 @@ public class LRAnalyzerImpl implements LRAnalyzer {
                 stack.push(new StackNode(action.getJump(), new SyntaxTree.Node(token, null, null)));
                 // System.out.println(stack + " read " + token.raw() + " push " + action.getJump());
             } else if (action.getAc().equals("r")) {
-                Production production = lrTable.getProductions().get(action.getJump());
+                Production production = lrTable.getProductionArray()[action.getJump()];
                 List<SyntaxTree.Node> pops = new ArrayList<>();
                 production.rightSymbol().forEach(o -> pops.add(stack.pop().getNode()));
                 Collections.reverse(pops);
-                Map<String, Integer> currentGoto = lrTable.getGotoTable().get(stack.peek().getState());
-                stack.push(new StackNode(currentGoto.get(production.leftSymbol()), new SyntaxTree.Node(token, production, pops)));
+                Integer[] currentGoto = lrTable.getGotoTable()[stack.peek().getState()];
+
+                stack.push(new StackNode(currentGoto[lrTable.getSymbolId().get(production.leftSymbol())], new SyntaxTree.Node(token, production, pops)));
                 //System.out.println(stack + " find " + token.raw() + "pop some and push "
                 //        + currentGoto.get(production.leftSymbol()));
                 //System.out.println(production);

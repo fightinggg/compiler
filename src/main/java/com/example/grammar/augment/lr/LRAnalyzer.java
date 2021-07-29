@@ -8,5 +8,5 @@ import java.util.List;
 import java.util.Set;
 
 public interface LRAnalyzer {
-    public SyntaxTree analyze(LRTable lrTable, List<Token> tokenList);
+    SyntaxTree analyze(LRTable lrTable, List<Token> tokenList);
 }

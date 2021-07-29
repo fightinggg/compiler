@@ -1,5 +1,6 @@
 package com.example.grammar;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -9,7 +10,7 @@ public class GrammarEmptySet {
         Set<String> emptySet = new HashSet<>();
         while (true) {
             Set<String> finalEmptySet = emptySet;
-            Set<String> newEmptySet = grammarConfig.allProduction().stream()
+            Set<String> newEmptySet = Arrays.stream(grammarConfig.allProduction())
                     .filter(o -> finalEmptySet.containsAll(o.rightSymbol()))
                     .map(Production::leftSymbol)
                     .collect(Collectors.toSet());

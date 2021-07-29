@@ -29,7 +29,7 @@ public class GrammarFollowSet {
 
         followSet.put(grammarConfig.target(), new HashSet<>(Set.of(Token.END)));
 
-        grammarConfig.allProduction()
+        Arrays.stream(grammarConfig.allProduction())
                 .forEach(production -> {
                     List<String> list = production.rightSymbol();
                     for (int i = 0; i + 1 < list.size(); i++) {
@@ -43,7 +43,7 @@ public class GrammarFollowSet {
 
 
         Set<String> emptySet = GrammarEmptySet.emptySet(grammarConfig);
-        Set<Map.Entry<String, String>> allDepends = grammarConfig.allProduction().stream()
+        Set<Map.Entry<String, String>> allDepends = Arrays.stream(grammarConfig.allProduction())
                 .filter(o -> !o.rightSymbol().isEmpty())
                 .flatMap(production -> {
                     List<String> list = production.rightSymbol();

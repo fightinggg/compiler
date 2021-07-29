@@ -2,17 +2,12 @@ package com.example.grammar.augment.lr.slr;
 
 import com.example.grammar.GrammarConfig;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SLRAugmentProductionItem {
     private static Set<SLRAugmentProduction> _closure(GrammarConfig grammarConfig, List<SLRAugmentProduction> productions) {
-        Set<SLRAugmentProduction> collect = grammarConfig.allProduction()
-                .stream()
+        Set<SLRAugmentProduction> collect = Arrays.stream(grammarConfig.allProduction())
                 .filter(production ->
                         productions.stream()
                                 .filter(o -> o.pos() != o.rightSymbol().size())

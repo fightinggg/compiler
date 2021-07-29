@@ -2,6 +2,7 @@ package com.example.grammar;
 
 import com.alibaba.fastjson.JSON;
 import com.example.LanguageConfig;
+import com.example.lexical.Token;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,6 +52,8 @@ public class GrammarReader {
         Set<String> notTerminal = languageConfig.getProductionsTable().keySet();
 
         symbol.removeAll(notTerminal);
+
+        symbol.add(Token.END);
 
 
         return new GrammarConfigImpl(productions, languageConfig.getTarget(), symbol, languageConfig.getName());

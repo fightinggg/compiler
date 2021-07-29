@@ -17,7 +17,7 @@ public class GrammarFirstSet {
      */
     public static Map<String, Set<String>> firstSet(GrammarConfig grammarConfig) {
         // 获取产生式集合
-        Set<Production> productions = grammarConfig.allProduction();
+        Set<Production> productions = Arrays.stream(grammarConfig.allProduction()).collect(Collectors.toUnmodifiableSet());
 
         // 寻找可以为空的非终极符
         Set<String> emptySet = GrammarEmptySet.emptySet(grammarConfig);
