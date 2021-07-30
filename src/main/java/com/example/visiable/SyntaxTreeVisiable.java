@@ -1,6 +1,7 @@
 package com.example.visiable;
 
 
+import com.alibaba.fastjson.JSON;
 import com.example.syntaxtree.SyntaxTree;
 
 public class SyntaxTreeVisiable {
@@ -22,7 +23,7 @@ public class SyntaxTreeVisiable {
             }
         } else {
             String raw = node.getToken().raw();
-            stringBuilder.append("%d[ label = \"%s\"]\n".formatted(res, raw));
+            stringBuilder.append("%d[ label = %s]\n".formatted(res, JSON.toJSONString(raw)));
         }
         return res;
     }

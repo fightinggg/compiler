@@ -18,6 +18,11 @@ public class LexicalConfigReader {
 
         LanguageConfig languageConfig = JSON.parseObject(new String(code), LanguageConfig.class);
 
-        return new LexicalConfigImpl(languageConfig.getTokens(), languageConfig.getTokenOrders(), languageConfig.getBlankToken());
+        return new LexicalConfigImpl(
+                languageConfig.getTokens(),
+                languageConfig.getTokenOrders(),
+                languageConfig.getBlankToken(),
+                languageConfig.getName()
+        );
     }
 }

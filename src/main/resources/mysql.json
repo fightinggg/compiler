@@ -13,7 +13,7 @@
     "equal": "=",
     "gt": ">",
     "lt": "<",
-    "string": "\"[\\s\\d]*\"",
+    "string": "\"[\\s\\w\\d]*\"",
     "and": "and",
     "limit": "limit",
     "symbol": "[_\\w][_\\w\\d]*"
@@ -58,7 +58,7 @@
       "limit number"
     ],
     "sqlWhere": [
-      "where condition"
+      "where conditionSeq"
     ],
     "compare": [
       "equal",

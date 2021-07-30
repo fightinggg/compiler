@@ -14,10 +14,12 @@ import com.example.visiable.SyntaxTreeVisiable;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MysqlTest {
 
-    String code = "select * from users where id = 1  ";
+    String subCode = "(select c1,c2,c3 from users where id = 1 and name = \"wsx\" limit 10 )";
+    String code = "select r1,r2,r3 from " + subCode + " where i = \"123\" limit 10 ";
 
     @Test
     public void mysqlTest() {
@@ -31,7 +33,7 @@ public class MysqlTest {
         // 3. 执行词法分析
         List<Token> tokes = new LexicalAnalysisImpl().parsing(code, lexicalConfig);
 
-        // System.out.println(tokes.stream().map(Object::toString).collect(Collectors.joining("\n")));
+        System.out.println(tokes.stream().map(Object::toString).collect(Collectors.joining("\n")));
 
         // 4. 执行语法分析
         final SyntaxTree syntaxTree = new LRAnalyzerImpl().analyze(lrTable, tokes);

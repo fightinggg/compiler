@@ -5,7 +5,7 @@
     "angleLeftBracket": "<",
     "angleRightBracket": ">",
     "blank": "\\s+",
-    "string": "\"[\\s\\d]*\"",
+    "string": "\"[\\s\\w\\d]*\"",
     "include": "#include",
     "symbol": "[_\\w][_\\w\\d]*",
     "comma": ",",

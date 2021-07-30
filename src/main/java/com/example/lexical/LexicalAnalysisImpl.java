@@ -38,7 +38,7 @@ public class LexicalAnalysisImpl implements LexicalAnalysis {
 
         final String nfaDot = NfaVisiable.nfa2Dot(nfa);
 
-        FileUtils.writeFile("target/cppNfaRegs.dot", nfaDot);
+        FileUtils.writeFile("target/%s-lexical-dfa.dot".formatted(lexicalConfig.name()), nfaDot);
 
 
         final NfaMatcher<Object, String> matcher = new NfaMatcher<>(nfa, Nfa.EMPTY_TRANS);
