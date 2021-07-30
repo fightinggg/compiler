@@ -7,4 +7,5 @@ public interface LexicalConfig {
 
     Integer tokenOrder(String type);
 
+    String getBlankToken();
 }

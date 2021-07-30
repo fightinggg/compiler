@@ -18,6 +18,11 @@ public class LanguageConfig {
     Map<String, Integer> tokenOrders;
 
     /**
+     * 空token(可删除)
+     */
+    private String blankToken;
+
+    /**
      * 产生式集合
      * k->[v1,v2,v3]
      * 所有的k必须为小写字母和大写字母组合，不允许使用其他的字符
@@ -35,4 +40,5 @@ public class LanguageConfig {
     private Set<String> keys;
 
     private String name;
+
 }

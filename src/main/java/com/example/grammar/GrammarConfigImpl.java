@@ -1,9 +1,6 @@
 package com.example.grammar;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -55,6 +52,20 @@ public class GrammarConfigImpl implements GrammarConfig {
         symbols = symbolList.toArray(new String[0]);
         symbolIdMap = IntStream.range(0, symbols.length).boxed().collect(Collectors.toMap(i -> symbols[i], i -> i));
 
+        checkGrammar();
+    }
+
+    private void checkGrammar() {
+        // 检验是否为产生式右边只能包含非终结符和终结符
+        final Set<String> symbolsSet = Arrays.stream(symbols).collect(Collectors.toSet());
+        productionsTable.values()
+                .stream()
+                .flatMap(Collection::stream)
+                .forEach(production -> {
+                    if (production.rightSymbol().stream().anyMatch(o -> !symbolsSet.contains(o))) {
+                        throw new RuntimeException("[%s] contain unknown symbol".formatted(production.toString()));
+                    }
+                });
     }
 
     @Override

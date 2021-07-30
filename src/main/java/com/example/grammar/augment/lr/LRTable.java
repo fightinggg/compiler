@@ -3,6 +3,7 @@ package com.example.grammar.augment.lr;
 import com.example.grammar.Production;
 import com.example.utils.TableUtils;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.*;
@@ -14,6 +15,7 @@ import java.util.stream.Stream;
 public class LRTable {
 
     @Getter
+    @EqualsAndHashCode
     @AllArgsConstructor
     public static class Action {
         public static String ACC = "acc";

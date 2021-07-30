@@ -43,20 +43,10 @@ public class GrammarReader {
                 .flatMap(o -> o.getValue().stream().map(v -> new ProductionImpl(o.getKey(), string2List(v))))
                 .collect(Collectors.groupingBy(ProductionImpl::leftSymbol, Collectors.toSet()));
 
-        Set<String> symbol = languageConfig.getProductionsTable().values()
-                .stream()
-                .flatMap(Collection::stream)
-                .flatMap(o -> Arrays.stream(o.split(" ")))
-                .filter(o -> o.length() != 0)
-                .collect(Collectors.toSet());
+        Set<String> terminal = new HashSet<>(languageConfig.getTokens().keySet());
 
-        Set<String> notTerminal = languageConfig.getProductionsTable().keySet();
+        terminal.add(Token.END);
 
-        symbol.removeAll(notTerminal);
-
-        symbol.add(Token.END);
-
-
-        return new GrammarConfigImpl(productions, languageConfig.getTarget(), symbol, languageConfig.getName());
+        return new GrammarConfigImpl(productions, languageConfig.getTarget(), terminal, languageConfig.getName());
     }
 }

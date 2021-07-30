@@ -55,6 +55,9 @@ public class LexicalAnalysisImpl implements LexicalAnalysis {
 
         list.add((Token) matcher.end().getValue());
 
-        return list;
+        list.add(new TokenImpl(Token.END, Token.END));
+
+
+        return list.stream().filter(o -> !o.type().equals(lexicalConfig.getBlankToken())).collect(Collectors.toList());
     }
 }

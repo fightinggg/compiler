@@ -13,12 +13,11 @@ public class LexicalConfigReader {
             assert inputStream != null;
             code = inputStream.readAllBytes();
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
 
         LanguageConfig languageConfig = JSON.parseObject(new String(code), LanguageConfig.class);
 
-        return new LexicalConfigImpl(languageConfig.getTokens(),languageConfig.getTokenOrders());
+        return new LexicalConfigImpl(languageConfig.getTokens(), languageConfig.getTokenOrders(), languageConfig.getBlankToken());
     }
 }

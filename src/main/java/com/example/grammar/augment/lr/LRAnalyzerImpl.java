@@ -47,10 +47,14 @@ public class LRAnalyzerImpl implements LRAnalyzer {
 
                 i--;
             } else if (action.getAc().equals(LRTable.Action.ACC)) {
-                //System.out.println("wow parse success!!");
+//                System.out.println("wow parse success!!");
             } else {
-                throw new RuntimeException();
+                throw new RuntimeException("parse error");
             }
+        }
+
+        if (stack.size() != 2) {
+            throw new RuntimeException("parse error");
         }
 
         SyntaxTree syntaxTree = new SyntaxTree();

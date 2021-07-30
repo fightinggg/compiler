@@ -8,6 +8,7 @@ import java.util.Map;
 public class LexicalConfigImpl implements LexicalConfig {
     Map<String, String> tokens;
     Map<String, Integer> tokenOrders;
+    String blankToken;
 
     @Override
     public Map<String, String> getTokens() {
@@ -17,5 +18,10 @@ public class LexicalConfigImpl implements LexicalConfig {
     @Override
     public Integer tokenOrder(String type) {
         return tokenOrders.get(type);
+    }
+
+    @Override
+    public String getBlankToken() {
+        return blankToken;
     }
 }

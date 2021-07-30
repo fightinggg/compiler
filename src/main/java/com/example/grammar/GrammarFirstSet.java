@@ -22,10 +22,9 @@ public class GrammarFirstSet {
         // 寻找可以为空的非终极符
         Set<String> emptySet = GrammarEmptySet.emptySet(grammarConfig);
 
-        Queue<Map.Entry<String, String>> firstSetQueue = new ArrayDeque<>();
-
         // 空first入队
-        firstSetQueue.addAll(emptySet.stream().map(o -> Map.entry(o, "")).collect(Collectors.toSet()));
+        Queue<Map.Entry<String, String>> firstSetQueue = emptySet.stream().map(o -> Map.entry(o, "")).distinct().collect(Collectors.toCollection(ArrayDeque::new));
+
         // 终结符入队
         Set<String> allTerminal = grammarConfig.allTerminal();
         firstSetQueue.addAll(allTerminal.stream().map(o -> Map.entry(o, o)).collect(Collectors.toSet()));

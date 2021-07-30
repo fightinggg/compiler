@@ -13,11 +13,11 @@ public class TableUtils {
                                        List<String> colHeadInput) {
         List<List<String>> table = tableInput.stream().map(ArrayList::new).collect(Collectors.toList());
         List<String> rowHead = new ArrayList<>(rowHeadInput == null
-                ? IntStream.range(1, tableInput.size() + 1).mapToObj(Objects::toString).toList()
+                ? IntStream.range(0, tableInput.size() ).mapToObj(Objects::toString).toList()
                 : rowHeadInput
         );
         List<String> colHead = new ArrayList<>(colHeadInput == null
-                ? IntStream.range(1, tableInput.get(0).size() + 1).mapToObj(Objects::toString).toList()
+                ? IntStream.range(0, tableInput.get(0).size() ).mapToObj(Objects::toString).toList()
                 : colHeadInput
         );
 

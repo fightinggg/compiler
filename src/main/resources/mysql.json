@@ -15,6 +15,7 @@
     "lt": "<",
     "string": "\"[\\s\\d]*\"",
     "and": "and",
+    "limit": "limit",
     "symbol": "[_\\w][_\\w\\d]*"
   },
   "tokenOrders": {
@@ -26,49 +27,51 @@
     "blank": 6,
     "comma": 7,
     "number": 8,
-    "leftBracket":9 ,
+    "leftBracket": 9,
     "rightBracket": 10,
     "equal": 11,
     "gt": 12,
     "lt": 13,
     "string": 14,
     "and": 15,
-    "symbol": 16
+    "limit": 16,
+    "symbol": 17
   },
   "productionsTable": {
-    "someBlank": [
-      "",
-      "someBlank blank"
-    ],
     "columns": [
       "star",
       "symbol",
-      "columns someBlank comma someBlank star",
-      "columns someBlank comma someBlank symbol"
+      "columns comma star",
+      "columns comma symbol"
     ],
     "sql": [
-      "select someBlank columns someBlank from someBlank symbol someBlank sqlParams",
-      "select someBlank columns someBlank from someBlank leftBracket someBlank sql someBlank rightBracket someBlank sqlParams"
+      "select columns from symbol sqlParams",
+      "select columns from leftBracket sql rightBracket sqlParams"
     ],
     "sqlParams": [
       "sqlLimit",
       "sqlWhere",
-      "sqlParams someBlank sqlLimit",
-      "sqlParams someBlank sqlWhere"
+      "sqlParams sqlLimit",
+      "sqlParams sqlWhere"
     ],
     "sqlLimit": [
-      "limit someBlank number"
+      "limit number"
     ],
     "sqlWhere": [
-      "where someBlank condition"
+      "where condition"
+    ],
+    "compare": [
+      "equal",
+      "gt",
+      "lt"
     ],
     "condition": [
-      "symbol someBlank compare someBlank rightSymbol",
-      "leftBracket someBlank conditionSeq someBlank rightBracket"
+      "symbol compare rightSymbol",
+      "leftBracket conditionSeq rightBracket"
     ],
     "conditionSeq": [
       "condition",
-      "condition someBlank conditionOperator someBlank symbol someBlank compare someBlank rightSymbol"
+      "condition conditionOperator symbol compare rightSymbol"
     ],
     "rightSymbol": [
       "number",
@@ -84,6 +87,7 @@
     ]
   },
   "target": "target",
+  "blankToken": "blank",
   "keys": [
   ],
   "name": "mysql"

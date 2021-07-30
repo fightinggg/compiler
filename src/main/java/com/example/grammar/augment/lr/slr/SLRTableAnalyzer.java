@@ -50,10 +50,10 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
         int row = itemSetDfa.size();
         int col = grammarConfig.symbolIdMap().size();
         Integer[][] gotoTable = new Integer[row][col];
-        List<LRTable.Action>[][] actionTable = new List[row][col];
+        Set<LRTable.Action>[][] actionTable = new Set[row][col];
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
-                actionTable[i][j] = new ArrayList<>();
+                actionTable[i][j] = new HashSet<>();
             }
         }
 
@@ -120,7 +120,7 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
                 if (actionTable[i][j].size() > 1) {
                     throw new RuntimeException("grammar %s is not slr grammar".formatted(grammarConfig.name()));
                 } else if (actionTable[i][j].size() == 1) {
-                    simpleActionTable[i][j] = actionTable[i][j].get(0);
+                    simpleActionTable[i][j] = actionTable[i][j].iterator().next();
                 }
             }
         }
