@@ -2,6 +2,7 @@ package com.example;
 
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -10,12 +11,8 @@ public class LanguageConfig {
     /**
      * tokens的定义
      */
-    Map<String, String> tokens;
+    List<Map<String, String>> tokens;
 
-    /**
-     * tokens的优先级
-     */
-    Map<String, Integer> tokenOrders;
 
     /**
      * 空token(可删除)

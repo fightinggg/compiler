@@ -24,24 +24,7 @@ import java.util.Set;
 
 public class CompilerTests {
 
-    String cppCode = "    int a = 1;\n" +
-            "    int a = 1;\n" +
-            "    int a = 1;\n" +
-            "\n";
 
-    @Test
-    public void cppTest() {
-        // 1. 获取词法和文法配置
-        LexicalConfig lexicalConfig = LexicalConfigReader.read("cpp.json");
-        GrammarConfig grammarConfig = GrammarReader.read("cpp.json");
-
-        // 2. 根据文法构建SLR语法分析器
-        LRTable lrTable = new SLRTableAnalyzer().analyze(grammarConfig);
-
-        // 3. 执行词法分析
-        List<Token> tokes = new LexicalAnalysisImpl().parsing(cppCode, lexicalConfig);
-
-    }
 
 
     @Test

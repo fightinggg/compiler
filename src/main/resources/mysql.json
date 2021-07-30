@@ -1,42 +1,23 @@
 {
-  "tokens": {
-    "select": "select",
-    "star": "\\*",
-    "from": "from",
-    "or": "or",
-    "where": "where",
-    "blank": "\\s+",
-    "comma": ",",
-    "number": "0|[123456789]\\d*",
-    "leftBracket": "\\(",
-    "rightBracket": "\\)",
-    "equal": "=",
-    "gt": ">",
-    "lt": "<",
-    "string": "\"[\\s\\w\\d]*\"",
-    "and": "and",
-    "limit": "limit",
-    "symbol": "[_\\w][_\\w\\d]*"
-  },
-  "tokenOrders": {
-    "select": 1,
-    "star": 2,
-    "from": 3,
-    "or": 4,
-    "where": 5,
-    "blank": 6,
-    "comma": 7,
-    "number": 8,
-    "leftBracket": 9,
-    "rightBracket": 10,
-    "equal": 11,
-    "gt": 12,
-    "lt": 13,
-    "string": 14,
-    "and": 15,
-    "limit": 16,
-    "symbol": 17
-  },
+  "tokens": [
+    {"select": "select"},
+    {"star": "\\*"},
+    {"from": "from"},
+    {"or": "or"},
+    {"where": "where"},
+    {"blank": "\\s+"},
+    {"comma": ","},
+    {"number": "0|[123456789]\\d*"},
+    {"leftBracket": "\\("},
+    {"rightBracket": "\\)"},
+    {"equal": "="},
+    {"gt": ">"},
+    {"lt": "<"},
+    {"string": "\"[\\s\\w\\d]*\""},
+    {"and": "and"},
+    {"limit": "limit"},
+    {"symbol": "[_\\w][_\\w\\d]*"}
+  ],
   "productionsTable": {
     "columns": [
       "star",
@@ -86,9 +67,11 @@
       "sql"
     ]
   },
-  "target": "target",
-  "blankToken": "blank",
-  "keys": [
-  ],
-  "name": "mysql"
+{"target": "target"},
+{"blankToken": "blank"},
+"keys": [
+],
+{
+"name": "mysql"
+}
 }

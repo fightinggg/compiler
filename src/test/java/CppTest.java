@@ -1,6 +1,5 @@
 import com.example.grammar.GrammarConfig;
 import com.example.grammar.GrammarReader;
-import com.example.grammar.augment.lr.LRAnalyzer;
 import com.example.grammar.augment.lr.LRAnalyzerImpl;
 import com.example.grammar.augment.lr.LRTable;
 import com.example.grammar.augment.lr.slr.SLRTableAnalyzer;
@@ -14,32 +13,30 @@ import com.example.visiable.SyntaxTreeVisiable;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class MysqlTest {
-
-    String subCode = "(select c1,c2,c3 from users where id = 1 and name = \"wsx\" limit 10 )";
-    String code = "select r1,r2,r3 from " + subCode + " where i = \"123\" limit 10 ";
+public class CppTest {
+    String cppCode = "    int a = 1;\n" +
+            "    int a = 1;\n" +
+            "    int a = 1;\n" +
+            "\n";
 
     @Test
-    public void mysqlTest() {
+    public void cppTest() {
         // 1. 获取词法和文法配置
-        LexicalConfig lexicalConfig = LexicalConfigReader.read("mysql.json");
-        GrammarConfig grammarConfig = GrammarReader.read("mysql.json");
+        LexicalConfig lexicalConfig = LexicalConfigReader.read("cpp.json");
+        GrammarConfig grammarConfig = GrammarReader.read("cpp.json");
 
         // 2. 根据文法构建SLR语法分析器
         LRTable lrTable = new SLRTableAnalyzer().analyze(grammarConfig);
 
         // 3. 执行词法分析
-        List<Token> tokes = new LexicalAnalysisImpl().parsing(code, lexicalConfig);
+        List<Token> tokes = new LexicalAnalysisImpl().parsing(cppCode, lexicalConfig);
 
         // 4. 执行语法分析
         final SyntaxTree syntaxTree = new LRAnalyzerImpl().analyze(lrTable, tokes);
-
 
         final String syntaxTreeString = SyntaxTreeVisiable.toDot(syntaxTree);
         FileUtils.writeFile("target/%s-syntaxTree.dot".formatted(grammarConfig.name()), syntaxTreeString);
 
     }
-
 }

@@ -43,7 +43,7 @@ public class GrammarReader {
                 .flatMap(o -> o.getValue().stream().map(v -> new ProductionImpl(o.getKey(), string2List(v))))
                 .collect(Collectors.groupingBy(ProductionImpl::leftSymbol, Collectors.toSet()));
 
-        Set<String> terminal = new HashSet<>(languageConfig.getTokens().keySet());
+        Set<String> terminal = languageConfig.getTokens().stream().flatMap(o -> o.keySet().stream()).collect(Collectors.toSet());
 
         terminal.add(Token.END);
 
