@@ -5,9 +5,13 @@
     {"angleLeftBracket": "<"},
     {"angleRightBracket": ">"},
     {"blank": "\\s+"},
+    {"leftCurlyBracket": "\\{"},
+    {"rightCurlyBracket": "\\}"},
     {"string": "\"[\\s\\w\\d]*\""},
     {"include": "#include"},
-    {"symbol": "[_\\w][_\\w\\d]*"},
+    {"while": "while"},
+    {"if": "if"},
+    {"for": "for"},
     {"comma": ","},
     {"leftBracket": "\\("},
     {"rightBracket": "\\)"},
@@ -16,7 +20,8 @@
     {"mul": "\\*"},
     {"div": "/"},
     {"eq": "="},
-    {"semicolon": ";"}
+    {"semicolon": ";"},
+    {"symbol": "[_\\w][_\\w\\d]*"}
   ],
   "productionsTable": {
     "type": [
@@ -25,21 +30,23 @@
     "leftSymbol": [
       "symbol"
     ],
-    "someSymbolJoinByCommaNotEmpty": [
-      "symbol",
-      "someSymbolJoinByCommaNotEmpty comma symbol"
+    "someRightSymbolJoinByCommaNotEmpty": [
+      "rightSymbol",
+      "someRightSymbolJoinByCommaNotEmpty comma rightSymbol"
     ],
-    "someSymbolJoinByComma": [
-      "",
-      "someSymbolJoinByCommaNotEmpty"
+    "functionStatement": [
+      "type symbol leftBracket rightBracket leftCurlyBracket block rightCurlyBracket",
+      "type symbol leftBracket someRightSymbolJoinByCommaNotEmpty rightBracket leftCurlyBracket block rightCurlyBracket"
     ],
     "functionInvoke": [
-      "symbol leftBracket someSymbolJoinByComma rightBracket"
+      "symbol leftBracket someRightSymbolJoinByCommaNotEmpty rightBracket",
+      "symbol leftBracket rightBracket"
     ],
     "rightSymbolUnit": [
       "symbol",
       "number",
-      "functionInvoke"
+      "functionInvoke",
+      "string"
     ],
     "addOrSubExpression": [
       "rightSymbol add rightSymbolUnit",
@@ -57,20 +64,41 @@
       "addOrSubExpression",
       "mulOrDelExpression"
     ],
-    "symbolStatement": [
-      "type leftSymbol semicolon",
-      "type leftSymbol eq rightSymbol semicolon"
+    "symbolStatementSentence": [
+      "type leftSymbol",
+      "type leftSymbol eq rightSymbol"
     ],
-    "symbolStatementBlockNotEmpty": [
-      "symbolStatement",
-      "symbolStatement symbolStatementBlockNotEmpty"
+    "symbolUpdateSentence": [
+      "leftSymbol eq rightSymbol"
     ],
-    "symbolStatementBlock": [
-      "",
-      "symbolStatementBlockNotEmpty"
+    "sentence": [
+      "symbolStatementSentence",
+      "symbolUpdateSentence"
+    ],
+    "ifBlock": [
+      "if leftBracket rightSymbol rightBracket sentence semicolon",
+      "if leftBracket rightSymbol rightBracket leftCurlyBracket block rightCurlyBracket"
+    ],
+    "forBlock": [
+      "for leftBracket sentence semicolon rightSymbol semicolon sentence rightBracket sentence semicolon",
+      "for leftBracket sentence semicolon rightSymbol semicolon sentence rightBracket leftCurlyBracket block rightCurlyBracket"
+    ],
+    "whileBlock": [
+      "while leftBracket rightSymbol rightBracket sentence semicolon",
+      "while leftBracket rightSymbol rightBracket leftCurlyBracket block rightCurlyBracket"
+    ],
+    "blockUnit": [
+      "sentence semicolon",
+      "ifBlock",
+      "forBlock",
+      "whileBlock"
+    ],
+    "block": [
+      "blockUnit",
+      "block blockUnit"
     ],
     "target": [
-      "symbolStatementBlock"
+      "functionStatement"
     ]
   },
   "target": "target",

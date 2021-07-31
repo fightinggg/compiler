@@ -15,10 +15,32 @@ import org.junit.Test;
 import java.util.List;
 
 public class CppTest {
-    String cppCode = "    int a = 1;\n" +
-            "    int a = 1;\n" +
-            "    int a = 1;\n" +
-            "\n";
+    String cppCode = """
+            int main(){
+                int a = 1;
+                int d = a + b;
+                int e = d + 0;
+                String s = "abc";
+                int invoke = f1() + f2(1);
+                if ( a+b ){
+                     a = 1;
+                 }
+                 while( a+b){
+                      d = 2;
+                      c = 1;
+                 }
+                 for(int i=0;i;i=i+1){
+                     s = s + i;
+                 }
+                 
+                 for(int i=0;i;i=i+1) {
+                    while(i){
+                        b = c + 1;
+                    }
+                    a = a+1;
+                 }
+            }
+            """;
 
     @Test
     public void cppTest() {
