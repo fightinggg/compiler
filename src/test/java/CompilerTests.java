@@ -36,11 +36,6 @@ public class CompilerTests {
 //                SerializerFeature.PrettyFormat));
 
         GrammarConfig grammarConfig = GrammarReader.read("reg.json", "");
-        Map<String, Set<String>> followSet = GrammarFollowSet.followSet(grammarConfig);
-//        System.out.println(JSON.toJSONString(followSet, SerializerFeature.PrettyFormat));
-
-        Map<Set<SLRAugmentProduction>, Map<String, Set<SLRAugmentProduction>>> map =
-                SLRAugmentProductionItem.itemSetDfa(grammarConfig);
 
 //        String dotCode = AugmentProductionItemSetVisiable.toDot(map, null);
 //

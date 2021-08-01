@@ -6,11 +6,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GrammarEmptySet {
-    public static Set<String> emptySet(GrammarConfig grammarConfig) {
-        Set<String> emptySet = new HashSet<>();
+    public static Set<Integer> emptySet(GrammarConfig grammarConfig) {
+        Set<Integer> emptySet = new HashSet<>();
         while (true) {
-            Set<String> finalEmptySet = emptySet;
-            Set<String> newEmptySet = Arrays.stream(grammarConfig.allProduction())
+            Set<Integer> finalEmptySet = emptySet;
+            Set<Integer> newEmptySet = Arrays.stream(grammarConfig.allProduction())
                     .filter(o -> finalEmptySet.containsAll(o.rightSymbol()))
                     .map(Production::leftSymbol)
                     .collect(Collectors.toSet());

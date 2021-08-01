@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @EqualsAndHashCode(callSuper = true)
 public class SLRAugmentProductionImpl extends ProductionImpl implements SLRAugmentProduction {
@@ -17,16 +18,16 @@ public class SLRAugmentProductionImpl extends ProductionImpl implements SLRAugme
     }
 
     public SLRAugmentProductionImpl(Production production, int pos) {
-        this(production.leftSymbol(), production.rightSymbol(), pos);
+        this(production.leftSymbol(), production.rightSymbol(), pos, production.raw());
     }
 
-    public SLRAugmentProductionImpl(String left, List<String> right) {
-        this(left, right, 0);
+    public SLRAugmentProductionImpl(Integer left, List<Integer> right, String raw) {
+        this(left, right, 0, raw);
     }
 
 
-    public SLRAugmentProductionImpl(String left, List<String> right, int pos) {
-        super(left, right);
+    public SLRAugmentProductionImpl(Integer left, List<Integer> right, int pos, String raw) {
+        super(left, right, raw);
         this.pos = pos;
     }
 
@@ -39,7 +40,7 @@ public class SLRAugmentProductionImpl extends ProductionImpl implements SLRAugme
 
     @Override
     public String toString() {
-        ArrayList<String> strings = new ArrayList<>(rightSymbol());
+        List<String> strings = new ArrayList<>(rightSymbol()).stream().map(Object::toString).collect(Collectors.toList());
         strings.add(pos, "·");
         String s = JSON.toJSONString(String.join(" ", strings));
         return "%s -> %s".formatted(leftSymbol(), s.substring(1, s.length() - 1));

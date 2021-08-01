@@ -11,10 +11,7 @@ public class SyntaxTreeVisiable {
 
 
         if (node.getSon() != null) {
-            String nodeString = "%d[ label = \"%s -> [%s]\" ] \n ".formatted(
-                    res,
-                    node.getProduction().leftSymbol(),
-                    String.join(",", node.getProduction().rightSymbol()));
+            String nodeString = "%d[ label = \"%s\" ] \n ".formatted(res, node.getProduction().raw());
 
             stringBuilder.append(nodeString);
             for (SyntaxTree.Node son : node.getSon()) {

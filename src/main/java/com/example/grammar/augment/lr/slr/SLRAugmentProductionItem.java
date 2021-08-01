@@ -37,7 +37,7 @@ public class SLRAugmentProductionItem {
     }
 
 
-    private static Set<SLRAugmentProduction> itemGoto(GrammarConfig grammarConfig, Set<SLRAugmentProduction> from, String symbol) {
+    private static Set<SLRAugmentProduction> itemGoto(GrammarConfig grammarConfig, Set<SLRAugmentProduction> from, Integer symbol) {
         List<SLRAugmentProduction> halfTarget = from.stream()
                 .filter(o -> o.pos() != o.rightSymbol().size())
                 .filter(production -> production.rightSymbol().get(production.pos()).equals(symbol))
@@ -47,8 +47,8 @@ public class SLRAugmentProductionItem {
     }
 
 
-    public static Map<Set<SLRAugmentProduction>, Map<String, Set<SLRAugmentProduction>>> itemSetDfa(GrammarConfig grammarConfig) {
-        Map<Set<SLRAugmentProduction>, Map<String, Set<SLRAugmentProduction>>> res = new HashMap<>();
+    public static Map<Set<SLRAugmentProduction>, Map<Integer, Set<SLRAugmentProduction>>> itemSetDfa(GrammarConfig grammarConfig) {
+        Map<Set<SLRAugmentProduction>, Map<Integer, Set<SLRAugmentProduction>>> res = new HashMap<>();
 
         Stack<Set<SLRAugmentProduction>> stack = new Stack<>();
 
@@ -64,9 +64,9 @@ public class SLRAugmentProductionItem {
             if (res.containsKey(top)) {
                 continue;
             }
-            Map<String, Set<SLRAugmentProduction>> currentGotoMap = new HashMap<>();
+            Map<Integer, Set<SLRAugmentProduction>> currentGotoMap = new HashMap<>();
 
-            for (String symbol : grammarConfig.allTerminal()) {
+            for (Integer symbol : grammarConfig.allTerminal()) {
                 Set<SLRAugmentProduction> itemGoto = itemGoto(grammarConfig, top, symbol);
                 if (itemGoto.isEmpty()) {
                     continue;
@@ -75,7 +75,7 @@ public class SLRAugmentProductionItem {
                 stack.push(itemGoto);
             }
 
-            for (String symbol : grammarConfig.allNotTerminal()) {
+            for (Integer symbol : grammarConfig.allNotTerminal()) {
                 Set<SLRAugmentProduction> itemGoto = itemGoto(grammarConfig, top, symbol);
                 if (itemGoto.isEmpty()) {
                     continue;

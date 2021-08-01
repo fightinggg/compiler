@@ -2,26 +2,32 @@ package com.example.grammar;
 
 import com.alibaba.fastjson.JSON;
 import com.example.LanguageConfig;
+import com.example.lexical.LexicalConfig;
 import com.example.lexical.Token;
+import com.example.utils.MapUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * @author wsx
  */
 public class GrammarReader {
 
-    static List<String> string2List(String s) {
-        if (s.isEmpty()) {
-            return new ArrayList<>();
-        } else if (s.length() == 1) {
-            return new ArrayList<>(List.of(s));
-        } else {
-            return new ArrayList<>(Arrays.asList(s.split(" ")));
-        }
+    static Production string2Production(String from, String to, Map<String, Integer> symbolId) {
+        Integer left = symbolId.get(from);
+        List<Integer> right = Arrays.stream(to.split(" "))
+                .filter(symbol -> !symbol.isBlank())
+                .map(symbolId::get)
+                .collect(Collectors.toList());
+        return new ProductionImpl(left, right, from + " -> " + to);
     }
 
     public static GrammarConfigImpl read(String path, String tag) {
@@ -36,20 +42,31 @@ public class GrammarReader {
 
         LanguageConfig languageConfig = JSON.parseObject(new String(code), LanguageConfig.class);
 
-
-        Map<String, Set<Production>> productions = languageConfig.getProductionsTable()
-                .entrySet()
-                .stream()
-                .flatMap(o -> o.getValue().stream().map(v -> new ProductionImpl(o.getKey(), string2List(v))))
-                .collect(Collectors.groupingBy(ProductionImpl::leftSymbol, Collectors.toSet()));
-
-        Set<String> terminal = languageConfig.getTokens().stream().flatMap(o -> o.keySet().stream()).collect(Collectors.toSet());
-
+        List<String> terminal = languageConfig.getTokens().stream().map(Map::keySet).flatMap(Collection::stream).collect(Collectors.toList());
         terminal.add(Token.END);
+        terminal.add(Token.EMPTY);
+
+        List<String> nonTerminal = languageConfig.getProductionsTable().keySet().stream().toList();
+
+        List<String> symbols = Stream.concat(nonTerminal.stream(), terminal.stream()).collect(Collectors.toList());
+
+        Map<String, Integer> symbolId = IntStream.range(0, symbols.size())
+                .boxed()
+                .map(i -> Map.entry(symbols.get(i), i))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        Production[] productions = languageConfig.getProductionsTable().entrySet()
+                .stream()
+                .flatMap(kv -> kv.getValue().stream().map(o -> Map.entry(kv.getKey(), o)))
+                .map(kv -> string2Production(kv.getKey(), kv.getValue(), symbolId))
+                .toArray(Production[]::new);
+
 
         return new GrammarConfigImpl(productions,
-                languageConfig.getTarget(),
-                terminal,
+                symbolId.get(languageConfig.getTarget()),
+                terminal.stream().map(symbolId::get).collect(Collectors.toList()),
+                nonTerminal.stream().map(symbolId::get).collect(Collectors.toList()),
+                symbols,
                 languageConfig.getName() + tag);
     }
 }

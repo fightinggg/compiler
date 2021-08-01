@@ -21,33 +21,33 @@ public class GrammarFollowSet {
      * @param grammarConfig
      * @return
      */
-    public static Map<String, Set<String>> followSet(GrammarConfig grammarConfig) {
+    public static Map<Integer, Set<Integer>> followSet(GrammarConfig grammarConfig) {
 
-        Map<String, Set<String>> firstSet = GrammarFirstSet.firstSet(grammarConfig);
+        Map<Integer, Set<Integer>> firstSet = GrammarFirstSet.firstSet(grammarConfig);
 
-        Map<String, Set<String>> followSet = new HashMap<>();
+        Map<Integer, Set<Integer>> followSet = new HashMap<>();
 
-        followSet.put(grammarConfig.target(), new HashSet<>(Set.of(Token.END)));
+        followSet.put(grammarConfig.target(), new HashSet<>(Set.of(grammarConfig.endTerminal())));
 
         Arrays.stream(grammarConfig.allProduction())
                 .forEach(production -> {
-                    List<String> list = production.rightSymbol();
+                    List<Integer> list = production.rightSymbol();
                     for (int i = 0; i + 1 < list.size(); i++) {
                         followSet.putIfAbsent(list.get(i), new HashSet<>());
                         followSet.get(list.get(i)).addAll(firstSet.get(list.get(i + 1)));
-                        for (int j = i + 1; j + 1 < list.size() && firstSet.get(list.get(j)).contains(""); j++) {
+                        for (int j = i + 1; j + 1 < list.size() && firstSet.get(list.get(j)).contains(grammarConfig.endTerminal()); j++) {
                             followSet.get(list.get(i)).addAll(firstSet.get(list.get(j + 1)));
                         }
                     }
                 });
 
 
-        Set<String> emptySet = GrammarEmptySet.emptySet(grammarConfig);
-        Set<Map.Entry<String, String>> allDepends = Arrays.stream(grammarConfig.allProduction())
+        Set<Integer> emptySet = GrammarEmptySet.emptySet(grammarConfig);
+        Set<Map.Entry<Integer, Integer>> allDepends = Arrays.stream(grammarConfig.allProduction())
                 .filter(o -> !o.rightSymbol().isEmpty())
                 .flatMap(production -> {
-                    List<String> list = production.rightSymbol();
-                    List<Map.Entry<String, String>> flat = new ArrayList<>();
+                    List<Integer> list = production.rightSymbol();
+                    List<Map.Entry<Integer, Integer>> flat = new ArrayList<>();
                     flat.add(Map.entry(list.get(list.size() - 1), production.leftSymbol()));
                     for (int i = list.size() - 1; i >= 1 && emptySet.contains(list.get(i)); i--) {
                         flat.add(Map.entry(list.get(i - 1), production.leftSymbol()));

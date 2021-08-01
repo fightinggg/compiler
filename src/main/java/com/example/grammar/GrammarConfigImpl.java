@@ -1,6 +1,10 @@
 package com.example.grammar;
 
+import com.example.lexical.Token;
+
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -13,60 +17,45 @@ public class GrammarConfigImpl implements GrammarConfig {
     /**
      * 产生式集合
      */
-    private final Map<String, Set<Production>> productionsTable;
 
     private final Map<Production, Integer> productionIdMap;
     private final Production[] productions;
 
-    private final Set<String> terminal;
-
-    private final Map<String, Integer> symbolIdMap;
-    private final String[] symbols;
+    private final List<Integer> terminal;
+    private final List<Integer> nonTerminal;
+    private final List<String> symbols;
 
     /**
      * 文法目标
      */
-    private final String target;
+    private final Integer target;
 
     private final String name;
+    private Integer emptyTerminal;
+    private Integer endTerminal;
 
 
-    public GrammarConfigImpl(Map<String, Set<Production>> productionsTable, String target, Set<String> terminal, String name) {
-        this.productionsTable = productionsTable;
+    public GrammarConfigImpl(Production[] productions, Integer target, List<Integer> terminal, List<Integer> nonTerminal, List<String> symbols, String name) {
         this.target = target;
-        this.terminal = terminal.stream().collect(Collectors.toUnmodifiableSet());
+        this.terminal = terminal;
+        this.nonTerminal = nonTerminal;
         this.name = name;
+        this.symbols = symbols;
+        this.productions = productions;
+        this.productionIdMap = IntStream.range(0, productions.length).boxed().collect(Collectors.toMap(i -> productions[i], i -> i));
+        List<Integer> emptyTerminals = terminal.stream().filter(o -> symbols.get(o).equals("")).collect(Collectors.toList());
+        if (emptyTerminals.size() != 1) {
+            throw new RuntimeException("终结符中缺少 empty");
+        }
+        this.emptyTerminal = emptyTerminals.get(0);
 
-        productions = productionsTable.values().stream()
-                .flatMap(Collection::stream).toArray(Production[]::new);
-        productionIdMap = IntStream.range(0, productions.length).boxed().collect(Collectors.toMap(i -> productions[i], i -> i));
-
-
-        final List<String> symbolList = productionsTable.values()
-                .stream()
-                .flatMap(Collection::stream)
-                .map(Production::leftSymbol)
-                .distinct()
-                .collect(Collectors.toList());
-        symbolList.addAll(terminal);
-        symbols = symbolList.toArray(new String[0]);
-        symbolIdMap = IntStream.range(0, symbols.length).boxed().collect(Collectors.toMap(i -> symbols[i], i -> i));
-
-        checkGrammar();
+        List<Integer> endTerminals = terminal.stream().filter(o -> symbols.get(o).equals(Token.END)).collect(Collectors.toList());
+        if (endTerminals.size() != 1) {
+            throw new RuntimeException("终结符中缺少 end");
+        }
+        this.endTerminal = endTerminals.get(0);
     }
 
-    private void checkGrammar() {
-        // 检验是否为产生式右边只能包含非终结符和终结符
-        final Set<String> symbolsSet = Arrays.stream(symbols).collect(Collectors.toSet());
-        productionsTable.values()
-                .stream()
-                .flatMap(Collection::stream)
-                .forEach(production -> {
-                    if (production.rightSymbol().stream().anyMatch(o -> !symbolsSet.contains(o))) {
-                        throw new RuntimeException("[%s] contain unknown symbol".formatted(production.toString()));
-                    }
-                });
-    }
 
     @Override
     public String name() {
@@ -74,17 +63,18 @@ public class GrammarConfigImpl implements GrammarConfig {
     }
 
     @Override
-    public Set<String> allTerminal() {
-        return terminal;
+    public Set<Integer> allTerminal() {
+        return new HashSet<>(terminal);
     }
 
     @Override
-    public Set<String> allNotTerminal() {
-        return productionsTable.values()
-                .stream()
-                .flatMap(Collection::stream)
-                .map(Production::leftSymbol)
-                .collect(Collectors.toSet());
+    public Set<Integer> allNotTerminal() {
+        return new HashSet<>(nonTerminal);
+    }
+
+    @Override
+    public List<String> symbol() {
+        return symbols;
     }
 
     @Override
@@ -93,18 +83,18 @@ public class GrammarConfigImpl implements GrammarConfig {
     }
 
     @Override
-    public Set<Production> allProduction(String left) {
-        return productionsTable.get(left).stream().collect(Collectors.toUnmodifiableSet());
+    public Integer target() {
+        return target;
     }
 
     @Override
-    public Integer symbolId(String symbol) {
-        return symbolIdMap.get(symbol);
+    public boolean isTerminal(Integer symbol) {
+        return terminal.contains(symbol);
     }
 
     @Override
-    public Map<String, Integer> symbolIdMap() {
-        return symbolIdMap;
+    public Set<Production> allProduction(Integer left) {
+        return Arrays.stream(productions).filter(production -> production.leftSymbol().equals(left)).collect(Collectors.toSet());
     }
 
     @Override
@@ -118,17 +108,12 @@ public class GrammarConfigImpl implements GrammarConfig {
     }
 
     @Override
-    public String[] allSymbol() {
-        return symbols;
+    public Integer emptyTerminal() {
+        return emptyTerminal;
     }
 
     @Override
-    public String target() {
-        return target;
-    }
-
-    @Override
-    public boolean isTerminal(String symbol) {
-        return terminal.contains(symbol);
+    public Integer endTerminal() {
+        return endTerminal;
     }
 }

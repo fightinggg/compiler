@@ -1,7 +1,8 @@
 package com.example.lexical;
 
 public interface Token {
-    public static final String END = "$END";
+    String END = "$END";
+    String EMPTY = "";
 
     String type();
 

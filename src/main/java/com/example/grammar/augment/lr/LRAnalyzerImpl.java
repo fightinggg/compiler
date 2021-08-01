@@ -40,7 +40,7 @@ public class LRAnalyzerImpl implements LRAnalyzer {
                 Collections.reverse(pops);
                 Integer[] currentGoto = lrTable.getGotoTable()[stack.peek().getState()];
 
-                stack.push(new StackNode(currentGoto[lrTable.getSymbolId().get(production.leftSymbol())], new SyntaxTree.Node(token, production, pops)));
+                stack.push(new StackNode(currentGoto[production.leftSymbol()], new SyntaxTree.Node(token, production, pops)));
                 //System.out.println(stack + " find " + token.raw() + "pop some and push "
                 //        + currentGoto.get(production.leftSymbol()));
                 //System.out.println(production);

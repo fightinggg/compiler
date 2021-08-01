@@ -17,12 +17,14 @@ public interface GrammarConfig {
     /**
      * 1. 终结符集合
      */
-    Set<String> allTerminal();
+    Set<Integer> allTerminal();
 
     /**
      * 2. 非终结符集合
      */
-    Set<String> allNotTerminal();
+    Set<Integer> allNotTerminal();
+
+    List<String> symbol();
 
     /**
      * 3. 产生式集合
@@ -33,22 +35,22 @@ public interface GrammarConfig {
     /**
      * 4. 目标
      */
-    String target();
+    Integer target();
 
     /**
      * 辅助
      */
-    boolean isTerminal(String symbol);
+    boolean isTerminal(Integer symbol);
 
-    Set<Production> allProduction(String left);
-
-    Integer symbolId(String symbol);
-
-    Map<String, Integer> symbolIdMap();
+    Set<Production> allProduction(Integer left);
 
     Integer productionId(Production production);
 
     Map<Production, Integer> productionIdMap();
 
-    String[] allSymbol();
+    Integer emptyTerminal();
+
+    Integer endTerminal();
+
+
 }

@@ -9,40 +9,40 @@ import java.util.stream.Collectors;
 
 @EqualsAndHashCode
 public class ProductionImpl implements Production {
-    private final String left;
-    private final List<String> right;
+    private final Integer left;
+    private final List<Integer> right;
+    private final String raw;
 
-
-    public ProductionImpl(String productionString) {
-        this(productionString.split("->")[0].strip(),
-                Arrays.stream(productionString.split("->")[1].split(" ")).filter(o -> !o.isBlank()).toList());
-    }
 
     public ProductionImpl(Production production) {
-        this.left = production.leftSymbol();
-        // 不可变对象
-        this.right = production.rightSymbol();
+        this(production.leftSymbol(), production.rightSymbol(), production.raw());
     }
 
-    public ProductionImpl(String left, List<String> right) {
+    public ProductionImpl(Integer left, List<Integer> right, String raw) {
         this.left = left;
         // 不可变对象
         this.right = right.stream().toList();
+        this.raw = raw;
     }
 
 
     @Override
-    public String leftSymbol() {
+    public Integer leftSymbol() {
         return left;
     }
 
     @Override
-    public List<String> rightSymbol() {
+    public List<Integer> rightSymbol() {
         return right;
     }
 
     @Override
+    public String raw() {
+        return raw;
+    }
+
+    @Override
     public String toString() {
-        return left + " -> " + String.join(" ", right);
+        return raw;
     }
 }

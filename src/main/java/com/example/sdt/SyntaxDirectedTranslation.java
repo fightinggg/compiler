@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class SyntaxDirectedTranslation {
     private static void translation(SyntaxTree.Node node,
                                     Map<SyntaxTree.Node, Map<String, Object>> res,
-                                    Map<Production, BiConsumer<Map<String, Object>, List<Map<String, Object>>>> innerNodeConfig,
+                                    Map<String, BiConsumer<Map<String, Object>, List<Map<String, Object>>>> innerNodeConfig,
                                     Map<String, BiConsumer<Map<String, Object>, Token>> leafConfig) {
         res.put(node, new HashMap<>());
         List<SyntaxTree.Node> sonList = node.getSon();
@@ -31,7 +31,7 @@ public class SyntaxDirectedTranslation {
         } else {
             // innerNode
             sonList.forEach(son -> translation(son, res, innerNodeConfig, leafConfig));
-            BiConsumer<Map<String, Object>, List<Map<String, Object>>> innerNodeConsumer = innerNodeConfig.get(node.getProduction());
+            BiConsumer<Map<String, Object>, List<Map<String, Object>>> innerNodeConsumer = innerNodeConfig.get(node.getProduction().raw());
             if (innerNodeConsumer == null) {
                 throw new RuntimeException("production [%s] could not found sdt function".formatted(node.getProduction()));
             }
@@ -41,7 +41,7 @@ public class SyntaxDirectedTranslation {
 
     public static Nfa<Object, String> translation(
             SyntaxTree syntaxTree,
-            Map<Production, BiConsumer<Map<String, Object>, List<Map<String, Object>>>> innerNodeConfig,
+            Map<String, BiConsumer<Map<String, Object>, List<Map<String, Object>>>> innerNodeConfig,
             Map<String, BiConsumer<Map<String, Object>, Token>> leafConfig) {
         Map<SyntaxTree.Node, Map<String, Object>> res = new HashMap<>();
         translation(syntaxTree.getRoot(), res, innerNodeConfig, leafConfig);

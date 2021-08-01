@@ -9,7 +9,9 @@ import java.util.List;
  * @author wsx
  */
 public interface Production {
-    String leftSymbol();
+    Integer leftSymbol();
 
-    List<String> rightSymbol();
+    List<Integer> rightSymbol();
+
+    String raw();
 }

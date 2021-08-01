@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+// https://dreampuf.github.io/GraphvizOnline/
+
 public class CppTest {
 
     @Test
@@ -53,24 +55,26 @@ public class CppTest {
     @Test
     public void mulOrDelOrModExpressionSeqtest() {
         String code = """
-                    int main(){
-                        int a = 1 * c * 1 / 2 % 1 *2 %1;
-                    }
+                int main(){
+                    int a = 1 * c * 1 / 2 % 1 *2 %1;
+                }
                 """;
         test(code, "mulOrDelOrModExpressionSeqtest");
     }
 
 
+    /**
+     * 测试失败，因为不是slr文法
+     */
     @Test
     public void addOrSubExpressionSeqtest() {
         String code = """
-                    int main(){
-                        int a = 1*2+3*4*4+1-2/2-3%3;
-                    }
+                int main(){
+                    int a = 1*2+3*4*4+1-2/2-3%3;
+                }
                 """;
         test(code, "addOrSubExpressionSeqtest");
     }
-
 
     private void test(String code, String tag) {
         // 1. 获取词法和文法配置

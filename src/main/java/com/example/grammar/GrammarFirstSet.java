@@ -15,25 +15,26 @@ public class GrammarFirstSet {
      * @param grammarConfig 文法
      * @return first集
      */
-    public static Map<String, Set<String>> firstSet(GrammarConfig grammarConfig) {
+    public static Map<Integer, Set<Integer>> firstSet(GrammarConfig grammarConfig) {
         // 获取产生式集合
         Set<Production> productions = Arrays.stream(grammarConfig.allProduction()).collect(Collectors.toUnmodifiableSet());
 
         // 寻找可以为空的非终极符
-        Set<String> emptySet = GrammarEmptySet.emptySet(grammarConfig);
+        Set<Integer> emptySet = GrammarEmptySet.emptySet(grammarConfig);
+
 
         // 空first入队
-        Queue<Map.Entry<String, String>> firstSetQueue = emptySet.stream().map(o -> Map.entry(o, "")).distinct().collect(Collectors.toCollection(ArrayDeque::new));
+        Queue<Map.Entry<Integer, Integer>> firstSetQueue = emptySet.stream().map(o -> Map.entry(o, grammarConfig.emptyTerminal())).distinct().collect(Collectors.toCollection(ArrayDeque::new));
 
         // 终结符入队
-        Set<String> allTerminal = grammarConfig.allTerminal();
+        Set<Integer> allTerminal = grammarConfig.allTerminal();
         firstSetQueue.addAll(allTerminal.stream().map(o -> Map.entry(o, o)).collect(Collectors.toSet()));
 
-        List<Map.Entry<String, String>> allDepends = productions.stream()
+        List<Map.Entry<Integer, Integer>> allDepends = productions.stream()
                 .filter(o -> !o.rightSymbol().isEmpty())
                 .flatMap(o -> {
-                    List<String> strings = o.rightSymbol();
-                    Set<Map.Entry<String, String>> depends = new HashSet<>();
+                    List<Integer> strings = o.rightSymbol();
+                    Set<Map.Entry<Integer, Integer>> depends = new HashSet<>();
                     depends.add(Map.entry(o.leftSymbol(), strings.get(0)));
                     for (int i = 0; i < strings.size() - 1; i++) {
                         if (emptySet.contains(strings.get(i))) {
@@ -47,16 +48,16 @@ public class GrammarFirstSet {
                 .collect(Collectors.toList());
 
         // 逆向构造依赖图
-        Map<String, List<Map.Entry<String, String>>> dependsBy = allDepends.stream().collect(Collectors.groupingBy(Map.Entry::getValue));
+        Map<Integer, List<Map.Entry<Integer, Integer>>> dependsBy = allDepends.stream().collect(Collectors.groupingBy(Map.Entry::getValue));
 
         // first集
-        Map<String, Set<String>> firstSet = new HashMap<>();
+        Map<Integer, Set<Integer>> firstSet = new HashMap<>();
 
         // 依赖松弛
         while (!firstSetQueue.isEmpty()) {
             // k 为 非终结符
             // v 为 first集中的一个
-            Map.Entry<String, String> release = firstSetQueue.poll();
+            Map.Entry<Integer, Integer> release = firstSetQueue.poll();
             dependsBy.getOrDefault(release.getKey(), new ArrayList<>())
                     .forEach(dependsKv -> {
                         firstSet.putIfAbsent(dependsKv.getKey(), new HashSet<>());
@@ -66,8 +67,9 @@ public class GrammarFirstSet {
                     });
         }
 
+        // TODO
         emptySet.forEach(o -> firstSet.putIfAbsent(o, new HashSet<>()));
-        emptySet.forEach(o -> firstSet.get(o).add(""));
+        emptySet.forEach(o -> firstSet.get(o).add(grammarConfig.emptyTerminal()));
         allTerminal.forEach(o -> firstSet.putIfAbsent(o, new HashSet<>()));
         allTerminal.forEach(o -> firstSet.get(o).add(o));
 

@@ -34,21 +34,21 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
 
     @Override
     public LRTable analyze(GrammarConfig grammarConfig) {
-        Map<String, Set<String>> followSet = GrammarFollowSet.followSet(grammarConfig);
+        Map<Integer, Set<Integer>> followSet = GrammarFollowSet.followSet(grammarConfig);
         final String followSetTxt = followSet.entrySet().stream()
                 .map(kv -> kv.getKey() + " -> " + String.join(" , ", JSON.toJSONString(kv.getValue())))
                 .collect(Collectors.joining("\n"));
         FileUtils.writeFile("target/%s-followset.txt".formatted(grammarConfig.name()), followSetTxt);
 
         // 1.
-        Map<Set<SLRAugmentProduction>, Map<String, Set<SLRAugmentProduction>>> itemSetDfa = SLRAugmentProductionItem.itemSetDfa(grammarConfig);
+        Map<Set<SLRAugmentProduction>, Map<Integer, Set<SLRAugmentProduction>>> itemSetDfa = SLRAugmentProductionItem.itemSetDfa(grammarConfig);
         List<Set<SLRAugmentProduction>> itemSetList = itemSetDfa.keySet().stream().toList();
         Map<Set<SLRAugmentProduction>, Integer> itemId = IntStream.range(0, itemSetDfa.size())
                 .mapToObj(i -> Map.entry(itemSetList.get(i), i))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         int row = itemSetDfa.size();
-        int col = grammarConfig.symbolIdMap().size();
+        int col = grammarConfig.symbol().size();
         Integer[][] gotoTable = new Integer[row][col];
         Set<LRTable.Action>[][] actionTable = new Set[row][col];
         for (int i = 0; i < row; i++) {
@@ -66,22 +66,21 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
 
             itemSet.forEach(slrAugmentProduction -> {
                 int pos = slrAugmentProduction.pos();
-                String leftSymbol = slrAugmentProduction.leftSymbol();
-                List<String> rightSymbol = slrAugmentProduction.rightSymbol();
+                Integer leftSymbol = slrAugmentProduction.leftSymbol();
+                List<Integer> rightSymbol = slrAugmentProduction.rightSymbol();
 
                 if (pos != rightSymbol.size() && grammarConfig.isTerminal(rightSymbol.get(pos))) {
                     // ①
-                    String terminal = rightSymbol.get(pos);
-                    Integer terminalId = grammarConfig.symbolId(terminal);
+                    Integer terminal = rightSymbol.get(pos);
                     LRTable.Action action = new LRTable.Action("s", itemId.get(trans.get(terminal)));
-                    actionTable[currentId][terminalId].add(action);
+                    actionTable[currentId][terminal].add(action);
                 } else if (pos == rightSymbol.size() && !leftSymbol.equals(grammarConfig.target())) {
                     // ②
                     LRTable.Action action = new LRTable.Action("r", grammarConfig.productionId(new ProductionImpl(slrAugmentProduction)));
-                    followSet.get(leftSymbol).stream().filter(o -> !o.equals("")).map(grammarConfig::symbolId).forEach(o -> actionTable[currentId][o].add(action));
+                    followSet.get(leftSymbol).stream().filter(o -> !o.equals(grammarConfig.emptyTerminal())).forEach(o -> actionTable[currentId][o].add(action));
                 } else if (pos == rightSymbol.size() && leftSymbol.equals(grammarConfig.target())) {
                     // ③
-                    actionTable[currentId][grammarConfig.symbolId(Token.END)].add(new LRTable.Action(LRTable.Action.ACC, 0));
+                    actionTable[currentId][grammarConfig.endTerminal()].add(new LRTable.Action(LRTable.Action.ACC, 0));
                 }
             });
         });
@@ -92,7 +91,7 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
 
             trans.keySet().stream()
                     .filter(o -> !grammarConfig.isTerminal(o))
-                    .forEach(nonTerminal -> gotoTable[currentId][grammarConfig.symbolId(nonTerminal)] = itemId.get(trans.get(nonTerminal)));
+                    .forEach(nonTerminal -> gotoTable[currentId][nonTerminal] = itemId.get(trans.get(nonTerminal)));
         });
 
 
@@ -103,7 +102,7 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
         // 复写gotoTable
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
-                if (!grammarConfig.isTerminal(grammarConfig.allSymbol()[j])) {
+                if (!grammarConfig.isTerminal(j)) {
                     String goTo = gotoTable[i][j] == null ? "" : gotoTable[i][j].toString();
                     table.get(i).set(j, goTo);
                 }
@@ -111,7 +110,7 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
         }
         List<List<String>> productionListTable = Arrays.stream(grammarConfig.allProduction()).map(Objects::toString).map(List::of).toList();
         FileUtils.writeFile("target/%s-production.tsv".formatted(grammarConfig.name()), TableUtils.tableToString(productionListTable, null, null));
-        FileUtils.writeFile("target/%s-slrtable.tsv".formatted(grammarConfig.name()), TableUtils.tableToString(table, null, Arrays.asList(grammarConfig.allSymbol())));
+        FileUtils.writeFile("target/%s-slrtable.tsv".formatted(grammarConfig.name()), TableUtils.tableToString(table, null, grammarConfig.symbol()));
 
 
         LRTable.Action[][] simpleActionTable = new LRTable.Action[row][col];
@@ -126,6 +125,6 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
         }
 
 
-        return new LRTable(gotoTable, simpleActionTable, grammarConfig.allProduction(), grammarConfig.allSymbol(), itemId.get(SLRAugmentProductionItem.begin(grammarConfig)));
+        return new LRTable(gotoTable, simpleActionTable, grammarConfig.allProduction(), grammarConfig.symbol().toArray(new String[0]), itemId.get(SLRAugmentProductionItem.begin(grammarConfig)));
     }
 }
