@@ -1,11 +1,13 @@
 package com.example.grammar.augment.lr.slr;
 
 import com.alibaba.fastjson.JSON;
+import com.example.grammar.GrammarConfig;
 import com.example.grammar.Production;
 import com.example.grammar.ProductionImpl;
 import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,31 +20,24 @@ public class SLRAugmentProductionImpl extends ProductionImpl implements SLRAugme
     }
 
     public SLRAugmentProductionImpl(Production production, int pos) {
-        this(production.leftSymbol(), production.rightSymbol(), pos, production.raw());
+        this(production.leftSymbol(), production.rightSymbol(), pos, production.grammarConfig());
     }
 
-    public SLRAugmentProductionImpl(Integer left, List<Integer> right, String raw) {
-        this(left, right, 0, raw);
-    }
-
-
-    public SLRAugmentProductionImpl(Integer left, List<Integer> right, int pos, String raw) {
-        super(left, right, raw);
+    public SLRAugmentProductionImpl(Integer left, List<Integer> right, int pos, GrammarConfig grammarConfig) {
+        super(left, right, grammarConfig);
         this.pos = pos;
     }
-
 
     @Override
     public int pos() {
         return pos;
     }
 
-
     @Override
     public String toString() {
-        List<String> strings = new ArrayList<>(rightSymbol()).stream().map(Object::toString).collect(Collectors.toList());
+        List<String> strings = rightSymbol().stream().map(grammarConfig().symbol()::get).collect(Collectors.toList());
         strings.add(pos, "·");
         String s = JSON.toJSONString(String.join(" ", strings));
-        return "%s -> %s".formatted(leftSymbol(), s.substring(1, s.length() - 1));
+        return "%s -> %s".formatted(raw().split("->")[0], s.substring(1, s.length() - 1));
     }
 }

@@ -11,20 +11,21 @@ import java.util.stream.Collectors;
 public class ProductionImpl implements Production {
     private final Integer left;
     private final List<Integer> right;
-    private final String raw;
+
+    @EqualsAndHashCode.Exclude
+    private final GrammarConfig grammarConfig;
 
 
     public ProductionImpl(Production production) {
-        this(production.leftSymbol(), production.rightSymbol(), production.raw());
+        this(production.leftSymbol(), production.rightSymbol(), production.grammarConfig());
     }
 
-    public ProductionImpl(Integer left, List<Integer> right, String raw) {
+    public ProductionImpl(Integer left, List<Integer> right, GrammarConfig grammarConfig) {
         this.left = left;
         // 不可变对象
         this.right = right.stream().toList();
-        this.raw = raw;
+        this.grammarConfig = grammarConfig;
     }
-
 
     @Override
     public Integer leftSymbol() {
@@ -38,11 +39,16 @@ public class ProductionImpl implements Production {
 
     @Override
     public String raw() {
-        return raw;
+        return "%s -> %s".formatted(grammarConfig.symbol().get(left), right.stream().map(grammarConfig.symbol()::get).collect(Collectors.joining(" ")));
+    }
+
+    @Override
+    public GrammarConfig grammarConfig() {
+        return grammarConfig;
     }
 
     @Override
     public String toString() {
-        return raw;
+        return raw();
     }
 }

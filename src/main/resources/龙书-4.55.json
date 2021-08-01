@@ -1,0 +1,23 @@
+{
+  "tokens": [
+    {"c": "c"},
+    {"d": "d"}
+  ],
+  "productionsTable": {
+    "S": [
+      "C C"
+    ],
+    "C": [
+      "c C",
+      "d"
+    ],
+    "target": [
+      "S"
+    ]
+  },
+  "target": "target",
+  "blankToken": "blank",
+  "keys": [
+  ],
+  "name": "龙书-4.55"
+}

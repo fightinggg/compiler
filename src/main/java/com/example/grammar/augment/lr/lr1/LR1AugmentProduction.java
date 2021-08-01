@@ -8,4 +8,5 @@ public interface LR1AugmentProduction extends Production {
     int pos();
 
     List<Integer> next();
+
 }

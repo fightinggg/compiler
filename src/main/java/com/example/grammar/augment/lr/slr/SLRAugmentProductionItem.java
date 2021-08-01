@@ -52,12 +52,7 @@ public class SLRAugmentProductionItem {
 
         Stack<Set<SLRAugmentProduction>> stack = new Stack<>();
 
-        List<SLRAugmentProduction> begin = grammarConfig.allProduction(grammarConfig.target())
-                .stream()
-                .map(SLRAugmentProductionImpl::new)
-                .collect(Collectors.toList());
-
-        stack.push(closure(grammarConfig, begin));
+        stack.push(begin(grammarConfig));
 
         while (!stack.empty()) {
             Set<SLRAugmentProduction> top = stack.pop();

@@ -14,4 +14,6 @@ public interface Production {
     List<Integer> rightSymbol();
 
     String raw();
+
+    GrammarConfig grammarConfig();
 }

@@ -1,10 +1,11 @@
-package com.example.grammar.augment.lr.slr;
+package com.example.grammar.augment.lr.lr1;
 
 import com.example.grammar.GrammarConfig;
 import com.example.grammar.GrammarFollowSet;
 import com.example.grammar.ProductionImpl;
 import com.example.grammar.augment.lr.LRTable;
 import com.example.grammar.augment.lr.LRTableAnalyzer;
+import com.example.lexical.Token;
 import com.example.utils.TableUtils;
 import com.example.visiable.ProductionItemSetVisiable;
 import com.example.visiable.FileUtils;
@@ -26,7 +27,7 @@ import java.util.stream.IntStream;
  * 4. 剩下的地方就是报错<br/>
  * 5. 起点是[S'->·S]<br/>
  */
-public class SLRTableAnalyzer implements LRTableAnalyzer {
+public class LR1TableAnalyzer implements LRTableAnalyzer {
 
     @Override
     public LRTable analyze(GrammarConfig grammarConfig) {
@@ -40,9 +41,9 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
         FileUtils.writeFile("target/%s-followset.txt".formatted(grammarConfig.name()), followSetTxt);
 
         // 1.
-        Map<Set<SLRAugmentProduction>, Map<Integer, Set<SLRAugmentProduction>>> itemSetDfa = SLRAugmentProductionItem.itemSetDfa(grammarConfig);
-        List<Set<SLRAugmentProduction>> itemSetList = itemSetDfa.keySet().stream().toList();
-        Map<Set<SLRAugmentProduction>, Integer> itemId = IntStream.range(0, itemSetDfa.size())
+        Map<Set<LR1AugmentProduction>, Map<Integer, Set<LR1AugmentProduction>>> itemSetDfa = LR1AugmentProductionItem.itemSetDfa(grammarConfig);
+        List<Set<LR1AugmentProduction>> itemSetList = itemSetDfa.keySet().stream().toList();
+        Map<Set<LR1AugmentProduction>, Integer> itemId = IntStream.range(0, itemSetDfa.size())
                 .mapToObj(i -> Map.entry(itemSetList.get(i), i))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
@@ -56,17 +57,17 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
             }
         }
 
-        FileUtils.writeFile("target/%s-slr-itemset.dot".formatted(grammarConfig.name()), ProductionItemSetVisiable.toDot(itemSetDfa, itemId, grammarConfig));
-        FileUtils.writeFile("target/%s-slr-itemset.txt".formatted(grammarConfig.name()), ProductionItemSetVisiable.toTxt(itemSetDfa, itemId));
+        FileUtils.writeFile("target/%s-lr1-itemset.dot".formatted(grammarConfig.name()), ProductionItemSetVisiable.toDot(itemSetDfa, itemId,grammarConfig));
+        FileUtils.writeFile("target/%s-lr1-itemset.txt".formatted(grammarConfig.name()), ProductionItemSetVisiable.toTxt(itemSetDfa, itemId));
 
         // 2.
         itemSetDfa.forEach((itemSet, trans) -> {
             Integer currentId = itemId.get(itemSet);
 
-            itemSet.forEach(slrAugmentProduction -> {
-                int pos = slrAugmentProduction.pos();
-                Integer leftSymbol = slrAugmentProduction.leftSymbol();
-                List<Integer> rightSymbol = slrAugmentProduction.rightSymbol();
+            itemSet.forEach(lr1AugmentProduction -> {
+                int pos = lr1AugmentProduction.pos();
+                Integer leftSymbol = lr1AugmentProduction.leftSymbol();
+                List<Integer> rightSymbol = lr1AugmentProduction.rightSymbol();
 
                 if (pos != rightSymbol.size() && grammarConfig.isTerminal(rightSymbol.get(pos))) {
                     // ①
@@ -75,9 +76,10 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
                     actionTable[currentId][terminal].add(action);
                 } else if (pos == rightSymbol.size() && !leftSymbol.equals(grammarConfig.target())) {
                     // ②
-                    LRTable.Action action = new LRTable.Action("r", grammarConfig.productionId(new ProductionImpl(slrAugmentProduction)));
-                    followSet.get(leftSymbol).stream().filter(o -> !o.equals(grammarConfig.emptyTerminal())).forEach(o -> actionTable[currentId][o].add(action));
-                } else if (pos == rightSymbol.size() && leftSymbol.equals(grammarConfig.target())) {
+                    LRTable.Action action = new LRTable.Action("r", grammarConfig.productionId(new ProductionImpl(lr1AugmentProduction)));
+                    // 这一行和slr不一样了， slr是选择所有的followset
+                    lr1AugmentProduction.next().stream().filter(o -> !o.equals(grammarConfig.emptyTerminal())).forEach(o -> actionTable[currentId][o].add(action));
+                } else if (pos == rightSymbol.size() && leftSymbol.equals(grammarConfig.target()) && lr1AugmentProduction.next().contains(grammarConfig.endTerminal())) {
                     // ③
                     actionTable[currentId][grammarConfig.endTerminal()].add(new LRTable.Action(LRTable.Action.ACC, 0));
                 }
@@ -109,21 +111,31 @@ public class SLRTableAnalyzer implements LRTableAnalyzer {
         }
         List<List<String>> productionListTable = Arrays.stream(grammarConfig.allProduction()).map(Objects::toString).map(List::of).toList();
         FileUtils.writeFile("target/%s-production.tsv".formatted(grammarConfig.name()), TableUtils.tableToString(productionListTable, null, null));
-        FileUtils.writeFile("target/%s-slrtable.tsv".formatted(grammarConfig.name()), TableUtils.tableToString(table, null, symbol));
+        FileUtils.writeFile("target/%s-lr1table.tsv".formatted(grammarConfig.name()), TableUtils.tableToString(table, null, symbol));
 
 
         LRTable.Action[][] simpleActionTable = new LRTable.Action[row][col];
+
+        boolean conflict = false;
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
                 if (actionTable[i][j].size() > 1) {
-                    throw new RuntimeException("grammar %s is not slr grammar".formatted(grammarConfig.name()));
+                    conflict = true;
+                    System.out.printf(
+                            "state %3d  + %10s Conflict: %s%n"
+                            , i
+                            , grammarConfig.symbol().get(j)
+                            , actionTable[i][j].stream().map(Objects::toString).collect(Collectors.joining(" ")));
                 } else if (actionTable[i][j].size() == 1) {
                     simpleActionTable[i][j] = actionTable[i][j].iterator().next();
                 }
             }
         }
+        if (conflict) {
+            throw new RuntimeException("grammar %s is not lr1 grammar".formatted(grammarConfig.name()));
+        }
 
 
-        return new LRTable(gotoTable, simpleActionTable, grammarConfig.allProduction(), symbol.toArray(new String[0]), itemId.get(SLRAugmentProductionItem.begin(grammarConfig)));
+        return new LRTable(gotoTable, simpleActionTable, grammarConfig.allProduction(), symbol.toArray(new String[0]), itemId.get(LR1AugmentProductionItem.begin(grammarConfig)));
     }
 }

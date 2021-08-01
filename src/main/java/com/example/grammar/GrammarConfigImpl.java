@@ -1,6 +1,8 @@
 package com.example.grammar;
 
 import com.example.lexical.Token;
+import jdk.jfr.DataAmount;
+import lombok.Data;
 
 import java.util.*;
 import java.util.function.Function;
@@ -13,47 +15,30 @@ import java.util.stream.IntStream;
  *
  * @author wsx
  */
+@Data
 public class GrammarConfigImpl implements GrammarConfig {
     /**
      * 产生式集合
      */
 
-    private final Map<Production, Integer> productionIdMap;
-    private final Production[] productions;
+    private Map<Production, Integer> productionIdMap;
+    private Production[] productions;
 
-    private final List<Integer> terminal;
-    private final List<Integer> nonTerminal;
-    private final List<String> symbols;
+    private List<Integer> terminal;
+    private List<Integer> nonTerminal;
+    private List<String> symbols;
 
     /**
      * 文法目标
      */
-    private final Integer target;
+    private Integer target;
 
-    private final String name;
+    private String name;
     private Integer emptyTerminal;
     private Integer endTerminal;
 
 
-    public GrammarConfigImpl(Production[] productions, Integer target, List<Integer> terminal, List<Integer> nonTerminal, List<String> symbols, String name) {
-        this.target = target;
-        this.terminal = terminal;
-        this.nonTerminal = nonTerminal;
-        this.name = name;
-        this.symbols = symbols;
-        this.productions = productions;
-        this.productionIdMap = IntStream.range(0, productions.length).boxed().collect(Collectors.toMap(i -> productions[i], i -> i));
-        List<Integer> emptyTerminals = terminal.stream().filter(o -> symbols.get(o).equals("")).collect(Collectors.toList());
-        if (emptyTerminals.size() != 1) {
-            throw new RuntimeException("终结符中缺少 empty");
-        }
-        this.emptyTerminal = emptyTerminals.get(0);
-
-        List<Integer> endTerminals = terminal.stream().filter(o -> symbols.get(o).equals(Token.END)).collect(Collectors.toList());
-        if (endTerminals.size() != 1) {
-            throw new RuntimeException("终结符中缺少 end");
-        }
-        this.endTerminal = endTerminals.get(0);
+    public GrammarConfigImpl() {
     }
 
 

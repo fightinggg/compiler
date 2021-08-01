@@ -21,13 +21,13 @@ import java.util.stream.Stream;
  */
 public class GrammarReader {
 
-    static Production string2Production(String from, String to, Map<String, Integer> symbolId) {
+    static Production string2Production(String from, String to, Map<String, Integer> symbolId, GrammarConfig grammarConfig) {
         Integer left = symbolId.get(from);
         List<Integer> right = Arrays.stream(to.split(" "))
                 .filter(symbol -> !symbol.isBlank())
                 .map(symbolId::get)
                 .collect(Collectors.toList());
-        return new ProductionImpl(left, right, from + " -> " + to);
+        return new ProductionImpl(left, right, grammarConfig);
     }
 
     public static GrammarConfigImpl read(String path, String tag) {
@@ -55,18 +55,35 @@ public class GrammarReader {
                 .map(i -> Map.entry(symbols.get(i), i))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        Production[] productions = languageConfig.getProductionsTable().entrySet()
+
+        GrammarConfigImpl grammarConfig = new GrammarConfigImpl();
+        grammarConfig.setTarget(symbolId.get(languageConfig.getTarget()));
+        grammarConfig.setTerminal(terminal.stream().map(symbolId::get).collect(Collectors.toList()));
+        grammarConfig.setNonTerminal(nonTerminal.stream().map(symbolId::get).collect(Collectors.toList()));
+        grammarConfig.setName(languageConfig.getName() + tag);
+        grammarConfig.setSymbols(symbols);
+
+        List<Integer> emptyTerminals = grammarConfig.getTerminal().stream().filter(o -> symbols.get(o).equals("")).collect(Collectors.toList());
+        if (emptyTerminals.size() != 1) {
+            throw new RuntimeException("终结符中缺少 empty");
+        }
+        grammarConfig.setEmptyTerminal(emptyTerminals.get(0));
+
+        List<Integer> endTerminals = grammarConfig.getTerminal().stream().filter(o -> symbols.get(o).equals(Token.END)).collect(Collectors.toList());
+        if (endTerminals.size() != 1) {
+            throw new RuntimeException("终结符中缺少 end");
+        }
+        grammarConfig.setEndTerminal(endTerminals.get(0));
+
+        grammarConfig.setProductions(languageConfig.getProductionsTable().entrySet()
                 .stream()
                 .flatMap(kv -> kv.getValue().stream().map(o -> Map.entry(kv.getKey(), o)))
-                .map(kv -> string2Production(kv.getKey(), kv.getValue(), symbolId))
-                .toArray(Production[]::new);
+                .map(kv -> string2Production(kv.getKey(), kv.getValue(), symbolId, grammarConfig))
+                .toArray(Production[]::new));
+        grammarConfig.setProductionIdMap(IntStream.range(0, grammarConfig.getProductions().length).boxed().collect(Collectors.toMap(i -> grammarConfig.getProductions()[i], i -> i)));
 
 
-        return new GrammarConfigImpl(productions,
-                symbolId.get(languageConfig.getTarget()),
-                terminal.stream().map(symbolId::get).collect(Collectors.toList()),
-                nonTerminal.stream().map(symbolId::get).collect(Collectors.toList()),
-                symbols,
-                languageConfig.getName() + tag);
+        return grammarConfig;
+
     }
 }
