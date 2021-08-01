@@ -2,8 +2,7 @@
   "tokens": [
     {"number": "0|[123456789]\\d*"},
     {"doubleQuotes": "\""},
-    {"angleLeftBracket": "<"},
-    {"angleRightBracket": ">"},
+
     {"blank": "\\s+"},
     {"leftCurlyBracket": "\\{"},
     {"rightCurlyBracket": "\\}"},
@@ -19,7 +18,16 @@
     {"sub": "\\-"},
     {"mul": "\\*"},
     {"div": "/"},
+    {"mod": "%"},
+    {"doubleEq": "=="},
     {"eq": "="},
+    {"ne": "!="},
+    {"leftShift": "<<"},
+    {"rightShift": ">>"},
+    {"be": ">="},
+    {"le": "<="},
+    {"bt": ">"},
+    {"lt": "<"},
     {"semicolon": ";"},
     {"symbol": "[_\\w][_\\w\\d]*"}
   ],
@@ -48,21 +56,68 @@
       "functionInvoke",
       "string"
     ],
-    "addOrSubExpression": [
-      "rightSymbol add rightSymbolUnit",
-      "rightSymbol sub rightSymbolUnit"
+    "mulOrDelOrModOperator": [
+      "mul",
+      "div",
+      "mod"
     ],
-    "mulOrDelExpression": [
-      "rightSymbolUnit mul rightSymbolUnit",
-      "rightSymbolUnit div rightSymbolUnit",
-      "mulOrDelExpression mul rightSymbolUnit",
-      "mulOrDelExpression div rightSymbolUnit",
-      "leftBracket rightSymbol rightBracket"
+    "mulOrDelOrModExpressionSeq": [
+      "rightSymbolUnit mulOrDelOrModOperator rightSymbolUnit",
+      "mulOrDelOrModExpressionSeq mulOrDelOrModOperator rightSymbolUnit"
+    ],
+    "addOrSubOperator": [
+      "add",
+      "sub"
+    ],
+    "addOrSubUnit": [
+      "rightSymbolUnit",
+      "mulOrDelOrModExpressionSeq"
+    ],
+    "addOrSubExpressionSeq": [
+      "addOrSubUnit addOrSubOperator addOrSubUnit",
+      "addOrSubExpressionSeq addOrSubOperator addOrSubUnit"
+    ],
+    "shiftOperator": [
+      "leftShift",
+      "rightShift"
+    ],
+    "shiftSeq": [
+      "rightSymbolUnit shiftOperator rightSymbolUnit",
+      "mulOrDelOrModExpressionSeq shiftOperator rightSymbolUnit",
+      "addOrSubExpressionSeq shiftOperator rightSymbolUnit",
+      "shiftSeq shiftOperator rightSymbolUnit"
+    ],
+    "btLtBeLeComparterOperator": [
+      "bt",
+      "lt",
+      "be",
+      "le"
+    ],
+    "btLtBeLeSeq": [
+      "rightSymbolUnit btLtBeLeComparterOperator rightSymbolUnit",
+      "mulOrDelOrModExpressionSeq btLtBeLeComparterOperator rightSymbolUnit",
+      "addOrSubExpressionSeq btLtBeLeComparterOperator rightSymbolUnit",
+      "shiftSeq btLtBeLeComparterOperator rightSymbolUnit",
+      "btLtBeLeSeq btLtBeLeComparterOperator rightSymbolUnit"
+    ],
+    "eqOrneOperator": [
+      "doubleEq",
+      "ne"
+    ],
+    "eqOrneSeq": [
+      "rightSymbolUnit eqOrneOperator rightSymbolUnit",
+      "mulOrDelOrModExpressionSeq eqOrneOperator rightSymbolUnit",
+      "addOrSubExpressionSeq eqOrneOperator rightSymbolUnit",
+      "shiftSeq eqOrneOperator rightSymbolUnit",
+      "btLtBeLeSeq eqOrneOperator rightSymbolUnit",
+      "eqOrneSeq eqOrneOperator rightSymbolUnit"
+    ],
+    "boolExpression": [
     ],
     "rightSymbol": [
       "rightSymbolUnit",
-      "addOrSubExpression",
-      "mulOrDelExpression"
+      "mulOrDelOrModExpressionSeq",
+      "addOrSubExpressionSeq"
     ],
     "symbolStatementSentence": [
       "type leftSymbol",

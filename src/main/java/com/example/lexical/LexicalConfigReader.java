@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class LexicalConfigReader {
-    public static LexicalConfig read(String path) {
+    public static LexicalConfig read(String path, String tag) {
         byte[] code;
         try (InputStream inputStream = LexicalConfigReader.class.getClassLoader().getResourceAsStream(path)) {
             assert inputStream != null;
@@ -38,7 +38,7 @@ public class LexicalConfigReader {
                 tokenMap,
                 tokenOrder,
                 languageConfig.getBlankToken(),
-                languageConfig.getName()
+                languageConfig.getName() + tag
         );
     }
 }

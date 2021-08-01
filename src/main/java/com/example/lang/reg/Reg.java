@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 public class Reg {
     public static Nfa<Object, String> parse(String code) {
         // 1. 获取词法和文法配置
-        LexicalConfig lexicalConfig = LexicalConfigReader.read("reg.json");
-        GrammarConfig grammarConfig = GrammarReader.read("reg.json");
+        LexicalConfig lexicalConfig = LexicalConfigReader.read("reg.json", "");
+        GrammarConfig grammarConfig = GrammarReader.read("reg.json", "");
 
         // 2. 根据文法构建SLR语法分析器
         LRTable lrTable = new SLRTableAnalyzer().analyze(grammarConfig);

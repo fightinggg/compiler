@@ -25,19 +25,17 @@ import java.util.Set;
 public class CompilerTests {
 
 
-
-
     @Test
     public void RegTest() {
 
         String code = "a|bc+de|f*(123)[456]?\\(\\)";
-        LexicalConfig lexicalConfig = LexicalConfigReader.read("reg.json");
+        LexicalConfig lexicalConfig = LexicalConfigReader.read("reg.json", "");
         LexicalAnalysis lexicalAnalysis = new RegLexicalAnalysisImpl();
         List<Token> tokes = lexicalAnalysis.parsing(code, lexicalConfig);
 //        System.out.println(JSON.toJSONString(tokes.stream().map(Object::toString).toList(),
 //                SerializerFeature.PrettyFormat));
 
-        GrammarConfig grammarConfig = GrammarReader.read("reg.json");
+        GrammarConfig grammarConfig = GrammarReader.read("reg.json", "");
         Map<String, Set<String>> followSet = GrammarFollowSet.followSet(grammarConfig);
 //        System.out.println(JSON.toJSONString(followSet, SerializerFeature.PrettyFormat));
 

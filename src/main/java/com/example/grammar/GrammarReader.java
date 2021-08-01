@@ -24,7 +24,7 @@ public class GrammarReader {
         }
     }
 
-    public static GrammarConfigImpl read(String path) {
+    public static GrammarConfigImpl read(String path, String tag) {
         byte[] code;
         try (InputStream inputStream = GrammarReader.class.getClassLoader().getResourceAsStream(path)) {
             assert inputStream != null;
@@ -47,6 +47,9 @@ public class GrammarReader {
 
         terminal.add(Token.END);
 
-        return new GrammarConfigImpl(productions, languageConfig.getTarget(), terminal, languageConfig.getName());
+        return new GrammarConfigImpl(productions,
+                languageConfig.getTarget(),
+                terminal,
+                languageConfig.getName() + tag);
     }
 }

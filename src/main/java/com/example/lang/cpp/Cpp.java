@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 public class Cpp {
     public static Nfa<Object, String> parse(String code) {
         // 1. 获取词法和文法配置
-        LexicalConfig lexicalConfig = LexicalConfigReader.read("cpp.json");
-        GrammarConfig grammarConfig = GrammarReader.read("cpp.json");
+        LexicalConfig lexicalConfig = LexicalConfigReader.read("cpp.json", "");
+        GrammarConfig grammarConfig = GrammarReader.read("cpp.json", "");
 
         // 2. 根据文法构建SLR语法分析器
         LRTable lrTable = new SLRTableAnalyzer().analyze(grammarConfig);

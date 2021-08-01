@@ -13,46 +13,77 @@ import com.example.visiable.SyntaxTreeVisiable;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class CppTest {
-    String cppCode = """
-            int main(){
-                int a = 1;
-                int d = a + b;
-                int e = d + 0;
-                String s = "abc";
-                int invoke = f1() + f2(1);
-                if ( a+b ){
-                     a = 1;
-                 }
-                 while( a+b){
-                      d = 2;
-                      c = 1;
-                 }
-                 for(int i=0;i;i=i+1){
-                     s = s + i;
-                 }
-                 
-                 for(int i=0;i;i=i+1) {
-                    while(i){
-                        b = c + 1;
-                    }
-                    a = a+1;
-                 }
-            }
-            """;
 
     @Test
-    public void cppTest() {
+    public void allTest() {
+        String code = """
+                int main(){
+                    int a = 1;
+                    int d = a + b;
+                    int e = d + 0;
+                    String s = "abc";
+                    int invoke = f1() + f2(1);
+                    if ( a+b ){
+                         a = 1;
+                     }
+                     while( a+b){
+                          d = 2;
+                          c = 1;
+                     }
+                     for(int i=0;i;i=i+1){
+                         s = s + i;
+                     }
+                     
+                     for(int i=0;i;i=i+1) {
+                        while(i){
+                            b = c + 1;
+                        }
+                        a = a+1;
+                     }
+                }
+                """;
+
+        test(code, "");
+    }
+
+    @Test
+    public void mulOrDelOrModExpressionSeqtest() {
+        String code = """
+                    int main(){
+                        int a = 1 * c * 1 / 2 % 1 *2 %1;
+                    }
+                """;
+        test(code, "mulOrDelOrModExpressionSeqtest");
+    }
+
+
+    @Test
+    public void addOrSubExpressionSeqtest() {
+        String code = """
+                    int main(){
+                        int a = 1*2+3*4*4+1-2/2-3%3;
+                    }
+                """;
+        test(code, "addOrSubExpressionSeqtest");
+    }
+
+
+    private void test(String code, String tag) {
         // 1. 获取词法和文法配置
-        LexicalConfig lexicalConfig = LexicalConfigReader.read("cpp.json");
-        GrammarConfig grammarConfig = GrammarReader.read("cpp.json");
+        LexicalConfig lexicalConfig = LexicalConfigReader.read("cpp.json", tag);
+        GrammarConfig grammarConfig = GrammarReader.read("cpp.json", tag);
 
         // 2. 根据文法构建SLR语法分析器
         LRTable lrTable = new SLRTableAnalyzer().analyze(grammarConfig);
 
         // 3. 执行词法分析
-        List<Token> tokes = new LexicalAnalysisImpl().parsing(cppCode, lexicalConfig);
+        List<Token> tokes = new LexicalAnalysisImpl().parsing(code, lexicalConfig);
+        FileUtils.writeFile("target/%s-tokens.txt".formatted(grammarConfig.name()),
+                tokes.stream().map(Objects::toString).collect(Collectors.joining("\n")));
 
         // 4. 执行语法分析
         final SyntaxTree syntaxTree = new LRAnalyzerImpl().analyze(lrTable, tokes);

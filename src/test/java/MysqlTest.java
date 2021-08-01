@@ -24,8 +24,8 @@ public class MysqlTest {
     @Test
     public void mysqlTest() {
         // 1. 获取词法和文法配置
-        LexicalConfig lexicalConfig = LexicalConfigReader.read("mysql.json");
-        GrammarConfig grammarConfig = GrammarReader.read("mysql.json");
+        LexicalConfig lexicalConfig = LexicalConfigReader.read("mysql.json", "");
+        GrammarConfig grammarConfig = GrammarReader.read("mysql.json", "");
 
         // 2. 根据文法构建SLR语法分析器
         LRTable lrTable = new SLRTableAnalyzer().analyze(grammarConfig);
@@ -41,5 +41,4 @@ public class MysqlTest {
         FileUtils.writeFile("target/%s-syntaxTree.dot".formatted(grammarConfig.name()), syntaxTreeString);
 
     }
-
 }
