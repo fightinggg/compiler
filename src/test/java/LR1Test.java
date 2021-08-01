@@ -3,6 +3,8 @@ import com.example.grammar.GrammarReader;
 import com.example.grammar.augment.lr.LRAnalyzerImpl;
 import com.example.grammar.augment.lr.LRTable;
 import com.example.grammar.augment.lr.lr1.LR1TableAnalyzer;
+import com.example.grammar.augment.lr.slr.SLRAugmentProduction;
+import com.example.grammar.augment.lr.slr.SLRTableAnalyzer;
 import com.example.lexical.LexicalAnalysisImpl;
 import com.example.lexical.LexicalConfig;
 import com.example.lexical.LexicalConfigReader;
@@ -33,7 +35,7 @@ public class LR1Test {
 
 
         // 3. 根据文法构建SLR语法分析器
-        LRTable lrTable = new LR1TableAnalyzer().analyze(grammarConfig);
+        LRTable lrTable = new SLRTableAnalyzer().analyze(grammarConfig);
 
         // 4. 执行语法分析
         final SyntaxTree syntaxTree = new LRAnalyzerImpl().analyze(lrTable, tokes);

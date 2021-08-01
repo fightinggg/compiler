@@ -50,7 +50,7 @@ public class CppLR1Test {
                 }
                 """;
 
-        test(code, "");
+        test(code, "allTest");
     }
 
     @Test
