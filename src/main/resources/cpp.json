@@ -2,7 +2,6 @@
   "tokens": [
     {"number": "0|[123456789]\\d*"},
     {"doubleQuotes": "\""},
-
     {"blank": "\\s+"},
     {"leftCurlyBracket": "\\{"},
     {"rightCurlyBracket": "\\}"},
@@ -11,6 +10,7 @@
     {"while": "while"},
     {"if": "if"},
     {"for": "for"},
+    {"return": "return"},
     {"comma": ","},
     {"leftBracket": "\\("},
     {"rightBracket": "\\)"},
@@ -38,13 +38,18 @@
     "leftSymbol": [
       "symbol"
     ],
-    "someRightSymbolJoinByCommaNotEmpty": [
-      "rightSymbol",
-      "someRightSymbolJoinByCommaNotEmpty comma rightSymbol"
+    "someRightSymbolDefineJoinByCommaNotEmpty": [
+      "type rightSymbol",
+      "someRightSymbolDefineJoinByCommaNotEmpty comma type rightSymbol"
     ],
     "functionStatement": [
       "type symbol leftBracket rightBracket leftCurlyBracket block rightCurlyBracket",
-      "type symbol leftBracket someRightSymbolJoinByCommaNotEmpty rightBracket leftCurlyBracket block rightCurlyBracket"
+      "type symbol leftBracket someRightSymbolDefineJoinByCommaNotEmpty rightBracket leftCurlyBracket block rightCurlyBracket"
+    ],
+
+    "someRightSymbolJoinByCommaNotEmpty": [
+      "rightSymbol",
+      "someRightSymbolJoinByCommaNotEmpty comma rightSymbol"
     ],
     "functionInvoke": [
       "symbol leftBracket someRightSymbolJoinByCommaNotEmpty rightBracket",
@@ -112,12 +117,13 @@
       "btLtBeLeSeq eqOrneOperator rightSymbolUnit",
       "eqOrneSeq eqOrneOperator rightSymbolUnit"
     ],
-    "boolExpression": [
-    ],
     "rightSymbol": [
       "rightSymbolUnit",
       "mulOrDelOrModExpressionSeq",
-      "addOrSubExpressionSeq"
+      "addOrSubExpressionSeq",
+      "shiftSeq",
+      "btLtBeLeSeq",
+      "eqOrneSeq"
     ],
     "symbolStatementSentence": [
       "type leftSymbol",
@@ -126,9 +132,13 @@
     "symbolUpdateSentence": [
       "leftSymbol eq rightSymbol"
     ],
+    "returnSentence": [
+      "return rightSymbol"
+    ],
     "sentence": [
       "symbolStatementSentence",
-      "symbolUpdateSentence"
+      "symbolUpdateSentence",
+      "returnSentence"
     ],
     "ifBlock": [
       "if leftBracket rightSymbol rightBracket sentence semicolon",
@@ -152,8 +162,20 @@
       "blockUnit",
       "block blockUnit"
     ],
-    "target": [
+    "staticSymbolStatement": [
+      "type leftSymbol semicolon",
+      "type leftSymbol eq rightSymbol semicolon"
+    ],
+    "cFileUnit": [
+      "staticSymbolStatement",
       "functionStatement"
+    ],
+    "someCFileUnit": [
+      "cFileUnit",
+      "someCFileUnit cFileUnit"
+    ],
+    "target": [
+      "someCFileUnit"
     ]
   },
   "target": "target",
