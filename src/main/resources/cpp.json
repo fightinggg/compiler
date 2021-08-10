@@ -151,16 +151,12 @@
       "break",
       "continue"
     ],
-    "elseIfBlock": [
-      "else if leftBracket rightSymbol rightBracket blockUnit"
-    ],
-    "someElseIfBlock": [
-      "elseIfBlock",
-      "someElseIfBlock elseIfBlock"
+    "ifElseBlock": [
+      "if leftBracket rightSymbol rightBracket notHalfIfBlockUnit else blockUnit"
     ],
     "ifBlock": [
       "if leftBracket rightSymbol rightBracket blockUnit",
-      "if leftBracket rightSymbol rightBracket blockUnit someElseIfBlock"
+      "if leftBracket rightSymbol rightBracket notHalfIfBlockUnit else blockUnit"
     ],
     "forBlock": [
       "for leftBracket sentence semicolon rightSymbol semicolon sentence rightBracket blockUnit",
@@ -170,6 +166,13 @@
     ],
     "doWhileBlock": [
       "do blockUnit while rightSymbol"
+    ],
+    "notHalfIfBlockUnit": [
+      "sentence semicolon",
+      "ifElseBlock",
+      "forBlock",
+      "whileBlock",
+      "leftCurlyBracket block rightCurlyBracket"
     ],
     "blockUnit": [
       "sentence semicolon",
