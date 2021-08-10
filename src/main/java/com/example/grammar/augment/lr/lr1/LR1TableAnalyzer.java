@@ -122,7 +122,7 @@ public class LR1TableAnalyzer implements LRTableAnalyzer {
                 if (actionTable[i][j].size() > 1) {
                     conflict = true;
                     System.out.printf(
-                            "state %3d  + %10s Conflict: %s%n"
+                            "'state: %-3d'  + 'symbol: %-10s' Conflict: %s%n"
                             , i
                             , grammarConfig.symbol().get(j)
                             , actionTable[i][j].stream().map(Objects::toString).collect(Collectors.joining(" ")));

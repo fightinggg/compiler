@@ -25,6 +25,14 @@ public class CppLR1Test {
     public void allTest() {
         String code = """
                 
+                void ifFunc(int x){
+                    if(a==1){
+                        return 1;
+                    } else {
+                        return 2;
+                    }
+                }
+                
                 int fib(int x){
                     if(x<2) return 1;
                     return fib(x-1) + fib(x-2);
@@ -70,6 +78,8 @@ public class CppLR1Test {
     }
 
 
+
+
     @Test
     public void addOrSubExpressionSeqtest() {
         String code = """
@@ -79,6 +89,34 @@ public class CppLR1Test {
                 """;
         test(code, "addOrSubExpressionSeqtest");
     }
+
+
+    @Test
+    public void ifTest() {
+        String code = """
+                void ifFunc(int x){
+                    if(a==1){
+                        return 1;
+                    }
+                }
+                """;
+        test(code, "ifTest");
+    }
+
+    @Test
+    public void ifElseTest() {
+        String code = """
+                void ifFunc(int x){
+                    if(a==1){
+                        return 1;
+                    } else {
+                        return 2;
+                    }
+                }
+                """;
+        test(code, "ifElseTest");
+    }
+
 
     private void test(String code, String tag) {
         // 1. 获取词法和文法配置

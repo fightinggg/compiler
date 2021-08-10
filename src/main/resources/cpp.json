@@ -11,6 +11,11 @@
     {"if": "if"},
     {"for": "for"},
     {"return": "return"},
+    {"break": "break"},
+    {"continue": "continue"},
+    {"do": "do"},
+    {"goto": "goto"},
+    {"else": "else"},
     {"comma": ","},
     {"leftBracket": "\\("},
     {"rightBracket": "\\)"},
@@ -46,7 +51,6 @@
       "type symbol leftBracket rightBracket leftCurlyBracket block rightCurlyBracket",
       "type symbol leftBracket someRightSymbolDefineJoinByCommaNotEmpty rightBracket leftCurlyBracket block rightCurlyBracket"
     ],
-
     "someRightSymbolJoinByCommaNotEmpty": [
       "rightSymbol",
       "someRightSymbolJoinByCommaNotEmpty comma rightSymbol"
@@ -133,30 +137,46 @@
       "leftSymbol eq rightSymbol"
     ],
     "returnSentence": [
-      "return rightSymbol"
+      "return rightSymbol",
+      "return"
+    ],
+    "gotoSentence": [
+      "goto symbol"
     ],
     "sentence": [
       "symbolStatementSentence",
       "symbolUpdateSentence",
-      "returnSentence"
+      "returnSentence",
+      "gotoSentence",
+      "break",
+      "continue"
+    ],
+    "elseIfBlock": [
+      "else if leftBracket rightSymbol rightBracket blockUnit"
+    ],
+    "someElseIfBlock": [
+      "elseIfBlock",
+      "someElseIfBlock elseIfBlock"
     ],
     "ifBlock": [
-      "if leftBracket rightSymbol rightBracket sentence semicolon",
-      "if leftBracket rightSymbol rightBracket leftCurlyBracket block rightCurlyBracket"
+      "if leftBracket rightSymbol rightBracket blockUnit",
+      "if leftBracket rightSymbol rightBracket blockUnit someElseIfBlock"
     ],
     "forBlock": [
-      "for leftBracket sentence semicolon rightSymbol semicolon sentence rightBracket sentence semicolon",
-      "for leftBracket sentence semicolon rightSymbol semicolon sentence rightBracket leftCurlyBracket block rightCurlyBracket"
+      "for leftBracket sentence semicolon rightSymbol semicolon sentence rightBracket blockUnit",
     ],
     "whileBlock": [
-      "while leftBracket rightSymbol rightBracket sentence semicolon",
-      "while leftBracket rightSymbol rightBracket leftCurlyBracket block rightCurlyBracket"
+      "while leftBracket rightSymbol rightBracket blockUnit",
+    ],
+    "doWhileBlock": [
+      "do blockUnit while rightSymbol"
     ],
     "blockUnit": [
       "sentence semicolon",
       "ifBlock",
       "forBlock",
-      "whileBlock"
+      "whileBlock",
+      "leftCurlyBracket block rightCurlyBracket"
     ],
     "block": [
       "blockUnit",

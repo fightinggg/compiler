@@ -23,8 +23,15 @@ public class GrammarReader {
 
     static Production string2Production(String from, String to, Map<String, Integer> symbolId, GrammarConfig grammarConfig) {
         Integer left = symbolId.get(from);
-        List<Integer> right = Arrays.stream(to.split(" "))
+        List<String> rightString = Arrays.stream(to.split(" "))
                 .filter(symbol -> !symbol.isBlank())
+                .toList();
+
+        if (rightString.stream().map(symbolId::get).anyMatch(Objects::isNull)) {
+            throw new RuntimeException("this production contain unknown symbol in %s->%s ".formatted(from, to));
+        }
+
+        List<Integer> right = rightString.stream()
                 .map(symbolId::get)
                 .collect(Collectors.toList());
         return new ProductionImpl(left, right, grammarConfig);

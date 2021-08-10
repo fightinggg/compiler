@@ -41,7 +41,7 @@ public class LR1AugmentProductionItem {
                 })
                 .collect(Collectors.toSet());
 
-        return collect.stream().toList().equals(productions)
+        return collect.equals(new HashSet<>(productions))
                 ? collect.stream().collect(Collectors.toUnmodifiableSet())
                 : _closure(grammarConfig, collect.stream().toList(), firstSet);
     }

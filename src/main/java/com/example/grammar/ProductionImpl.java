@@ -5,6 +5,7 @@ import lombok.ToString;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @EqualsAndHashCode
@@ -25,6 +26,11 @@ public class ProductionImpl implements Production {
         // 不可变对象
         this.right = right.stream().toList();
         this.grammarConfig = grammarConfig;
+
+        // check
+        if (right.stream().anyMatch(Objects::isNull)) {
+            throw new RuntimeException("error production");
+        }
     }
 
     @Override
