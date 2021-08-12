@@ -1,0 +1,38 @@
+{
+  "info": "挺复杂的，一定不能是二义性文法",
+  "tokens": [
+    {"condition": "condition"},
+    {"if": "if"},
+    {"else": "else"},
+    {"notIfBlockUnit": "notIfBlockUnit"},
+    {"blank": "\\s"},
+    {"leftBracket": "\\("},
+    {"rightBracket": "\\)"}
+  ],
+  "productionsTable": {
+    "matchIfBlockUnit": [
+      "if leftBracket condition rightBracket notIfBlockUnit else notIfBlockUnit",
+      "if leftBracket condition rightBracket notIfBlockUnit else matchIfBlockUnit",
+      "if leftBracket condition rightBracket matchIfBlockUnit else notIfBlockUnit",
+      "if leftBracket condition rightBracket matchIfBlockUnit else matchIfBlockUnit"
+    ],
+    "noMatchIfBlockUnit": [
+      "if leftBracket condition rightBracket blockUnit",
+      "if leftBracket condition rightBracket matchIfBlockUnit else noMatchIfBlockUnit",
+      "if leftBracket condition rightBracket notIfBlockUnit else noMatchIfBlockUnit"
+    ],
+    "blockUnit": [
+      "notIfBlockUnit",
+      "matchIfBlockUnit",
+      "noMatchIfBlockUnit"
+    ],
+    "target": [
+      "blockUnit"
+    ]
+  },
+  "target": "target",
+  "blankToken": "blank",
+  "keys": [
+  ],
+  "name": "if-else"
+}

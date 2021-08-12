@@ -44,4 +44,7 @@ public class LR1Test {
         FileUtils.writeFile("target/%s-syntaxTree.dot".formatted(grammarConfig.name()), syntaxTreeString);
 
     }
+
+
+
 }

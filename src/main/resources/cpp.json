@@ -154,9 +154,8 @@
     "ifElseBlock": [
       "if leftBracket rightSymbol rightBracket notHalfIfBlockUnit else blockUnit"
     ],
-    "ifBlock": [
+    "halfIfBlock": [
       "if leftBracket rightSymbol rightBracket blockUnit",
-      "if leftBracket rightSymbol rightBracket notHalfIfBlockUnit else blockUnit"
     ],
     "forBlock": [
       "for leftBracket sentence semicolon rightSymbol semicolon sentence rightBracket blockUnit",
@@ -175,11 +174,8 @@
       "leftCurlyBracket block rightCurlyBracket"
     ],
     "blockUnit": [
-      "sentence semicolon",
-      "ifBlock",
-      "forBlock",
-      "whileBlock",
-      "leftCurlyBracket block rightCurlyBracket"
+      "halfIfBlock",
+      "notHalfIfBlockUnit"
     ],
     "block": [
       "blockUnit",
