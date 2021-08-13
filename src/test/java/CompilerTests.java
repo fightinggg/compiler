@@ -8,7 +8,10 @@ import com.example.grammar.augment.lr.LRTableAnalyzer;
 import com.example.grammar.augment.lr.slr.SLRAugmentProduction;
 import com.example.grammar.augment.lr.slr.SLRAugmentProductionItem;
 import com.example.grammar.augment.lr.slr.SLRTableAnalyzer;
-import com.example.lexical.*;
+import com.example.lexical.LexicalAnalysis;
+import com.example.lexical.LexicalConfig;
+import com.example.lexical.LexicalConfigReader;
+import com.example.lexical.Token;
 import com.example.visiable.FileUtils;
 import com.example.visiable.NfaVisiable;
 import com.example.visiable.SyntaxTreeVisiable;
@@ -26,7 +29,7 @@ public class CompilerTests {
 
 
     @Test
-    public void RegTest() {
+    public void regTest() {
 
         String code = "a|bc+de|f*(123)[456]?\\(\\)";
         LexicalConfig lexicalConfig = LexicalConfigReader.read("reg.json", "");
