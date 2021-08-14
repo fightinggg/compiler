@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * 这一块负责正则文法的词法分析
+ * 这一块负责正则文法的词法分析<br/>
  * 由于通用的词法分析器依赖于正则文法，所以正则文法的词法分析器就没办法依赖自己了
  */
 public class RegLexicalAnalysisImpl implements LexicalAnalysis {

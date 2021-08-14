@@ -4,10 +4,13 @@ import com.example.grammar.augment.lr.LRAnalyzerImpl;
 import com.example.grammar.augment.lr.LRTable;
 import com.example.grammar.augment.lr.lr1.LR1TableAnalyzer;
 import com.example.grammar.augment.lr.slr.SLRTableAnalyzer;
+import com.example.lang.cpp.Cpp;
+import com.example.lang.cpp.CppSyntaxDirectedTranslation;
 import com.example.lexical.LexicalAnalysisImpl;
 import com.example.lexical.LexicalConfig;
 import com.example.lexical.LexicalConfigReader;
 import com.example.lexical.Token;
+import com.example.sdt.SyntaxDirectedTranslation;
 import com.example.syntaxtree.SyntaxTree;
 import com.example.visiable.FileUtils;
 import com.example.visiable.SyntaxTreeVisiable;
@@ -24,7 +27,7 @@ public class CppLR1Test {
     @Test
     public void allTest() {
         String code = """
-                
+                                
                 void ifFunc(int x){
                     if(a==1){
                         return 1;
@@ -32,12 +35,12 @@ public class CppLR1Test {
                         return 2;
                     }
                 }
-                
+                                
                 int fib(int x){
                     if(x<2) return 1;
                     return fib(x-1) + fib(x-2);
                 }
-                
+                                
                 int main(){
                     int a = 1;
                     int d = a + b;
@@ -64,7 +67,7 @@ public class CppLR1Test {
                 }
                 """;
 
-        test(code, "allTest");
+        Cpp.parse(code, "allTest");
     }
 
     @Test
@@ -74,7 +77,8 @@ public class CppLR1Test {
                     int a = 1 * c * 1 / 2 % 1 *2 %1;
                 }
                 """;
-        test(code, "CppLR1Test.mulOrDelOrModExpressionSeqtest");
+        List<CppSyntaxDirectedTranslation.ThreeAddressCode> parse = Cpp.parse(code, "CppLR1Test.mulOrDelOrModExpressionSeqtest");
+
     }
 
     @Test
@@ -84,7 +88,7 @@ public class CppLR1Test {
                     int a = 1*2+3*4*4+1-2/2-3%3;
                 }
                 """;
-        test(code, "CppLR1Test.addOrSubExpressionSeqtest");
+        Cpp.parse(code, "CppLR1Test.addOrSubExpressionSeqtest");
     }
 
 
@@ -95,9 +99,8 @@ public class CppLR1Test {
                     int a = (1*2+3*4*4+1-2/2-3%3)+1*(2+4)*1*2%3/(3+1);
                 }
                 """;
-        test(code, "CppLR1Test.expressionSeqtest");
+        Cpp.parse(code, "CppLR1Test.expressionSeqtest");
     }
-
 
 
     @Test
@@ -109,7 +112,7 @@ public class CppLR1Test {
                     }
                 }
                 """;
-        test(code, "ifTest");
+        Cpp.parse(code, "ifTest");
     }
 
     @Test
@@ -123,29 +126,7 @@ public class CppLR1Test {
                     }
                 }
                 """;
-        test(code, "ifElseTest");
+        Cpp.parse(code, "ifElseTest");
     }
 
-
-    private void test(String code, String tag) {
-        // 1. 获取词法和文法配置
-        LexicalConfig lexicalConfig = LexicalConfigReader.read("cpp.json", tag);
-        GrammarConfig grammarConfig = GrammarReader.read("cpp.json", tag);
-
-        // 2. 执行词法分析
-        List<Token> tokes = new LexicalAnalysisImpl().parsing(code, lexicalConfig);
-        FileUtils.writeFile("target/%s-tokens.txt".formatted(grammarConfig.name()),
-                tokes.stream().map(Objects::toString).collect(Collectors.joining("\n")));
-
-
-        // 3. 根据文法构建SLR语法分析器
-        LRTable lrTable = new LR1TableAnalyzer().analyze(grammarConfig);
-
-        // 4. 执行语法分析
-        final SyntaxTree syntaxTree = new LRAnalyzerImpl().analyze(lrTable, tokes);
-
-        final String syntaxTreeString = SyntaxTreeVisiable.toDot(syntaxTree);
-        FileUtils.writeFile("target/%s-syntaxTree.dot".formatted(grammarConfig.name()), syntaxTreeString);
-
-    }
 }
