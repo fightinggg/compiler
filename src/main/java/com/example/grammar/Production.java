@@ -9,11 +9,17 @@ import java.util.List;
  * @author wsx
  */
 public interface Production {
+    Integer DEFAULT_ORDER = Integer.MAX_VALUE - 1;
+
     Integer leftSymbol();
 
     List<Integer> rightSymbol();
 
     String raw();
+
+    Integer order();
+
+    Boolean leftCombination();
 
     GrammarConfig grammarConfig();
 }

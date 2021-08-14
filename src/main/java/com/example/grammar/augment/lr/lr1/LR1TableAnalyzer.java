@@ -2,13 +2,15 @@ package com.example.grammar.augment.lr.lr1;
 
 import com.example.grammar.GrammarConfig;
 import com.example.grammar.GrammarFollowSet;
+import com.example.grammar.Production;
 import com.example.grammar.ProductionImpl;
 import com.example.grammar.augment.lr.LRTable;
 import com.example.grammar.augment.lr.LRTableAnalyzer;
-import com.example.lexical.Token;
 import com.example.utils.TableUtils;
 import com.example.visiable.ProductionItemSetVisiable;
 import com.example.visiable.FileUtils;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,6 +30,16 @@ import java.util.stream.IntStream;
  * 5. 起点是[S'->·S]<br/>
  */
 public class LR1TableAnalyzer implements LRTableAnalyzer {
+
+    private static int order(Production production, String action) {
+        if (action.equals(LRTable.Action.REDUCE) && production.leftCombination()) {
+            return production.order();
+        }
+        if (action.equals(LRTable.Action.SHIFT) && !production.leftCombination()) {
+            return production.order();
+        }
+        return production.order() + 1;
+    }
 
     @Override
     public LRTable analyze(GrammarConfig grammarConfig) {
@@ -50,38 +62,60 @@ public class LR1TableAnalyzer implements LRTableAnalyzer {
         int row = itemSetDfa.size();
         int col = symbol.size();
         Integer[][] gotoTable = new Integer[row][col];
-        Set<LRTable.Action>[][] actionTable = new Set[row][col];
+
+        @Getter
+        @EqualsAndHashCode(callSuper = true)
+        class OrderAction extends LRTable.Action {
+            private final Integer order;
+
+            public OrderAction(String ac, Integer jump, Integer order) {
+                super(ac, jump);
+                this.order = order;
+            }
+
+            @Override
+            public String toString() {
+                String orderString = order.toString();
+                if (order.equals(Production.DEFAULT_ORDER)) {
+                    orderString = "default";
+                } else if (order.equals(Production.DEFAULT_ORDER + 1)) {
+                    orderString = "default+1";
+                }
+                return "%s(%s)".formatted(super.toString(), orderString);
+            }
+        }
+        Set<OrderAction>[][] actionTable = new Set[row][col];
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
                 actionTable[i][j] = new HashSet<>();
             }
         }
 
-        FileUtils.writeFile("target/%s-lr1-itemset.dot".formatted(grammarConfig.name()), ProductionItemSetVisiable.toDot(itemSetDfa, itemId,grammarConfig));
+        FileUtils.writeFile("target/%s-lr1-itemset.dot".formatted(grammarConfig.name()), ProductionItemSetVisiable.toDot(itemSetDfa, itemId, grammarConfig));
         FileUtils.writeFile("target/%s-lr1-itemset.txt".formatted(grammarConfig.name()), ProductionItemSetVisiable.toTxt(itemSetDfa, itemId));
 
         // 2.
         itemSetDfa.forEach((itemSet, trans) -> {
             Integer currentId = itemId.get(itemSet);
 
-            itemSet.forEach(lr1AugmentProduction -> {
-                int pos = lr1AugmentProduction.pos();
-                Integer leftSymbol = lr1AugmentProduction.leftSymbol();
-                List<Integer> rightSymbol = lr1AugmentProduction.rightSymbol();
+            itemSet.forEach(production -> {
+                int pos = production.pos();
+                Integer leftSymbol = production.leftSymbol();
+                List<Integer> rightSymbol = production.rightSymbol();
 
                 if (pos != rightSymbol.size() && grammarConfig.isTerminal(rightSymbol.get(pos))) {
                     // ①
                     Integer terminal = rightSymbol.get(pos);
-                    LRTable.Action action = new LRTable.Action("s", itemId.get(trans.get(terminal)));
+                    OrderAction action = new OrderAction(LRTable.Action.SHIFT, itemId.get(trans.get(terminal)), order(production, LRTable.Action.SHIFT));
                     actionTable[currentId][terminal].add(action);
                 } else if (pos == rightSymbol.size() && !leftSymbol.equals(grammarConfig.target())) {
                     // ②
-                    LRTable.Action action = new LRTable.Action("r", grammarConfig.productionId(new ProductionImpl(lr1AugmentProduction)));
+                    OrderAction action = new OrderAction(LRTable.Action.REDUCE, grammarConfig.productionId(new ProductionImpl(production)), order(production, LRTable.Action.REDUCE));
                     // 这一行和slr不一样了， slr是选择所有的followset
-                    lr1AugmentProduction.next().stream().filter(o -> !o.equals(grammarConfig.emptyTerminal())).forEach(o -> actionTable[currentId][o].add(action));
-                } else if (pos == rightSymbol.size() && leftSymbol.equals(grammarConfig.target()) && lr1AugmentProduction.next().contains(grammarConfig.endTerminal())) {
+                    production.next().stream().filter(o -> !o.equals(grammarConfig.emptyTerminal())).forEach(o -> actionTable[currentId][o].add(action));
+                } else if (pos == rightSymbol.size() && leftSymbol.equals(grammarConfig.target()) && production.next().contains(grammarConfig.endTerminal())) {
                     // ③
-                    actionTable[currentId][grammarConfig.endTerminal()].add(new LRTable.Action(LRTable.Action.ACC, 0));
+                    actionTable[currentId][grammarConfig.endTerminal()].add(new OrderAction(LRTable.Action.ACC, 0, production.order()));
                 }
             });
         });
@@ -94,6 +128,16 @@ public class LR1TableAnalyzer implements LRTableAnalyzer {
                     .filter(o -> !grammarConfig.isTerminal(o))
                     .forEach(nonTerminal -> gotoTable[currentId][nonTerminal] = itemId.get(trans.get(nonTerminal)));
         });
+
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                actionTable[i][j] = actionTable[i][j].stream()
+                        .collect(Collectors.groupingBy(o -> new LRTable.Action(o.getAc(), o.getJump())))
+                        .values().stream()
+                        .flatMap(o -> o.stream().min(Comparator.comparing(OrderAction::getOrder)).stream())
+                        .collect(Collectors.toSet());
+            }
+        }
 
 
         // 把actionTable转化为二维的表格
@@ -119,6 +163,8 @@ public class LR1TableAnalyzer implements LRTableAnalyzer {
         boolean conflict = false;
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
+                int min = actionTable[i][j].stream().mapToInt(OrderAction::getOrder).min().orElse(Production.DEFAULT_ORDER);
+                actionTable[i][j] = actionTable[i][j].stream().filter(o -> o.getOrder().equals(min)).collect(Collectors.toSet());
                 if (actionTable[i][j].size() > 1) {
                     conflict = true;
                     System.out.printf(

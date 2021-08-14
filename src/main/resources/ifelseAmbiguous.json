@@ -1,0 +1,30 @@
+{
+  "info": "二义性ifelse文法",
+  "tokens": [
+    {"condition": "condition"},
+    {"if": "if"},
+    {"else": "else"},
+    {"notIfBlockUnit": "notIfBlockUnit"},
+    {"blank": "\\s"},
+    {"leftBracket": "\\("},
+    {"rightBracket": "\\)"}
+  ],
+  "productionsTable": {
+    "ifBlock": [
+      "if leftBracket condition rightBracket block $lv.4",
+      "if leftBracket condition rightBracket block else block $lv.2"
+    ],
+    "block": [
+      "notIfBlockUnit",
+      "ifBlock"
+    ],
+    "target": [
+      "block"
+    ]
+  },
+  "target": "target",
+  "blankToken": "blank",
+  "keys": [
+  ],
+  "name": "if-else-ambiguous"
+}

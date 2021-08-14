@@ -3,7 +3,6 @@ import com.example.grammar.GrammarReader;
 import com.example.grammar.augment.lr.LRAnalyzerImpl;
 import com.example.grammar.augment.lr.LRTable;
 import com.example.grammar.augment.lr.lr1.LR1TableAnalyzer;
-import com.example.grammar.augment.lr.slr.SLRTableAnalyzer;
 import com.example.lexical.LexicalAnalysisImpl;
 import com.example.lexical.LexicalConfig;
 import com.example.lexical.LexicalConfigReader;
@@ -17,67 +16,56 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-// https://dreampuf.github.io/GraphvizOnline/
-
-public class CppSLRTest {
+public class IfElseAmbiguousLR1Test {
 
     @Test
-    public void allTest() {
+    public void ifElseTest() {
         String code = """
-                int main(){
-                    int a = 1;
-                    int d = a + b;
-                    int e = d + 0;
-                    String s = "abc";
-                    int invoke = f1() + f2(1);
-                    if ( a+b ){
-                         a = 1;
-                     }
-                     while( a+b){
-                          d = 2;
-                          c = 1;
-                     }
-                     for(int i=0;i;i=i+1){
-                         s = s + i;
-                     }
-                     
-                     for(int i=0;i;i=i+1) {
-                        while(i){
-                            b = c + 1;
-                        }
-                        a = a+1;
-                     }
-                }
+                if ( condition ) notIfBlockUnit 
+                else notIfBlockUnit
                 """;
 
-        test(code, "");
+        String tag = "IfElseAmbiguousLR1Test.ifElseTest";
+        test(code, tag);
     }
 
     @Test
-    public void mulOrDelOrModExpressionSeqtest() {
+    public void ifElseTest2() {
         String code = """
-                int main(){
-                    int a = 1 * c * 1 / 2 % 1 *2 %1;
-                }
+                if ( condition ) 
+                    if ( condition ) 
+                        if ( condition ) 
+                            if ( condition ) notIfBlockUnit 
+                            else notIfBlockUnit 
+                        else notIfBlockUnit 
+                    else notIfBlockUnit 
+                else notIfBlockUnit
                 """;
-        test(code, "CppSLRTest.mulOrDelOrModExpressionSeqtest");
+
+        String tag = "IfElseAmbiguousLR1Test.ifElseTest2";
+        test(code, tag);
     }
 
 
     @Test
-    public void addOrSubExpressionSeqtest() {
+    public void ifElseTest3() {
         String code = """
-                int main(){
-                    int a = 1*2+3*4*4+1-2/2-3%3;
-                }
+                if ( condition ) 
+                    if ( condition ) 
+                        if ( condition ) 
+                            if ( condition ) notIfBlockUnit 
+                            else notIfBlockUnit
                 """;
-        test(code, "addOrSubExpressionSeqtest");
+
+        String tag = "IfElseAmbiguousLR1Test.ifElseTest3";
+        test(code, tag);
     }
+
 
     private void test(String code, String tag) {
         // 1. 获取词法和文法配置
-        LexicalConfig lexicalConfig = LexicalConfigReader.read("cpp.json", tag);
-        GrammarConfig grammarConfig = GrammarReader.read("cpp.json", tag);
+        LexicalConfig lexicalConfig = LexicalConfigReader.read("ifelseAmbiguous.json", tag);
+        GrammarConfig grammarConfig = GrammarReader.read("ifelseAmbiguous.json", tag);
 
         // 2. 执行词法分析
         List<Token> tokes = new LexicalAnalysisImpl().parsing(code, lexicalConfig);
@@ -95,4 +83,5 @@ public class CppSLRTest {
         FileUtils.writeFile("target/%s-syntaxTree.dot".formatted(grammarConfig.name()), syntaxTreeString);
 
     }
+
 }

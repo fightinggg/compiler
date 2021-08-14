@@ -2,8 +2,8 @@ package com.example.grammar.augment.lr.lr1;
 
 import com.example.grammar.GrammarConfig;
 import com.example.grammar.GrammarFirstSet;
-import com.example.grammar.GrammarFollowSet;
-import com.example.lexical.Token;
+import com.example.grammar.augment.lr.slr.SLRAugmentProduction;
+import com.example.grammar.augment.lr.slr.SLRAugmentProductionImpl;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,15 +29,12 @@ public class LR1AugmentProductionItem {
 
         collect.addAll(productions);
 
-        collect = collect.stream().collect(Collectors.groupingBy(o -> List.of(o.pos(), o.leftSymbol(), o.rightSymbol())))
+        collect = collect.stream().collect(Collectors.groupingBy(o -> new SLRAugmentProductionImpl(o, o.pos())))
                 .entrySet().stream()
                 .map(kv -> {
-                    List<Object> key = kv.getKey();
-                    Integer pos = (Integer) key.get(0);
-                    Integer left = (Integer) key.get(1);
-                    List<Integer> right = (List<Integer>) key.get(2);
+                    SLRAugmentProduction production = kv.getKey();
                     List<Integer> next = kv.getValue().stream().flatMap(o -> o.next().stream()).distinct().collect(Collectors.toList());
-                    return new LR1AugmentProductionImpl(left, right, pos, next, grammarConfig);
+                    return new LR1AugmentProductionImpl(production, production.pos(), next);
                 })
                 .collect(Collectors.toSet());
 

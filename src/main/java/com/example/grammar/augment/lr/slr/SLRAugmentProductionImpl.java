@@ -20,11 +20,11 @@ public class SLRAugmentProductionImpl extends ProductionImpl implements SLRAugme
     }
 
     public SLRAugmentProductionImpl(Production production, int pos) {
-        this(production.leftSymbol(), production.rightSymbol(), pos, production.grammarConfig());
+        this(production.leftSymbol(), production.rightSymbol(), production.order(), production.leftCombination(), pos, production.grammarConfig());
     }
 
-    public SLRAugmentProductionImpl(Integer left, List<Integer> right, int pos, GrammarConfig grammarConfig) {
-        super(left, right, grammarConfig);
+    public SLRAugmentProductionImpl(Integer left, List<Integer> right, int order, boolean leftCombination, int pos, GrammarConfig grammarConfig) {
+        super(left, right, order, leftCombination, grammarConfig);
         this.pos = pos;
     }
 

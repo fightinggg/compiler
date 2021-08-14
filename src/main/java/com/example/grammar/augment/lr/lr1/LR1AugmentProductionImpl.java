@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.example.grammar.GrammarConfig;
 import com.example.grammar.Production;
 import com.example.grammar.ProductionImpl;
+import com.example.grammar.augment.lr.slr.SLRAugmentProduction;
 import lombok.EqualsAndHashCode;
 
 import java.util.Arrays;
@@ -18,11 +19,11 @@ public class LR1AugmentProductionImpl extends ProductionImpl implements LR1Augme
 
 
     public LR1AugmentProductionImpl(Production production, int pos, List<Integer> next) {
-        this(production.leftSymbol(), production.rightSymbol(), pos, next, production.grammarConfig());
+        this(production.leftSymbol(), production.rightSymbol(), production.order(), production.leftCombination(), pos, next, production.grammarConfig());
     }
 
-    public LR1AugmentProductionImpl(Integer left, List<Integer> right, int pos, List<Integer> next, GrammarConfig grammarConfig) {
-        super(left, right, grammarConfig);
+    public LR1AugmentProductionImpl(Integer left, List<Integer> right, int order, boolean leftCombination, int pos, List<Integer> next, GrammarConfig grammarConfig) {
+        super(left, right, order, leftCombination, grammarConfig);
         this.pos = pos;
         this.next = Set.copyOf(next);
     }

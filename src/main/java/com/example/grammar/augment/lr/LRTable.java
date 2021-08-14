@@ -19,6 +19,8 @@ public class LRTable {
     @AllArgsConstructor
     public static class Action {
         public static String ACC = "acc";
+        public static String SHIFT = "s";
+        public static String REDUCE = "r";
 
         private final String ac;
         private final Integer jump;

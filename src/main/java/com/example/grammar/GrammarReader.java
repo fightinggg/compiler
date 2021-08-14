@@ -25,7 +25,28 @@ public class GrammarReader {
         Integer left = symbolId.get(from);
         List<String> rightString = Arrays.stream(to.split(" "))
                 .filter(symbol -> !symbol.isBlank())
+                .filter(symbol -> !symbol.startsWith("$"))
                 .toList();
+
+        final int[] order = {Production.DEFAULT_ORDER};
+        final boolean[] leftCombination = {true};
+        Arrays.stream(to.split(" "))
+                .filter(symbol -> !symbol.isBlank())
+                .filter(symbol -> symbol.startsWith("$"))
+                .forEach(info -> {
+                    if (info.startsWith("$lv.")) {
+                        order[0] = Integer.parseInt(info.substring(4));
+                        if (order[0] % 2 == 1) {
+                            throw new RuntimeException("in production %s->%s , $lv can be only even number".formatted(from, to));
+                        }
+                    } else if (info.startsWith("$rightCombination")) {
+                        leftCombination[0] = false;
+                    } else if (info.startsWith("$leftCombination")) {
+                        leftCombination[0] = true;
+                    } else {
+                        throw new RuntimeException("could not parse " + info);
+                    }
+                });
 
         if (rightString.stream().map(symbolId::get).anyMatch(Objects::isNull)) {
             throw new RuntimeException("this production contain unknown symbol in %s->%s ".formatted(from, to));
@@ -34,7 +55,7 @@ public class GrammarReader {
         List<Integer> right = rightString.stream()
                 .map(symbolId::get)
                 .collect(Collectors.toList());
-        return new ProductionImpl(left, right, grammarConfig);
+        return new ProductionImpl(left, right, order[0], leftCombination[0], grammarConfig);
     }
 
     public static GrammarConfigImpl read(String path, String tag) {

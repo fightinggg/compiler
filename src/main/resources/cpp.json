@@ -55,79 +55,26 @@
       "rightSymbol",
       "someRightSymbolJoinByCommaNotEmpty comma rightSymbol"
     ],
-    "functionInvoke": [
-      "symbol leftBracket someRightSymbolJoinByCommaNotEmpty rightBracket",
-      "symbol leftBracket rightBracket"
-    ],
-    "rightSymbolUnit": [
+    "rightSymbol": [
       "symbol",
       "number",
-      "functionInvoke",
-      "string"
-    ],
-    "mulOrDelOrModOperator": [
-      "mul",
-      "div",
-      "mod"
-    ],
-    "mulOrDelOrModExpressionSeq": [
-      "rightSymbolUnit mulOrDelOrModOperator rightSymbolUnit",
-      "mulOrDelOrModExpressionSeq mulOrDelOrModOperator rightSymbolUnit"
-    ],
-    "addOrSubOperator": [
-      "add",
-      "sub"
-    ],
-    "addOrSubUnit": [
-      "rightSymbolUnit",
-      "mulOrDelOrModExpressionSeq"
-    ],
-    "addOrSubExpressionSeq": [
-      "addOrSubUnit addOrSubOperator addOrSubUnit",
-      "addOrSubExpressionSeq addOrSubOperator addOrSubUnit"
-    ],
-    "shiftOperator": [
-      "leftShift",
-      "rightShift"
-    ],
-    "shiftSeq": [
-      "rightSymbolUnit shiftOperator rightSymbolUnit",
-      "mulOrDelOrModExpressionSeq shiftOperator rightSymbolUnit",
-      "addOrSubExpressionSeq shiftOperator rightSymbolUnit",
-      "shiftSeq shiftOperator rightSymbolUnit"
-    ],
-    "btLtBeLeComparterOperator": [
-      "bt",
-      "lt",
-      "be",
-      "le"
-    ],
-    "btLtBeLeSeq": [
-      "rightSymbolUnit btLtBeLeComparterOperator rightSymbolUnit",
-      "mulOrDelOrModExpressionSeq btLtBeLeComparterOperator rightSymbolUnit",
-      "addOrSubExpressionSeq btLtBeLeComparterOperator rightSymbolUnit",
-      "shiftSeq btLtBeLeComparterOperator rightSymbolUnit",
-      "btLtBeLeSeq btLtBeLeComparterOperator rightSymbolUnit"
-    ],
-    "eqOrneOperator": [
-      "doubleEq",
-      "ne"
-    ],
-    "eqOrneSeq": [
-      "rightSymbolUnit eqOrneOperator rightSymbolUnit",
-      "mulOrDelOrModExpressionSeq eqOrneOperator rightSymbolUnit",
-      "addOrSubExpressionSeq eqOrneOperator rightSymbolUnit",
-      "shiftSeq eqOrneOperator rightSymbolUnit",
-      "btLtBeLeSeq eqOrneOperator rightSymbolUnit",
-      "eqOrneSeq eqOrneOperator rightSymbolUnit"
-    ],
-    "rightSymbol": [
-      "rightSymbolUnit",
-      "mulOrDelOrModExpressionSeq",
-      "addOrSubExpressionSeq",
-      "shiftSeq",
-      "btLtBeLeSeq",
-      "eqOrneSeq"
+      "symbol leftBracket someRightSymbolJoinByCommaNotEmpty rightBracket",
+      "symbol leftBracket rightBracket",
+      "string",
+      "leftBracket rightSymbol rightBracket",
+      "rightSymbol mul rightSymbol $lv.2",
+      "rightSymbol div rightSymbol $lv.2",
+      "rightSymbol mod rightSymbol $lv.2",
+      "rightSymbol add rightSymbol $lv.4",
+      "rightSymbol sub rightSymbol $lv.4",
+      "rightSymbol leftShift rightSymbol $lv.6",
+      "rightSymbol rightShift rightSymbol $lv.6",
+      "rightSymbol bt rightSymbol $lv.8",
+      "rightSymbol lt rightSymbol $lv.8",
+      "rightSymbol be rightSymbol $lv.8",
+      "rightSymbol le rightSymbol $lv.8",
+      "rightSymbol doubleEq rightSymbol $lv.10",
+      "rightSymbol ne rightSymbol $lv.10"
     ],
     "symbolStatementSentence": [
       "type leftSymbol",
@@ -151,36 +98,25 @@
       "break",
       "continue"
     ],
-    "matchIfBlockUnit": [
-      "if leftBracket condition rightBracket notIfBlockUnit else notIfBlockUnit",
-      "if leftBracket condition rightBracket notIfBlockUnit else matchIfBlockUnit",
-      "if leftBracket condition rightBracket matchIfBlockUnit else notIfBlockUnit",
-      "if leftBracket condition rightBracket matchIfBlockUnit else matchIfBlockUnit"
-    ],
-    "noMatchIfBlockUnit": [
-      "if leftBracket condition rightBracket blockUnit",
-      "if leftBracket condition rightBracket matchIfBlockUnit else noMatchIfBlockUnit",
-      "if leftBracket condition rightBracket notIfBlockUnit else noMatchIfBlockUnit"
+    "ifBlock": [
+      "if leftBracket rightSymbol rightBracket blockUnit $lv.4",
+      "if leftBracket rightSymbol rightBracket blockUnit else blockUnit $lv.2"
     ],
     "forBlock": [
-      "for leftBracket sentence semicolon rightSymbol semicolon sentence rightBracket blockUnit",
+      "for leftBracket sentence semicolon rightSymbol semicolon sentence rightBracket blockUnit"
     ],
     "whileBlock": [
-      "while leftBracket rightSymbol rightBracket blockUnit",
+      "while leftBracket rightSymbol rightBracket blockUnit"
     ],
     "doWhileBlock": [
       "do blockUnit while rightSymbol"
     ],
-    "notHalfIfBlockUnit": [
+    "blockUnit": [
       "sentence semicolon",
-      "ifElseBlock",
+      "ifBlock",
       "forBlock",
       "whileBlock",
       "leftCurlyBracket block rightCurlyBracket"
-    ],
-    "blockUnit": [
-      "halfIfBlock",
-      "notHalfIfBlockUnit"
     ],
     "block": [
       "blockUnit",

@@ -74,11 +74,8 @@ public class CppLR1Test {
                     int a = 1 * c * 1 / 2 % 1 *2 %1;
                 }
                 """;
-        test(code, "mulOrDelOrModExpressionSeqtest");
+        test(code, "CppLR1Test.mulOrDelOrModExpressionSeqtest");
     }
-
-
-
 
     @Test
     public void addOrSubExpressionSeqtest() {
@@ -87,8 +84,20 @@ public class CppLR1Test {
                     int a = 1*2+3*4*4+1-2/2-3%3;
                 }
                 """;
-        test(code, "addOrSubExpressionSeqtest");
+        test(code, "CppLR1Test.addOrSubExpressionSeqtest");
     }
+
+
+    @Test
+    public void expressionSeqtest() {
+        String code = """
+                int main(){
+                    int a = (1*2+3*4*4+1-2/2-3%3)+1*(2+4)*1*2%3/(3+1);
+                }
+                """;
+        test(code, "CppLR1Test.expressionSeqtest");
+    }
+
 
 
     @Test
