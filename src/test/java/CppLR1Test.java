@@ -126,7 +126,62 @@ public class CppLR1Test {
                     }
                 }
                 """;
-        Cpp.parse(code, "ifElseTest");
+        Cpp.parse(code, "CppLR1Test.ifElseTest");
     }
+
+
+    @Test
+    public void whileTest() {
+        String code = """
+                void ifFunc(int x){
+                    while(a==1){
+                        return 1;
+                    }
+                }
+                """;
+        Cpp.parse(code, "CppLR1Test.whileTest");
+    }
+
+    @Test
+    public void functionInvokerTest1() {
+        String code = """
+                int fib(){
+                    return fib();
+                }
+                """;
+        Cpp.parse(code, "CppLR1Test.functionInvokerTest1");
+    }
+
+    @Test
+    public void functionInvokerTest2() {
+        String code = """
+                int fib(int x){
+                    return fib(x-1);
+                }
+                """;
+        Cpp.parse(code, "CppLR1Test.functionInvokerTest2");
+    }
+
+    @Test
+    public void functionInvokerTest3() {
+        String code = """
+                int fib(int x,int y){
+                    return fib(x-1,y+1);
+                }
+                """;
+        Cpp.parse(code, "CppLR1Test.functionInvokerTest3");
+    }
+
+
+    @Test
+    public void functionInvokerTest4() {
+        String code = """
+                int fib(int x,int y){
+                    return fib(x-1,y+1) + fib(1,2) + fib(3,y-3);
+                }
+                """;
+        Cpp.parse(code, "CppLR1Test.functionInvokerTest4");
+    }
+
 
 }
