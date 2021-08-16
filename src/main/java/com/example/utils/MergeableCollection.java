@@ -1,6 +1,7 @@
 package com.example.utils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MergeableCollection<T> implements Collection<T> {
     private final Collection<T>[] c;
@@ -35,12 +36,12 @@ public class MergeableCollection<T> implements Collection<T> {
 
     @Override
     public Object[] toArray() {
-        throw new RuntimeException("unsupport for toArray");
+        return Arrays.stream(c).flatMap(Collection::stream).toArray();
     }
 
     @Override
     public <T1> T1[] toArray(T1[] a) {
-        throw new RuntimeException("unsupport for toArray");
+        return Arrays.stream(c).flatMap(Collection::stream).toList().toArray(a);
     }
 
     @Override

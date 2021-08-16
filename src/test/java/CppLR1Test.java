@@ -112,7 +112,7 @@ public class CppLR1Test {
                     }
                 }
                 """;
-        Cpp.parse(code, "ifTest");
+        Cpp.parse(code, "CppLR1Test.ifTest");
     }
 
     @Test

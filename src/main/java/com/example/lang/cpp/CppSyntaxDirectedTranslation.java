@@ -19,6 +19,12 @@ public class CppSyntaxDirectedTranslation {
         public static final String MOD = "mod";
         public static final String ASSIGN = "assign";
         public static final String ASSIGN_NUMBER = "assignNumber";
+        public static final String ADD = "add";
+        public static final String SUB = "sub";
+        public static final String EQUAL = "equal";
+        public static final String RETURN = "return";
+        public static final String LABEL = "label";
+        public static final String JFALSE = "jFalse";
         String operator;
         String target;
         String op1;
@@ -40,7 +46,8 @@ public class CppSyntaxDirectedTranslation {
 
     public static MergeableCollection<ThreeAddressCode> translation(SyntaxTree syntaxTree) {
         final int[] tmpId = {0};
-        String varPrefix = "v";
+        String varPrefix = "symbol_";
+        String labelPrefix = "label_";
         final Map<String, BiConsumer<Map<String, Object>, List<Map<String, Object>>>> innerNodeConfig = Map.ofEntries(
                 Map.entry("type -> symbol", (rt, sonList) -> {
                     rt.put("typeName", sonList.get(0).get("tokenRaw"));
@@ -117,6 +124,45 @@ public class CppSyntaxDirectedTranslation {
                     rt.put("codes", codes);
                     rt.put("address", address);
                 }),
+                Map.entry("rightSymbol -> rightSymbol add rightSymbol", (rt, sonList) -> {
+                    String address = varPrefix + tmpId[0]++;
+                    String ad1 = toString(sonList.get(0).get("address"));
+                    String ad2 = toString(sonList.get(2).get("address"));
+                    List<ThreeAddressCode> currentCode = List.of(new ThreeAddressCode(ThreeAddressCode.ADD, address, ad1, ad2));
+
+                    Collection<ThreeAddressCode> codes1 = toCodes(sonList.get(0).get("codes"));
+                    Collection<ThreeAddressCode> codes2 = toCodes(sonList.get(2).get("codes"));
+                    MergeableCollection<ThreeAddressCode> codes = new MergeableCollection<>(codes1, codes2, currentCode);
+
+                    rt.put("codes", codes);
+                    rt.put("address", address);
+                }),
+                Map.entry("rightSymbol -> rightSymbol sub rightSymbol", (rt, sonList) -> {
+                    String address = varPrefix + tmpId[0]++;
+                    String ad1 = toString(sonList.get(0).get("address"));
+                    String ad2 = toString(sonList.get(2).get("address"));
+                    List<ThreeAddressCode> currentCode = List.of(new ThreeAddressCode(ThreeAddressCode.SUB, address, ad1, ad2));
+
+                    Collection<ThreeAddressCode> codes1 = toCodes(sonList.get(0).get("codes"));
+                    Collection<ThreeAddressCode> codes2 = toCodes(sonList.get(2).get("codes"));
+                    MergeableCollection<ThreeAddressCode> codes = new MergeableCollection<>(codes1, codes2, currentCode);
+
+                    rt.put("codes", codes);
+                    rt.put("address", address);
+                }),
+                Map.entry("rightSymbol -> rightSymbol doubleEq rightSymbol", (rt, sonList) -> {
+                    String address = varPrefix + tmpId[0]++;
+                    String ad1 = toString(sonList.get(0).get("address"));
+                    String ad2 = toString(sonList.get(2).get("address"));
+                    List<ThreeAddressCode> currentCode = List.of(new ThreeAddressCode(ThreeAddressCode.EQUAL, address, ad1, ad2));
+
+                    Collection<ThreeAddressCode> codes1 = toCodes(sonList.get(0).get("codes"));
+                    Collection<ThreeAddressCode> codes2 = toCodes(sonList.get(2).get("codes"));
+                    MergeableCollection<ThreeAddressCode> codes = new MergeableCollection<>(codes1, codes2, currentCode);
+
+                    rt.put("codes", codes);
+                    rt.put("address", address);
+                }),
                 Map.entry("symbolStatementSentence -> type leftSymbol eq rightSymbol", (rt, sonList) -> {
                     String address = toString(sonList.get(1).get("address"));
                     String ad = toString(sonList.get(3).get("address"));
@@ -126,13 +172,46 @@ public class CppSyntaxDirectedTranslation {
                     MergeableCollection<ThreeAddressCode> codes = new MergeableCollection<>(codes1, currentCode);
 
                     rt.put("codes", codes);
-                    rt.put("address", address);
+                }),
+                Map.entry("returnSentence -> return rightSymbol", (rt, sonList) -> {
+                    String address = toString(sonList.get(1).get("address"));
+                    Collection<ThreeAddressCode> codes1 = toCodes(sonList.get(1).get("codes"));
+
+                    List<ThreeAddressCode> currentCode = List.of(new ThreeAddressCode(ThreeAddressCode.RETURN, address, null, null));
+                    MergeableCollection<ThreeAddressCode> codes = new MergeableCollection<>(codes1, currentCode);
+
+                    rt.put("codes", codes);
                 }),
                 Map.entry("sentence -> symbolStatementSentence", (rt, sonList) -> {
                     rt.putAll(sonList.get(0));
                 }),
+                Map.entry("sentence -> returnSentence", (rt, sonList) -> {
+                    rt.putAll(sonList.get(0));
+                }),
+                Map.entry("ifBlock -> if leftBracket rightSymbol rightBracket blockUnit", (rt, sonList) -> {
+                    String label = labelPrefix + tmpId[0]++;
+
+                    Collection<ThreeAddressCode> rightSymbolCodes = toCodes(sonList.get(2).get("codes"));
+                    String rightSymbolAddress = toString(sonList.get(2).get("address"));
+
+                    Collection<ThreeAddressCode> jFalseCodes = List.of(new ThreeAddressCode(ThreeAddressCode.JFALSE, label, rightSymbolAddress, null));
+
+                    Collection<ThreeAddressCode> blockCodes = toCodes(sonList.get(4).get("codes"));
+
+                    Collection<ThreeAddressCode> endCodes = List.of(new ThreeAddressCode(ThreeAddressCode.LABEL, label, null, null));
+
+                    MergeableCollection<ThreeAddressCode> codes = new MergeableCollection<>(rightSymbolCodes, jFalseCodes, blockCodes, endCodes);
+                    rt.put("codes", codes);
+
+                }),
                 Map.entry("blockUnit -> sentence semicolon", (rt, sonList) -> {
                     rt.putAll(sonList.get(0));
+                }),
+                Map.entry("blockUnit -> ifBlock", (rt, sonList) -> {
+                    rt.putAll(sonList.get(0));
+                }),
+                Map.entry("blockUnit -> leftCurlyBracket block rightCurlyBracket", (rt, sonList) -> {
+                    rt.putAll(sonList.get(1));
                 }),
                 Map.entry("block -> blockUnit", (rt, sonList) -> {
                     rt.putAll(sonList.get(0));
