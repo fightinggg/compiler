@@ -135,7 +135,7 @@
     ],
     "someCFileUnit": [
       "cFileUnit",
-      "someCFileUnit cFileUnit"
+      "someCFileUnit someCFileUnit"
     ],
     "target": [
       "someCFileUnit"

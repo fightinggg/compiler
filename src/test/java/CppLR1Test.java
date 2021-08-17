@@ -1,24 +1,8 @@
-import com.example.grammar.GrammarConfig;
-import com.example.grammar.GrammarReader;
-import com.example.grammar.augment.lr.LRAnalyzerImpl;
-import com.example.grammar.augment.lr.LRTable;
-import com.example.grammar.augment.lr.lr1.LR1TableAnalyzer;
-import com.example.grammar.augment.lr.slr.SLRTableAnalyzer;
 import com.example.lang.cpp.Cpp;
-import com.example.lang.cpp.CppSyntaxDirectedTranslation;
-import com.example.lexical.LexicalAnalysisImpl;
-import com.example.lexical.LexicalConfig;
-import com.example.lexical.LexicalConfigReader;
-import com.example.lexical.Token;
-import com.example.sdt.SyntaxDirectedTranslation;
-import com.example.syntaxtree.SyntaxTree;
-import com.example.visiable.FileUtils;
-import com.example.visiable.SyntaxTreeVisiable;
+import com.example.pava.impl.PavaDefaultThreeAddressCode;
 import org.junit.Test;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 // https://dreampuf.github.io/GraphvizOnline/
 
@@ -43,6 +27,7 @@ public class CppLR1Test {
                                 
                 int main(){
                     int a = 1;
+                    int b = 2;
                     int d = a + b;
                     int e = d + 0;
                     String s = "abc";
@@ -67,7 +52,7 @@ public class CppLR1Test {
                 }
                 """;
 
-        Cpp.parse(code, "allTest");
+        Cpp.parse(code, "CppLR1Test.allTest");
     }
 
     @Test
@@ -77,7 +62,7 @@ public class CppLR1Test {
                     int a = 1 * c * 1 / 2 % 1 *2 %1;
                 }
                 """;
-        List<CppSyntaxDirectedTranslation.ThreeAddressCode> parse = Cpp.parse(code, "CppLR1Test.mulOrDelOrModExpressionSeqtest");
+        List<PavaDefaultThreeAddressCode> parse = Cpp.parse(code, "CppLR1Test.mulOrDelOrModExpressionSeqtest");
 
     }
 

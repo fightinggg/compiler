@@ -10,6 +10,7 @@ import com.example.lexical.LexicalAnalysisImpl;
 import com.example.lexical.LexicalConfig;
 import com.example.lexical.LexicalConfigReader;
 import com.example.lexical.Token;
+import com.example.pava.impl.PavaDefaultThreeAddressCode;
 import com.example.syntaxtree.SyntaxTree;
 import com.example.visiable.FileUtils;
 import com.example.visiable.SyntaxTreeVisiable;
@@ -19,7 +20,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Cpp {
-    public static List<CppSyntaxDirectedTranslation.ThreeAddressCode> parse(String code, String tag) {
+    public static List<PavaDefaultThreeAddressCode> parse(String code, String tag) {
         String propertiesFile = "cpp.json";
         LRTableAnalyzer lrTableAnalyzer = new LR1TableAnalyzer();
 
@@ -36,9 +37,9 @@ public class Cpp {
         FileUtils.writeFile("target/%s-syntaxTree.dot".formatted(grammarConfig.name()), SyntaxTreeVisiable.toDot(syntaxTree));
 
         // 3. 语义分析
-        List<CppSyntaxDirectedTranslation.ThreeAddressCode> threeAddressCodes = CppSyntaxDirectedTranslation.translation(syntaxTree).stream().toList();
+        List<PavaDefaultThreeAddressCode> pavaDefaultThreeAddressCodes = CppSyntaxDirectedTranslation.translation(syntaxTree).stream().toList();
         FileUtils.writeFile("target/%s-threeAddressCodes.txt".formatted(grammarConfig.name()),
-                threeAddressCodes.stream().map(Object::toString).collect(Collectors.joining("\n")));
-        return threeAddressCodes;
+                pavaDefaultThreeAddressCodes.stream().map(Object::toString).collect(Collectors.joining("\n")));
+        return pavaDefaultThreeAddressCodes;
     }
 }
