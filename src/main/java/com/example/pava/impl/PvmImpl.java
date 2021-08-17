@@ -13,7 +13,7 @@ public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
 
     }
 
-   private Map<String, BiConsumer<PavaDefaultThreeAddressCode, Context>> map = Map.ofEntries(
+    private Map<String, BiConsumer<PavaDefaultThreeAddressCode, Context>> map = Map.ofEntries(
             Map.entry(PavaDefaultThreeAddressCode.ADD, (code, context) -> {
             }),
             Map.entry(PavaDefaultThreeAddressCode.ASSIGN, (code, context) -> {
@@ -30,7 +30,11 @@ public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
         // 运行pava代码
         List<PavaDefaultThreeAddressCode> pavaDefaultThreeAddressCodes = pavaCode.pavaCode();
         for (PavaDefaultThreeAddressCode threeAddressCode : pavaDefaultThreeAddressCodes) {
-            map.get(threeAddressCode.getOperator()).accept(threeAddressCode, context);
+            BiConsumer<PavaDefaultThreeAddressCode, Context> consumer = map.get(threeAddressCode.getOperator());
+            if (consumer == null) {
+                throw new RuntimeException("无法解析三地址代码：" + threeAddressCode);
+            }
+            consumer.accept(threeAddressCode, context);
         }
         return 0;
     }

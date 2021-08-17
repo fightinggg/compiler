@@ -43,7 +43,7 @@ public class PavaDefaultThreeAddressCode {
     }
 
     public static PavaDefaultThreeAddressCode decode(String code) {
-        List<String> s = Arrays.stream(code.split(" ")).filter(Objects::nonNull).toList();
+        List<String> s = Arrays.stream(code.split(" ")).filter(o -> o.length() > 0).toList();
         return new PavaDefaultThreeAddressCode(s.get(0), s.get(1), s.get(2), s.get(3));
     }
 }
