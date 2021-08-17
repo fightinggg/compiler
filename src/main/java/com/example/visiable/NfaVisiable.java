@@ -23,14 +23,12 @@ public class NfaVisiable {
                 .collect(Collectors.groupingBy(strings -> List.of(strings.get(0), strings.get(1))))
                 .entrySet().stream()
                 .map(edge -> {
-                    final List<String> edgeSymbol = edge.getValue().stream().map(o -> o.get(2)).collect(Collectors.toList());
-                    edgeSymbol.sort(String::compareTo);
-                    final String collect = IntStream.range(0, edgeSymbol.size()).mapToObj(o -> o).collect(Collectors.groupingBy(new Function<Integer, Object>() {
-                        @Override
-                        public Object apply(Integer integer) {
-                            return integer / 10;
-                        }
-                    })).values().stream().map(o -> o.stream().map(edgeSymbol::get).toList())
+                    final List<String> edgeSymbol = edge.getValue().stream().map(o -> o.get(2))
+                            .sorted(String::compareTo)
+                            .collect(Collectors.toList());
+                    final String collect = IntStream.range(0, edgeSymbol.size())
+                            .boxed()
+                            .collect(Collectors.groupingBy((Function<Integer, Object>) integer -> integer / 10)).values().stream().map(o -> o.stream().map(edgeSymbol::get).toList())
                             .map(Object::toString)
                             .map(o -> String.join(",", o))
                             .collect(Collectors.joining("\n"));

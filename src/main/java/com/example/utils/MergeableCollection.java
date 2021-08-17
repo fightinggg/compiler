@@ -26,7 +26,6 @@ public class MergeableCollection<T> implements Collection<T> {
     @Override
     public boolean contains(Object o) {
         throw new RuntimeException("unsupport for contains");
-//        return c1.contains(o) || c2.contains(o);
     }
 
     @Override

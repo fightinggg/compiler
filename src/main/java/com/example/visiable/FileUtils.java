@@ -10,8 +10,6 @@ public class FileUtils {
     public static void writeFile(String name, String dot) {
         try (OutputStream outputStream = new FileOutputStream(name)) {
             outputStream.write(dot.getBytes(StandardCharsets.UTF_8));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
