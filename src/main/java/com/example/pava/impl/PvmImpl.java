@@ -84,6 +84,7 @@ public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
                 // 放入返回地址
                 context.getStack().push(context.getIntMemory().get(code.getTarget()));
                 context.setPc(context.getLabelPoint().get(functionName));
+                throw new RuntimeException("todo");
             })
     );
 
