@@ -26,7 +26,7 @@ public class PavaDefaultThreeAddressCode {
     public static final String LABEL = "label";
     public static final String JFALSE = "jFalse";
     public static final String JUMP = "jump";
-    public static final String CALL = "call";
+    public static final String CALL = "call"; // 调用函数op1, 返回值储存于target
     public static final String PARMA_PUT = "parmaPut";
     public static final String PARMA_LOAD = "parmaLoad";
     public static final String LT = "lt";

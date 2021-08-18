@@ -14,93 +14,107 @@ public class PvmImplTest {
 
     class Config {
         static String data = """
-                label                ifFunc     null       null     
-                parmaLoad            x          null       null     
-                assignNumber         symbol_0   1          null     
-                equal                symbol_1   a          symbol_0 
-                jFalse               label_4    symbol_1   null     
-                assignNumber         symbol_2   1          null     
-                return               symbol_2   null       null     
-                jump                 label_5    symbol_1   null     
-                label                label_4    null       null     
-                assignNumber         symbol_3   2          null     
-                return               symbol_3   null       null     
-                label                label_5    null       null     
-                label                fib        null       null     
-                parmaLoad            x          null       null     
-                assignNumber         symbol_6   2          null     
-                lt                   symbol_7   x          symbol_6 
-                jFalse               label_9    symbol_7   null     
-                assignNumber         symbol_8   1          null     
-                return               symbol_8   null       null     
-                label                label_9    null       null     
-                parmaPut             symbol_11  null       null     
-                call                 symbol_12  fib        null     
-                parmaPut             symbol_14  null       null     
-                call                 symbol_15  fib        null     
-                add                  symbol_16  symbol_12  symbol_15
-                return               symbol_16  null       null     
-                label                main       null       null     
-                assignNumber         symbol_17  1          null     
-                assign               a          symbol_17  null     
-                assignNumber         symbol_18  2          null     
-                assign               b          symbol_18  null     
-                add                  symbol_19  a          b        
-                assign               d          symbol_19  null     
-                assignNumber         symbol_20  0          null     
-                add                  symbol_21  d          symbol_20
-                assign               e          symbol_21  null     
-                assignString         symbol_22  "abc"      null     
-                assign               s          symbol_22  null     
-                call                 symbol_23  f1         null     
-                parmaPut             symbol_24  null       null     
-                call                 symbol_25  f2         null     
-                add                  symbol_26  symbol_23  symbol_25
-                assign               invoke     symbol_26  null     
-                add                  symbol_27  a          b        
-                jFalse               label_30   symbol_27  null     
-                assignNumber         symbol_28  1          null     
-                update               symbol_29  symbol_28  null     
-                label                label_30   null       null     
-                label                label_37   null       null     
-                add                  symbol_31  a          b        
-                jFalse               label_36   symbol_31  null     
-                assignNumber         symbol_32  2          null     
-                update               symbol_33  symbol_32  null     
-                assignNumber         symbol_34  1          null     
-                update               symbol_35  symbol_34  null     
-                label                label_37   null       null     
-                label                label_36   null       null     
-                assignNumber         symbol_38  0          null     
-                assign               i          symbol_38  null     
-                label                label_44   null       null     
-                jFalse               label_45   i          null     
-                add                  symbol_42  s          i        
-                update               symbol_43  symbol_42  null     
-                assignNumber         symbol_39  1          null     
-                add                  symbol_40  i          symbol_39
-                update               symbol_41  symbol_40  null     
-                jump                 label_44   null       null     
-                label                label_45   null       null     
-                assignNumber         symbol_46  0          null     
-                assign               i          symbol_46  null     
-                label                label_58   null       null     
-                jFalse               label_59   i          null     
-                label                label_54   null       null     
-                jFalse               label_53   i          null     
-                assignNumber         symbol_50  1          null     
-                add                  symbol_51  c          symbol_50
-                update               symbol_52  symbol_51  null     
-                label                label_54   null       null     
-                label                label_53   null       null     
-                assignNumber         symbol_55  1          null     
-                add                  symbol_56  a          symbol_55
-                update               symbol_57  symbol_56  null     
-                assignNumber         symbol_47  1          null     
-                add                  symbol_48  i          symbol_47
-                update               symbol_49  symbol_48  null     
-                jump                 label_58   null       null     
-                label                label_59   null       null     
+                label                ifFunc     null       null     \s
+                parmaLoad            x          null       null     \s
+                assignNumber         symbol_0   1          null     \s
+                equal                symbol_1   x          symbol_0 \s
+                jFalse               label_4    symbol_1   null     \s
+                assignNumber         symbol_2   1          null     \s
+                return               symbol_2   null       null     \s
+                jump                 label_5    symbol_1   null     \s
+                label                label_4    null       null     \s
+                assignNumber         symbol_3   2          null     \s
+                return               symbol_3   null       null     \s
+                label                label_5    null       null     \s
+                label                fib        null       null     \s
+                parmaLoad            x          null       null     \s
+                assignNumber         symbol_6   2          null     \s
+                lt                   symbol_7   x          symbol_6 \s
+                jFalse               label_9    symbol_7   null     \s
+                assignNumber         symbol_8   1          null     \s
+                return               symbol_8   null       null     \s
+                label                label_9    null       null     \s
+                parmaPut             symbol_11  null       null     \s
+                call                 symbol_12  fib        null     \s
+                parmaPut             symbol_14  null       null     \s
+                call                 symbol_15  fib        null     \s
+                add                  symbol_16  symbol_12  symbol_15\s
+                return               symbol_16  null       null     \s
+                label                main       null       null     \s
+                assignNumber         symbol_17  10         null     \s
+                assign               a          symbol_17  null     \s
+                assignNumber         symbol_18  2          null     \s
+                assign               b          symbol_18  null     \s
+                add                  symbol_19  a          b        \s
+                assign               d          symbol_19  null     \s
+                assignNumber         symbol_20  0          null     \s
+                add                  symbol_21  d          symbol_20\s
+                assign               e          symbol_21  null     \s
+                parmaPut             symbol_22  null       null     \s
+                call                 symbol_23  fib        null     \s
+                parmaPut             symbol_24  null       null     \s
+                call                 symbol_25  fib        null     \s
+                add                  symbol_26  symbol_23  symbol_25\s
+                assign               fib7       symbol_26  null     \s
+                add                  symbol_27  a          b        \s
+                jFalse               label_30   symbol_27  null     \s
+                assignNumber         symbol_28  1          null     \s
+                update               symbol_29  symbol_28  null     \s
+                label                label_30   null       null     \s
+                label                label_42   null       null     \s
+                add                  symbol_31  a          b        \s
+                jFalse               label_41   symbol_31  null     \s
+                assignNumber         symbol_32  2          null     \s
+                update               symbol_33  symbol_32  null     \s
+                assignNumber         symbol_34  1          null     \s
+                update               symbol_35  symbol_34  null     \s
+                assignNumber         symbol_36  1          null     \s
+                sub                  symbol_37  a          symbol_36\s
+                update               symbol_38  symbol_37  null     \s
+                assignNumber         symbol_39  0          null     \s
+                update               symbol_40  symbol_39  null     \s
+                label                label_42   null       null     \s
+                label                label_41   null       null     \s
+                assignNumber         symbol_43  0          null     \s
+                assign               i          symbol_43  null     \s
+                label                label_51   null       null     \s
+                assignNumber         symbol_44  10         null     \s
+                lt                   symbol_45  i          symbol_44\s
+                jFalse               label_52   symbol_45  null     \s
+                add                  symbol_49  s          i        \s
+                update               symbol_50  symbol_49  null     \s
+                assignNumber         symbol_46  1          null     \s
+                add                  symbol_47  i          symbol_46\s
+                update               symbol_48  symbol_47  null     \s
+                jump                 label_51   null       null     \s
+                label                label_52   null       null     \s
+                assignNumber         symbol_53  0          null     \s
+                assign               i          symbol_53  null     \s
+                label                label_71   null       null     \s
+                assignNumber         symbol_54  20         null     \s
+                lt                   symbol_55  i          symbol_54\s
+                jFalse               label_72   symbol_55  null     \s
+                assignNumber         symbol_59  3          null     \s
+                assign               x          symbol_59  null     \s
+                label                label_67   null       null     \s
+                jFalse               label_66   x          null     \s
+                assignNumber         symbol_60  1          null     \s
+                add                  symbol_61  c          symbol_60\s
+                update               symbol_62  symbol_61  null     \s
+                assignNumber         symbol_63  1          null     \s
+                sub                  symbol_64  x          symbol_63\s
+                update               symbol_65  symbol_64  null     \s
+                label                label_67   null       null     \s
+                label                label_66   null       null     \s
+                assignNumber         symbol_68  1          null     \s
+                add                  symbol_69  a          symbol_68\s
+                update               symbol_70  symbol_69  null     \s
+                assignNumber         symbol_56  1          null     \s
+                add                  symbol_57  i          symbol_56\s
+                update               symbol_58  symbol_57  null     \s
+                jump                 label_71   null       null     \s
+                label                label_72   null       null     \s
+                return               fib7       null       null     \s
                 """;
     }
 }
