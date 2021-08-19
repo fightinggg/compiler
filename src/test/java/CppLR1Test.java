@@ -97,7 +97,7 @@ public class CppLR1Test {
     public void ifTest() {
         String code = """
                 void ifFunc(int x){
-                    if(a==1){
+                    if(x==1){
                         return 1;
                     }
                 }
