@@ -32,6 +32,8 @@ public class PavaDefaultThreeAddressCode {
     public static final String LT = "lt";
     public static final String ASSIGN_STRING = "assignString";
     public static final String UPDATE = "update";
+    public static final String DEFINE_SYMBOL = "defineSymbol";
+    public static final String UNDEFINE_SYMBOL = "undefineSymbol";
     private String operator;
     private String target;
     private String op1;

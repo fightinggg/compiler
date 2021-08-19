@@ -22,14 +22,14 @@ public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
         private Integer pc;
         @ToString.Exclude
         private Map<String, Integer> labelPoint;
-        private Map<String, Integer> intMemory;
+        private Map<String, Integer> register;
         private Stack<Integer> stack;
 
         public Context(PavaCode<List<PavaDefaultThreeAddressCode>> pavaCode) {
             pc = 0;
-            intMemory = new HashMap<>();
             labelPoint = new HashMap<>();
             stack = new Stack<>();
+            register = new HashMap<>();
 
             IntStream.range(0, pavaCode.pavaCode().size()).forEach(i -> {
                 PavaDefaultThreeAddressCode threeAddressCode = pavaCode.pavaCode().get(i);
@@ -44,24 +44,24 @@ public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
 
     private final Map<String, BiConsumer<PavaDefaultThreeAddressCode, Context>> map = Map.ofEntries(
             Map.entry(PavaDefaultThreeAddressCode.ADD, (code, context) -> {
-                int op1 = context.getIntMemory().get(code.getOp1());
-                int op2 = context.getIntMemory().get(code.getOp2());
-                context.getIntMemory().put(code.getTarget(), op1 + op2);
+                int op1 = context.getRegister().get(code.getOp1());
+                int op2 = context.getRegister().get(code.getOp2());
+                context.getRegister().put(code.getTarget(), op1 + op2);
                 context.setPc(context.getPc() + 1);
             }),
             Map.entry(PavaDefaultThreeAddressCode.EQUAL, (code, context) -> {
-                int op1 = context.getIntMemory().get(code.getOp1());
-                int op2 = context.getIntMemory().get(code.getOp2());
-                context.getIntMemory().put(code.getTarget(), op1 == op2 ? 1 : 0);
+                int op1 = context.getRegister().get(code.getOp1());
+                int op2 = context.getRegister().get(code.getOp2());
+                context.getRegister().put(code.getTarget(), op1 == op2 ? 1 : 0);
                 context.setPc(context.getPc() + 1);
             }),
             Map.entry(PavaDefaultThreeAddressCode.ASSIGN_NUMBER, (code, context) -> {
-                context.getIntMemory().put(code.getTarget(), Integer.parseInt(code.getOp1()));
+                context.getRegister().put(code.getTarget(), Integer.parseInt(code.getOp1()));
                 context.setPc(context.getPc() + 1);
             }),
             Map.entry(PavaDefaultThreeAddressCode.ASSIGN, (code, context) -> {
-                int op1 = context.getIntMemory().get(code.getOp1());
-                context.getIntMemory().put(code.getTarget(), op1);
+                int op1 = context.getRegister().get(code.getOp1());
+                context.getRegister().put(code.getTarget(), op1);
                 context.setPc(context.getPc() + 1);
             }),
             Map.entry(PavaDefaultThreeAddressCode.LABEL, (code, context) -> {
@@ -71,18 +71,18 @@ public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
                 if (context.getStack().empty()) {
                     throw new RuntimeException("虚拟机内部错误, pava栈空");
                 }
-                context.getIntMemory().put(code.getTarget(), context.getStack().pop());
+                context.getRegister().put(code.getTarget(), context.getStack().pop());
                 context.setPc(context.getPc() + 1);
             }),
             Map.entry(PavaDefaultThreeAddressCode.PARMA_PUT, (code, context) -> {
-                context.getStack().push(context.getIntMemory().get(code.getTarget()));
+                context.getStack().push(context.getRegister().get(code.getTarget()));
                 context.setPc(context.getPc() + 1);
             }),
             Map.entry(PavaDefaultThreeAddressCode.CALL, (code, context) -> {
                 String returnAddress = code.getTarget();
                 String functionName = code.getOp1();
                 // 放入返回地址
-                context.getStack().push(context.getIntMemory().get(code.getTarget()));
+                context.getStack().push(context.getRegister().get(code.getTarget()));
                 context.setPc(context.getLabelPoint().get(functionName));
                 throw new RuntimeException("todo");
             })

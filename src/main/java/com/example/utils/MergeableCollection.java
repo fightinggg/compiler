@@ -8,9 +8,14 @@ public class MergeableCollection<T> implements Collection<T> {
     private final Integer size;
 
     @SafeVarargs
-    public MergeableCollection(Collection<T>... c) {
+    private MergeableCollection(Collection<T>... c) {
         this.c = c;
         this.size = Arrays.stream(c).mapToInt(Collection::size).sum();
+    }
+
+    @SafeVarargs
+    public static <T> Collection<T> merge(Collection<T>... c) {
+        return new MergeableCollection<T>(c);
     }
 
     @Override
