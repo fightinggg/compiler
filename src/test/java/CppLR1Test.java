@@ -109,7 +109,8 @@ public class CppLR1Test {
     public void ifElseTest() {
         String code = """
                 void ifFunc(int x){
-                    if(a==1){
+                    if(x==1+2*3){
+                        int y = 1;
                         return 1;
                     } else {
                         return 2;
