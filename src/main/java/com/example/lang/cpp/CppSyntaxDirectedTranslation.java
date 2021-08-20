@@ -4,9 +4,15 @@ import com.example.sdt.SyntaxDirectedTranslation;
 import com.example.syntaxtree.SyntaxTree;
 import com.example.utils.MergeableCollection;
 import com.example.pava.impl.PavaDefaultThreeAddressCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+
+import static java.util.Map.entry;
+
 
 public class CppSyntaxDirectedTranslation {
 
@@ -49,18 +55,24 @@ public class CppSyntaxDirectedTranslation {
         String varPrefix = "symbol_";
         String jumpLabelPrefix = "jump_label_";
         String returnLabelPrefix = "return_label_";
-        final Map<String, BiConsumer<Map<String, Object>, List<Map<String, Object>>>> innerNodeConfig = Map.ofEntries(
-                Map.entry("type -> symbol", (rt, sonList) -> {
+
+
+        final Map<String, SyntaxDirectedTranslation.SyntaxDirectedTranslationConsumer> innerNodeConfig = Map.ofEntries(
+                entry("type -> symbol", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     rt.put("typeName", sonList.get(0).get("tokenRaw"));
                 }),
-                Map.entry("leftSymbol -> symbol", (rt, sonList) -> {
+                entry("leftSymbol -> symbol", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     rt.put("address", sonList.get(0).get("tokenRaw"));
                 }),
-                Map.entry("someRightSymbolDefineJoinByCommaNotEmpty -> type rightSymbol", (rt, sonList) -> {
+                entry("someRightSymbolDefineJoinByCommaNotEmpty -> type rightSymbol", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     rt.put("typeList", List.of(sonList.get(0).get("typeName")));
                     rt.put("addressList", List.of(sonList.get(1).get("address")));
                 }),
-                Map.entry("someRightSymbolDefineJoinByCommaNotEmpty -> someRightSymbolDefineJoinByCommaNotEmpty comma type rightSymbol", (rt, sonList) -> {
+                entry("someRightSymbolDefineJoinByCommaNotEmpty -> someRightSymbolDefineJoinByCommaNotEmpty comma type rightSymbol", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     List<String> typeList = new ArrayList<>(toStringCollection(sonList.get(0).get("typeList")));
                     List<String> addressList = new ArrayList<>(toStringCollection(sonList.get(0).get("addressList")));
                     typeList.add(toString(sonList.get(2).get("typeName")));
@@ -68,7 +80,8 @@ public class CppSyntaxDirectedTranslation {
                     rt.put("typeList", typeList);
                     rt.put("addressList", addressList);
                 }),
-                Map.entry("functionStatement -> type symbol leftBracket rightBracket leftCurlyBracket block rightCurlyBracket", (rt, sonList) -> {
+                entry("functionStatement -> type symbol leftBracket rightBracket leftCurlyBracket block rightCurlyBracket", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     String funcionName = toString(sonList.get(1).get("tokenRaw"));
 
                     Collection<PavaDefaultThreeAddressCode> functionLabelCodes = List.of(new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.LABEL, funcionName, null, null));
@@ -83,7 +96,8 @@ public class CppSyntaxDirectedTranslation {
 
                     rt.put("codes", codes);
                 }),
-                Map.entry("functionStatement -> type symbol leftBracket someRightSymbolDefineJoinByCommaNotEmpty rightBracket leftCurlyBracket block rightCurlyBracket", (rt, sonList) -> {
+                entry("functionStatement -> type symbol leftBracket someRightSymbolDefineJoinByCommaNotEmpty rightBracket leftCurlyBracket block rightCurlyBracket", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     String funcionName = toString(sonList.get(1).get("tokenRaw"));
 
                     Collection<PavaDefaultThreeAddressCode> functionLabelCodes = List.of(new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.LABEL, funcionName, null, null));
@@ -116,14 +130,16 @@ public class CppSyntaxDirectedTranslation {
 
                     rt.put("codes", codes);
                 }),
-                Map.entry("someRightSymbolJoinByCommaNotEmpty -> rightSymbol", (rt, sonList) -> {
+                entry("someRightSymbolJoinByCommaNotEmpty -> rightSymbol", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     String rightSymbolAddress = toString(sonList.get(0).get("address"));
                     Collection<PavaDefaultThreeAddressCode> rightSymbolCodes = toCodes(sonList.get(0).get("codes"));
 
                     rt.put("addressList", List.of(rightSymbolAddress));
                     rt.put("codes", rightSymbolCodes);
                 }),
-                Map.entry("someRightSymbolJoinByCommaNotEmpty -> someRightSymbolJoinByCommaNotEmpty comma rightSymbol", (rt, sonList) -> {
+                entry("someRightSymbolJoinByCommaNotEmpty -> someRightSymbolJoinByCommaNotEmpty comma rightSymbol", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     String rightSymbolAddress = toString(sonList.get(2).get("address"));
                     Collection<PavaDefaultThreeAddressCode> rightSymbolCodes = toCodes(sonList.get(2).get("codes"));
 
@@ -136,7 +152,8 @@ public class CppSyntaxDirectedTranslation {
                     rt.put("addressList", addressList);
                     rt.put("codes", codes);
                 }),
-                Map.entry("functionInvoke -> symbol leftBracket rightBracket", (rt, sonList) -> {
+                entry("functionInvoke -> symbol leftBracket rightBracket", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     String address = varPrefix + tmpId[0]++;
                     String functionName = toString(sonList.get(0).get("tokenRaw"));
 
@@ -146,7 +163,8 @@ public class CppSyntaxDirectedTranslation {
                     rt.put("address", address);
                     rt.put("scope", List.of(address));
                 }),
-                Map.entry("functionInvoke -> symbol leftBracket someRightSymbolJoinByCommaNotEmpty rightBracket", (rt, sonList) -> {
+                entry("functionInvoke -> symbol leftBracket someRightSymbolJoinByCommaNotEmpty rightBracket", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     String address = varPrefix + tmpId[0]++;
                     String functionName = toString(sonList.get(0).get("tokenRaw"));
 
@@ -161,12 +179,14 @@ public class CppSyntaxDirectedTranslation {
                     rt.put("address", address);
                     rt.put("scope", List.of(address));
                 }),
-                Map.entry("rightSymbol -> symbol", (rt, sonList) -> {
+                entry("rightSymbol -> symbol", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     rt.put("codes", new ArrayList<>());
                     rt.put("address", sonList.get(0).get("tokenRaw"));
                     rt.put("scope", List.of());
                 }),
-                Map.entry("rightSymbol -> number", (rt, sonList) -> {
+                entry("rightSymbol -> number", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     String address = varPrefix + tmpId[0]++;
                     String ad = toString(sonList.get(0).get("tokenRaw"));
                     List<PavaDefaultThreeAddressCode> currentCode = List.of(new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.ASSIGN_NUMBER, address, ad, null));
@@ -175,10 +195,12 @@ public class CppSyntaxDirectedTranslation {
                     rt.put("address", address);
                     rt.put("scope", List.of(address));
                 }),
-                Map.entry("rightSymbol -> functionInvoke", (rt, sonList) -> {
+                entry("rightSymbol -> functionInvoke", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     rt.putAll(sonList.get(0));
                 }),
-                Map.entry("rightSymbol -> string", (rt, sonList) -> {
+                entry("rightSymbol -> string", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     String address = varPrefix + tmpId[0]++;
                     String ad = toString(sonList.get(0).get("tokenRaw"));
                     List<PavaDefaultThreeAddressCode> currentCode = List.of(new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.ASSIGN_STRING, address, ad, null));
@@ -187,28 +209,36 @@ public class CppSyntaxDirectedTranslation {
                     rt.put("address", address);
                     rt.put("scope", List.of(address));
                 }),
-                Map.entry("rightSymbol -> rightSymbol mul rightSymbol", (rt, sonList) -> {
+                entry("rightSymbol -> rightSymbol mul rightSymbol", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     binaryOperator(varPrefix, tmpId, rt, sonList, PavaDefaultThreeAddressCode.MUL);
                 }),
-                Map.entry("rightSymbol -> rightSymbol div rightSymbol", (rt, sonList) -> {
+                entry("rightSymbol -> rightSymbol div rightSymbol", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     binaryOperator(varPrefix, tmpId, rt, sonList, PavaDefaultThreeAddressCode.DIV);
                 }),
-                Map.entry("rightSymbol -> rightSymbol mod rightSymbol", (rt, sonList) -> {
+                entry("rightSymbol -> rightSymbol mod rightSymbol", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     binaryOperator(varPrefix, tmpId, rt, sonList, PavaDefaultThreeAddressCode.MOD);
                 }),
-                Map.entry("rightSymbol -> rightSymbol add rightSymbol", (rt, sonList) -> {
+                entry("rightSymbol -> rightSymbol add rightSymbol", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     binaryOperator(varPrefix, tmpId, rt, sonList, PavaDefaultThreeAddressCode.ADD);
                 }),
-                Map.entry("rightSymbol -> rightSymbol sub rightSymbol", (rt, sonList) -> {
+                entry("rightSymbol -> rightSymbol sub rightSymbol", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     binaryOperator(varPrefix, tmpId, rt, sonList, PavaDefaultThreeAddressCode.SUB);
                 }),
-                Map.entry("rightSymbol -> rightSymbol lt rightSymbol", (rt, sonList) -> {
+                entry("rightSymbol -> rightSymbol lt rightSymbol", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     binaryOperator(varPrefix, tmpId, rt, sonList, PavaDefaultThreeAddressCode.LT);
                 }),
-                Map.entry("rightSymbol -> rightSymbol doubleEq rightSymbol", (rt, sonList) -> {
+                entry("rightSymbol -> rightSymbol doubleEq rightSymbol", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     binaryOperator(varPrefix, tmpId, rt, sonList, PavaDefaultThreeAddressCode.EQUAL);
                 }),
-                Map.entry("symbolStatementSentence -> type leftSymbol eq rightSymbol", (rt, sonList) -> {
+                entry("symbolStatementSentence -> type leftSymbol eq rightSymbol", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     String address = toString(sonList.get(1).get("address"));
                     String rightSymbolAddress = toString(sonList.get(3).get("address"));
                     List<PavaDefaultThreeAddressCode> currentCode = List.of(new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.ASSIGN, address, rightSymbolAddress, null));
@@ -222,7 +252,8 @@ public class CppSyntaxDirectedTranslation {
                     rt.put("codes", codes);
                     rt.put("scope", scope);
                 }),
-                Map.entry("symbolUpdateSentence -> leftSymbol eq rightSymbol", (rt, sonList) -> {
+                entry("symbolUpdateSentence -> leftSymbol eq rightSymbol", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     String address = toString(sonList.get(0).get("address"));
                     String rightSymbolAddress = toString(sonList.get(2).get("address"));
                     Collection<PavaDefaultThreeAddressCode> rightSymbolCodes = toCodes(sonList.get(2).get("codes"));
@@ -237,7 +268,8 @@ public class CppSyntaxDirectedTranslation {
                     rt.put("scope", rightSymbolScope);
                     rt.put("address", address);
                 }),
-                Map.entry("returnSentence -> return rightSymbol", (rt, sonList) -> {
+                entry("returnSentence -> return rightSymbol", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     String returnLabel = returnLabelPrefix + tmpId[0]++;
                     String address = toString(sonList.get(1).get("address"));
                     Collection<PavaDefaultThreeAddressCode> rightSymbolCodes = toCodes(sonList.get(1).get("codes"));
@@ -253,16 +285,20 @@ public class CppSyntaxDirectedTranslation {
                     rt.put("codes", codes);
                     rt.put("scope", rightSymbolScope);
                 }),
-                Map.entry("sentence -> symbolStatementSentence", (rt, sonList) -> {
+                entry("sentence -> symbolStatementSentence", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     rt.putAll(sonList.get(0));
                 }),
-                Map.entry("sentence -> symbolUpdateSentence", (rt, sonList) -> {
+                entry("sentence -> symbolUpdateSentence", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     rt.putAll(sonList.get(0));
                 }),
-                Map.entry("sentence -> returnSentence", (rt, sonList) -> {
+                entry("sentence -> returnSentence", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     rt.putAll(sonList.get(0));
                 }),
-                Map.entry("ifBlock -> if leftBracket rightSymbol rightBracket blockUnit", (rt, sonList) -> {
+                entry("ifBlock -> if leftBracket rightSymbol rightBracket blockUnit", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     String endLabel = returnLabelPrefix + tmpId[0]++;
 
                     // rightSymbol 的变量提升
@@ -301,7 +337,8 @@ public class CppSyntaxDirectedTranslation {
                     rt.put("codes", codes);
                     rt.put("scope", List.of());
                 }),
-                Map.entry("ifBlock -> if leftBracket rightSymbol rightBracket blockUnit else blockUnit", (rt, sonList) -> {
+                entry("ifBlock -> if leftBracket rightSymbol rightBracket blockUnit else blockUnit", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     String labelFalseBegin = returnLabelPrefix + tmpId[0]++;
                     String labelEnd = returnLabelPrefix + tmpId[0]++;
 
@@ -350,7 +387,8 @@ public class CppSyntaxDirectedTranslation {
                     rt.put("scope", List.of());
 
                 }),
-                Map.entry("forBlock -> for leftBracket sentence semicolon rightSymbol semicolon sentence rightBracket blockUnit", (rt, sonList) -> {
+                entry("forBlock -> for leftBracket sentence semicolon rightSymbol semicolon sentence rightBracket blockUnit", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     String labelLoopBegin = returnLabelPrefix + tmpId[0]++;
                     String labelEnd = returnLabelPrefix + tmpId[0]++;
 
@@ -376,7 +414,8 @@ public class CppSyntaxDirectedTranslation {
                     rt.put("codes", codes);
                     rt.put("scope", List.of());
                 }),
-                Map.entry("whileBlock -> while leftBracket rightSymbol rightBracket blockUnit", (rt, sonList) -> {
+                entry("whileBlock -> while leftBracket rightSymbol rightBracket blockUnit", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     String endLabel = returnLabelPrefix + tmpId[0]++;
                     String beginLabel = returnLabelPrefix + tmpId[0]++;
 
@@ -399,19 +438,24 @@ public class CppSyntaxDirectedTranslation {
                     rt.put("scope", List.of());
 
                 }),
-                Map.entry("blockUnit -> sentence semicolon", (rt, sonList) -> {
+                entry("blockUnit -> sentence semicolon", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     rt.putAll(sonList.get(0));
                 }),
-                Map.entry("blockUnit -> ifBlock", (rt, sonList) -> {
+                entry("blockUnit -> ifBlock", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     rt.putAll(sonList.get(0));
                 }),
-                Map.entry("blockUnit -> forBlock", (rt, sonList) -> {
+                entry("blockUnit -> forBlock", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     rt.putAll(sonList.get(0));
                 }),
-                Map.entry("blockUnit -> whileBlock", (rt, sonList) -> {
+                entry("blockUnit -> whileBlock", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     rt.putAll(sonList.get(0));
                 }),
-                Map.entry("blockUnit -> leftCurlyBracket block rightCurlyBracket", (rt, sonList) -> {
+                entry("blockUnit -> leftCurlyBracket block rightCurlyBracket", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     // 变量提升
                     Collection<String> scope = toStringCollection(sonList.get(1).get("scope"));
                     Collection<PavaDefaultThreeAddressCode> scopeDefineCodes = scope.stream()
@@ -429,10 +473,12 @@ public class CppSyntaxDirectedTranslation {
                     rt.put("codes", codes);
                     rt.put("scope", List.of());
                 }),
-                Map.entry("block -> blockUnit", (rt, sonList) -> {
+                entry("block -> blockUnit", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     rt.putAll(sonList.get(0));
                 }),
-                Map.entry("block -> block block", (rt, sonList) -> {
+                entry("block -> block block", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     Collection<PavaDefaultThreeAddressCode> codes1 = toCodes(sonList.get(0).get("codes"));
                     Collection<PavaDefaultThreeAddressCode> codes2 = toCodes(sonList.get(1).get("codes"));
                     Collection<PavaDefaultThreeAddressCode> codes = MergeableCollection.merge(codes1, codes2);
@@ -444,20 +490,26 @@ public class CppSyntaxDirectedTranslation {
                     rt.put("codes", codes);
                     rt.put("scope", scope);
                 }),
-                Map.entry("cFileUnit -> functionStatement", (rt, sonList) -> {
+                entry("cFileUnit -> functionStatement", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     rt.putAll(sonList.get(0));
                 }),
-                Map.entry("someCFileUnit -> cFileUnit", (rt, sonList) -> {
+                entry("someCFileUnit -> cFileUnit", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     rt.putAll(sonList.get(0));
                 }),
-                Map.entry("someCFileUnit -> someCFileUnit someCFileUnit", (rt, sonList) -> {
+                entry("someCFileUnit -> someCFileUnit someCFileUnit", (rt, sonList, accessAllSon) -> {
+                    accessAllSon.run();
                     Collection<PavaDefaultThreeAddressCode> codes1 = toCodes(sonList.get(0).get("codes"));
                     Collection<PavaDefaultThreeAddressCode> codes2 = toCodes(sonList.get(1).get("codes"));
                     Collection<PavaDefaultThreeAddressCode> codes = MergeableCollection.merge(codes1, codes2);
                     rt.put("codes", codes);
                 })
         );
-        return toCodes(SyntaxDirectedTranslation.translation(syntaxTree, innerNodeConfig).get("codes"));
+
+        Map<SyntaxTree.Node, Map<String, Object>> translation = SyntaxDirectedTranslation.translation(new HashMap<>(), syntaxTree, innerNodeConfig);
+
+        return toCodes(translation.get(syntaxTree.getRoot()).get("codes"));
     }
 
 
