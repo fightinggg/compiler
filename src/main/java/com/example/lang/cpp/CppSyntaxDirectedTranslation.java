@@ -520,8 +520,15 @@ public class CppSyntaxDirectedTranslation {
 
                     Collection<PavaDefaultThreeAddressCode> codes = MergeableCollection.merge(forBeginCodes,
                             loopBeginCodes, forCompareCodes, jumpCodes, forBodyCodes, forBodyEndCodes, loopCodes, forEndCodes);
+
+                    Collection<String> scope1 = toStringCollection(sonList.get(2).get("scope"));
+                    Collection<String> scope2 = toStringCollection(sonList.get(4).get("scope"));
+                    Collection<String> scope3 = toStringCollection(sonList.get(6).get("scope"));
+                    Collection<String> scope4 = toStringCollection(sonList.get(8).get("scope"));
+                    Collection<String> scope = MergeableCollection.merge(scope1, scope2, scope3, scope4);
+
                     rt.put("codes", codes);
-                    rt.put("scope", List.of());
+                    rt.put("scope", scope);
                 }),
                 entry("whileBlock -> while leftBracket rightSymbol rightBracket blockUnit", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();

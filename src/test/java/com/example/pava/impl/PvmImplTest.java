@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class PvmImplTest {
     @Test
-    public void functionData() {
+    public void functionCode() {
         String code = """
                 int fib(int x){
                     if(x<2) return 1;
@@ -24,7 +24,24 @@ public class PvmImplTest {
     }
 
     @Test
-    public void whileData() {
+    public void forCode() {
+        String code = """
+                int main(){
+                    int a1 = 1;
+                    int a2 = 1;
+                    for(int i=2;i<10;i=i+1){
+                        int a3 = a1+a2;
+                        a1=a2;
+                        a2=a3;
+                    }
+                    return a2;
+                }
+                """;
+        test(code,"CppLR1Test.forData");
+    }
+
+    @Test
+    public void whileCode() {
         String code = """
                 int main(){
                     int a1 = 1;
