@@ -2,7 +2,7 @@ package com.example.pava.impl;
 
 import com.example.pava.PavaCode;
 import com.example.pava.Pvm;
-import lombok.Data;
+import lombok.Getter;
 import lombok.ToString;
 
 import java.util.HashMap;
@@ -17,19 +17,30 @@ import java.util.stream.IntStream;
  */
 public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
 
-    @Data
+    private final static Object nullObj = new Object() {
+        @Override
+        public String toString() {
+            return "nullObj";
+        }
+    };
+
+    @ToString
     static class Context {
+        @Getter
         private Integer pc;
         @ToString.Exclude
-        private Map<String, Integer> labelPoint;
-        private Map<String, Integer> register;
-        private Stack<Integer> stack;
+        private final Map<String, Integer> labelPoint;
+        private Map<String, Object> register;
+        private final Stack<Object> stack;
+        private Object returnValueRegister = nullObj;
+
 
         public Context(PavaCode<List<PavaDefaultThreeAddressCode>> pavaCode) {
             pc = 0;
             labelPoint = new HashMap<>();
             stack = new Stack<>();
             register = new HashMap<>();
+            register.put(PavaDefaultThreeAddressCode.Reg.returnJumpRegister, nullObj);
 
             IntStream.range(0, pavaCode.pavaCode().size()).forEach(i -> {
                 PavaDefaultThreeAddressCode threeAddressCode = pavaCode.pavaCode().get(i);
@@ -40,51 +51,173 @@ public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
 
             pc = labelPoint.get("main");
         }
+
+        public void saveAllRegister() {
+            stack.push(new HashMap<>(Map.copyOf(register)));
+        }
+
+        public void loadAllRegister() {
+            register = (Map<String, Object>) stack.pop();
+        }
+
+        public Object getReg(String regName) {
+            if (regName.equals(PavaDefaultThreeAddressCode.Reg.returnValueRegisterName)) {
+                return returnValueRegister;
+            } else {
+                return register.get(regName);
+            }
+        }
+
+        public void defineReg(String regName) {
+            if (getReg(regName) != null) {
+                throw new RuntimeException("重复定义的寄存器");
+            } else {
+                if (regName.equals(PavaDefaultThreeAddressCode.Reg.returnValueRegisterName)) {
+                    throw new RuntimeException("不可定义Pvm内部寄存器");
+                } else {
+                    register.put(regName, nullObj);
+                }
+            }
+        }
+
+        public void undefineReg(String regName) {
+            if (getReg(regName) == null) {
+                throw new RuntimeException("找不到的寄存器");
+            } else {
+                if (regName.equals(PavaDefaultThreeAddressCode.Reg.returnValueRegisterName)) {
+                    throw new RuntimeException("不可删除Pvm内部寄存器");
+                } else {
+                    register.remove(regName);
+                }
+            }
+        }
+
+        public void putReg(String regName, Object o) {
+            if (getReg(regName) == null) {
+                throw new RuntimeException("未定义的寄存器");
+            } else {
+                if (regName.equals(PavaDefaultThreeAddressCode.Reg.returnValueRegisterName)) {
+                    returnValueRegister = o;
+                } else {
+                    register.put(regName, o);
+                }
+            }
+        }
+
+        public int getRegInt(String regName) {
+            return (Integer) getReg(regName);
+        }
+
+
+        public void nextPc() {
+            pc++;
+        }
+
+        public void pushStack(Object o) {
+            stack.push(o);
+        }
+
+
+        public Object popStack() {
+            return stack.pop();
+        }
+
+        public void clearReg() {
+            register.clear();
+            register.put(PavaDefaultThreeAddressCode.Reg.returnJumpRegister, nullObj);
+        }
+
+        public void jump(String op1) {
+            pc = labelPoint.get(op1);
+        }
+
+
+        public void jumpReg(String target) {
+            pc = labelPoint.get(register.get(target));
+        }
     }
 
     private final Map<String, BiConsumer<PavaDefaultThreeAddressCode, Context>> map = Map.ofEntries(
             Map.entry(PavaDefaultThreeAddressCode.ADD, (code, context) -> {
-                int op1 = context.getRegister().get(code.getOp1());
-                int op2 = context.getRegister().get(code.getOp2());
-                context.getRegister().put(code.getTarget(), op1 + op2);
-                context.setPc(context.getPc() + 1);
+                int op1 = context.getRegInt(code.getOp1());
+                int op2 = context.getRegInt(code.getOp2());
+                context.putReg(code.getTarget(), op1 + op2);
+                context.nextPc();
+            }),
+            Map.entry(PavaDefaultThreeAddressCode.SUB, (code, context) -> {
+                int op1 = context.getRegInt(code.getOp1());
+                int op2 = context.getRegInt(code.getOp2());
+                context.putReg(code.getTarget(), op1 - op2);
+                context.nextPc();
+            }),
+            Map.entry(PavaDefaultThreeAddressCode.LT, (code, context) -> {
+                int op1 = context.getRegInt(code.getOp1());
+                int op2 = context.getRegInt(code.getOp2());
+                context.putReg(code.getTarget(), op1 < op2 ? 1 : 0);
+                context.nextPc();
             }),
             Map.entry(PavaDefaultThreeAddressCode.EQUAL, (code, context) -> {
-                int op1 = context.getRegister().get(code.getOp1());
-                int op2 = context.getRegister().get(code.getOp2());
-                context.getRegister().put(code.getTarget(), op1 == op2 ? 1 : 0);
-                context.setPc(context.getPc() + 1);
+                int op1 = context.getRegInt(code.getOp1());
+                int op2 = context.getRegInt(code.getOp2());
+                context.putReg(code.getTarget(), op1 == op2 ? 1 : 0);
+                context.nextPc();
             }),
             Map.entry(PavaDefaultThreeAddressCode.ASSIGN_NUMBER, (code, context) -> {
-                context.getRegister().put(code.getTarget(), Integer.parseInt(code.getOp1()));
-                context.setPc(context.getPc() + 1);
+                context.putReg(code.getTarget(), Integer.parseInt(code.getOp1()));
+                context.nextPc();
             }),
             Map.entry(PavaDefaultThreeAddressCode.ASSIGN, (code, context) -> {
-                int op1 = context.getRegister().get(code.getOp1());
-                context.getRegister().put(code.getTarget(), op1);
-                context.setPc(context.getPc() + 1);
+                int op1 = context.getRegInt(code.getOp1());
+                context.putReg(code.getTarget(), op1);
+                context.nextPc();
             }),
             Map.entry(PavaDefaultThreeAddressCode.LABEL, (code, context) -> {
-                context.setPc(context.getPc() + 1);
+                context.nextPc();
             }),
-            Map.entry(PavaDefaultThreeAddressCode.PARMA_LOAD, (code, context) -> {
-                if (context.getStack().empty()) {
-                    throw new RuntimeException("虚拟机内部错误, pava栈空");
+            Map.entry(PavaDefaultThreeAddressCode.LOAD_FROM_STACK, (code, context) -> {
+                context.putReg(code.getTarget(), context.popStack());
+                context.nextPc();
+            }),
+            Map.entry(PavaDefaultThreeAddressCode.SAVE_TO_STACK, (code, context) -> {
+                context.pushStack(context.getReg(code.getTarget()));
+                context.nextPc();
+            }),
+            Map.entry(PavaDefaultThreeAddressCode.DEFINE_REG, (code, context) -> {
+                context.defineReg(code.getTarget());
+                context.nextPc();
+            }),
+            Map.entry(PavaDefaultThreeAddressCode.SAVE_ALL_REG_TO_STACK, (code, context) -> {
+                context.saveAllRegister();
+                context.nextPc();
+            }),
+            Map.entry(PavaDefaultThreeAddressCode.ASSIGN_STRING, (code, context) -> {
+                context.putReg(code.getTarget(), code.getOp1());
+                context.nextPc();
+            }),
+            Map.entry(PavaDefaultThreeAddressCode.CLEAR_REG, (code, context) -> {
+                context.clearReg();
+                context.nextPc();
+            }),
+            Map.entry(PavaDefaultThreeAddressCode.JUMP, (code, context) -> {
+                context.jump(code.getTarget());
+            }),
+            Map.entry(PavaDefaultThreeAddressCode.JFALSE, (code, context) -> {
+                if (context.getRegInt(code.getOp1()) == 0) {
+                    context.jump(code.getTarget());
+                } else {
+                    context.nextPc();
                 }
-                context.getRegister().put(code.getTarget(), context.getStack().pop());
-                context.setPc(context.getPc() + 1);
             }),
-            Map.entry(PavaDefaultThreeAddressCode.PARMA_PUT, (code, context) -> {
-                context.getStack().push(context.getRegister().get(code.getTarget()));
-                context.setPc(context.getPc() + 1);
+            Map.entry(PavaDefaultThreeAddressCode.UNDEFINE_SYMBOL, (code, context) -> {
+                context.undefineReg(code.getTarget());
+                context.nextPc();
             }),
-            Map.entry(PavaDefaultThreeAddressCode.CALL, (code, context) -> {
-                String returnAddress = code.getTarget();
-                String functionName = code.getOp1();
-                // 放入返回地址
-                context.getStack().push(context.getRegister().get(code.getTarget()));
-                context.setPc(context.getLabelPoint().get(functionName));
-                throw new RuntimeException("todo");
+            Map.entry(PavaDefaultThreeAddressCode.JUMP_REG, (code, context) -> {
+                context.jumpReg(code.getTarget());
+            }),
+            Map.entry(PavaDefaultThreeAddressCode.LOAD_ALL_REG_FROM_STACK, (code, context) -> {
+                context.loadAllRegister();
+                context.nextPc();
             })
     );
 
@@ -95,7 +228,7 @@ public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
 
         // 运行pava代码
         List<PavaDefaultThreeAddressCode> pavaDefaultThreeAddressCodes = pavaCode.pavaCode();
-        while (true) {
+        while (context.getPc() < pavaDefaultThreeAddressCodes.size()) {
             PavaDefaultThreeAddressCode threeAddressCode = pavaDefaultThreeAddressCodes.get(context.getPc());
             System.out.print("tac: " + threeAddressCode + ", ");
 
@@ -106,5 +239,7 @@ public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
             consumer.accept(threeAddressCode, context);
             System.out.println("context: " + context);
         }
+        // 1 1 2 3 5 8
+        return context.getRegInt(PavaDefaultThreeAddressCode.Reg.returnValueRegisterName);
     }
 }

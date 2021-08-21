@@ -26,22 +26,33 @@ public class PavaDefaultThreeAddressCode {
     public static final String LABEL = "label";
     public static final String JFALSE = "jFalse";
     public static final String JUMP = "jump";
-    public static final String CALL = "call"; // 调用函数op1, 返回值储存于target
-    public static final String PARMA_PUT = "parmaPut";
-    public static final String PARMA_LOAD = "parmaLoad";
+    public static final String SAVE_TO_STACK = "saveToStack";
+    public static final String LOAD_FROM_STACK = "loadFromStack";
+    public static final String SAVE_ALL_REG_TO_STACK = "saveAllRegToStack";
+    public static final String CLEAR_REG = "clearReg";
+    public static final String LOAD_ALL_REG_FROM_STACK = "loadAllFromStack";
     public static final String LT = "lt";
     public static final String ASSIGN_STRING = "assignString";
     public static final String UPDATE = "update";
-    public static final String DEFINE_SYMBOL = "defineSymbol";
+    public static final String DEFINE_REG = "defineSymbol";
     public static final String UNDEFINE_SYMBOL = "undefineSymbol";
+    public static final String JUMP_REG = "jumpReg";
+
+
     private String operator;
     private String target;
     private String op1;
     private String op2;
 
+    public static class Reg {
+        public static final String returnValueRegisterName = "pvmReg_returnValue"; // 储存返回值的寄存器
+        public static final String returnJumpRegister = "saveReg_returnJump"; // 储存函数return跳转的寄存器
+    }
+
+
     @Override
     public String toString() {
-        return "%-20s %-10s %-10s %-10s".formatted(operator, target, op1, op2);
+        return "%-20s %-20s %-20s %-20s".formatted(operator, target, op1, op2);
     }
 
     public static PavaDefaultThreeAddressCode decode(String code) {

@@ -167,8 +167,13 @@ public class CppLR1Test {
     @Test
     public void functionInvokerTest4() {
         String code = """
-                int fib(int x,int y){
-                    return fib(x-1,y+1) + fib(1,2) + fib(3,y-3);
+                int fib(int x){
+                    if(x<2) return 1;
+                    return fib(x-1) + fib(x-2);
+                }
+                
+                int main(){
+                    return fib(5);
                 }
                 """;
         Cpp.parse(code, "CppLR1Test.functionInvokerTest4");

@@ -1,12 +1,14 @@
 package com.example.utils;
 
 import java.util.*;
+import java.util.function.UnaryOperator;
 
-public class ReadableList<T> implements List<T> {
+public class RoList<T> implements List<T> {
+
     private final List<T> target;
 
-    public ReadableList(List<T> c) {
-        this.target = c;
+    public RoList(List<T> target) {
+        this.target = target;
     }
 
     @Override
@@ -41,12 +43,12 @@ public class ReadableList<T> implements List<T> {
 
     @Override
     public boolean add(T t) {
-        throw new RuntimeException("unsupport for add");
+        throw new RuntimeException("ReadOnlyClass");
     }
 
     @Override
     public boolean remove(Object o) {
-        throw new RuntimeException("unsupport for remove");
+        throw new RuntimeException("ReadOnlyClass");
     }
 
     @Override
@@ -56,28 +58,39 @@ public class ReadableList<T> implements List<T> {
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        throw new RuntimeException("unsupport for addAll");
+        throw new RuntimeException("ReadOnlyClass");
     }
 
     @Override
     public boolean addAll(int index, Collection<? extends T> c) {
-        throw new RuntimeException("unsupport for addAll");
+        throw new RuntimeException("ReadOnlyClass");
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        throw new RuntimeException("unsupport for removeAll");
+        throw new RuntimeException("ReadOnlyClass");
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        throw new RuntimeException("unsupport for retainAll");
+        throw new RuntimeException("ReadOnlyClass");
+    }
+
+    @Override
+    public void replaceAll(UnaryOperator<T> operator) {
+        throw new RuntimeException("ReadOnlyClass");
+    }
+
+    @Override
+    public void sort(Comparator<? super T> c) {
+        throw new RuntimeException("ReadOnlyClass");
     }
 
     @Override
     public void clear() {
-        throw new RuntimeException("unsupport for clear");
+        throw new RuntimeException("ReadOnlyClass");
     }
+
 
     @Override
     public T get(int index) {
@@ -86,17 +99,17 @@ public class ReadableList<T> implements List<T> {
 
     @Override
     public T set(int index, T element) {
-        throw new RuntimeException("unsupport for set");
+        throw new RuntimeException("ReadOnlyClass");
     }
 
     @Override
     public void add(int index, T element) {
-        throw new RuntimeException("unsupport for add");
+        throw new RuntimeException("ReadOnlyClass");
     }
 
     @Override
     public T remove(int index) {
-        throw new RuntimeException("unsupport for remove");
+        throw new RuntimeException("ReadOnlyClass");
     }
 
     @Override
@@ -123,4 +136,10 @@ public class ReadableList<T> implements List<T> {
     public List<T> subList(int fromIndex, int toIndex) {
         return target.subList(fromIndex, toIndex);
     }
+
+    @Override
+    public Spliterator<T> spliterator() {
+        return target.spliterator();
+    }
+
 }

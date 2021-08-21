@@ -26,7 +26,7 @@ public class RegSyntaxDirectedTranslation {
 
     public static Nfa<Object, String> toNfa(SyntaxTree syntaxTree) {
         final Map<String, SyntaxDirectedTranslation.SyntaxDirectedTranslationConsumer> innerNodeConfig = Map.ofEntries(
-                Map.entry("numberSeq -> number sub number", (rt, sonList, accessAllSon) -> {
+                Map.entry("numberSeq -> number sub number", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     int from = Integer.parseInt((toString(sonList.get(0).get("tokenRaw"))));
                     int to = Integer.parseInt(toString(sonList.get(2).get("tokenRaw")));
@@ -37,7 +37,7 @@ public class RegSyntaxDirectedTranslation {
                     Nfa<Object, String> parallel = NfaUtils.parallel(nfaList, Nfa.EMPTY_TRANS);
                     rt.put("nfa", parallel);
                 }),
-                Map.entry("lowerCaseLetterSeq -> lowerCaseLetter sub lowerCaseLetter", (rt, sonList, accessAllSon) -> {
+                Map.entry("lowerCaseLetterSeq -> lowerCaseLetter sub lowerCaseLetter", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     String from = (String) sonList.get(0).get("tokenRaw");
                     String to = (String) sonList.get(2).get("tokenRaw");
@@ -49,7 +49,7 @@ public class RegSyntaxDirectedTranslation {
                     Nfa<Object, String> parallel = NfaUtils.parallel(nfaList, Nfa.EMPTY_TRANS);
                     rt.put("nfa", parallel);
                 }),
-                Map.entry("lowerCaseLetterSeq -> upperCaseLetter sub upperCaseLetter", (rt, sonList, accessAllSon) -> {
+                Map.entry("lowerCaseLetterSeq -> upperCaseLetter sub upperCaseLetter", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     String from = (String) sonList.get(0).get("tokenRaw");
                     String to = (String) sonList.get(2).get("tokenRaw");
@@ -61,65 +61,65 @@ public class RegSyntaxDirectedTranslation {
                     Nfa<Object, String> parallel = NfaUtils.parallel(nfaList, Nfa.EMPTY_TRANS);
                     rt.put("nfa", parallel);
                 }),
-                Map.entry("letterSeq -> lowerCaseLetterSeq", (rt, sonList, accessAllSon) -> {
+                Map.entry("letterSeq -> lowerCaseLetterSeq", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     rt.put("nfa", sonList.get(0).get("nfa"));
                 }),
-                Map.entry("letterSeq -> upperCaseLetterSeq", (rt, sonList, accessAllSon) -> {
+                Map.entry("letterSeq -> upperCaseLetterSeq", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     rt.put("nfa", sonList.get(0).get("nfa"));
                 }),
-                Map.entry("char -> number", (rt, sonList, accessAllSon) -> {
+                Map.entry("char -> number", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     rt.put("nfa", NfaUtils.oneChar(sonList.get(0).get("tokenRaw")));
                     rt.put("valueList", List.of(sonList.get(0).get("tokenRaw")));
                 }),
-                Map.entry("char -> lowerCaseLetter", (rt, sonList, accessAllSon) -> {
+                Map.entry("char -> lowerCaseLetter", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     rt.put("nfa", NfaUtils.oneChar(sonList.get(0).get("tokenRaw")));
                     rt.put("valueList", List.of(sonList.get(0).get("tokenRaw")));
                 }),
-                Map.entry("char -> upperCaseLetter", (rt, sonList, accessAllSon) -> {
+                Map.entry("char -> upperCaseLetter", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     rt.put("nfa", NfaUtils.oneChar(sonList.get(0).get("tokenRaw")));
                     rt.put("valueList", List.of(sonList.get(0).get("tokenRaw")));
                 }),
-                Map.entry("char -> escape", (rt, sonList, accessAllSon) -> {
+                Map.entry("char -> escape", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     rt.put("nfa", NfaUtils.oneChar(sonList.get(0).get("tokenRaw")));
                     rt.put("valueList", List.of(sonList.get(0).get("tokenRaw")));
                 }),
-                Map.entry("char -> blankSet", (rt, sonList, accessAllSon) -> {
+                Map.entry("char -> blankSet", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     final List<String> values = Arrays.stream(" \n\t".split("")).toList();
                     Nfa<Object, String> nfa = NfaUtils.someCharParallel(values);
                     rt.put("nfa", nfa);
                     rt.put("valueList", values);
                 }),
-                Map.entry("char -> simpleNumberSet", (rt, sonList, accessAllSon) -> {
+                Map.entry("char -> simpleNumberSet", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     final List<String> values = Arrays.stream("0123456789".split("")).toList();
                     Nfa<Object, String> nfa = NfaUtils.someCharParallel(values);
                     rt.put("nfa", nfa);
                     rt.put("valueList", values);
                 }),
-                Map.entry("char -> letterSet", (rt, sonList, accessAllSon) -> {
+                Map.entry("char -> letterSet", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     final List<String> values = Arrays.stream("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")).toList();
                     Nfa<Object, String> nfa = NfaUtils.someCharParallel(values);
                     rt.put("nfa", nfa);
                     rt.put("valueList", values);
                 }),
-                Map.entry("char -> specialChar", (rt, sonList, accessAllSon) -> {
+                Map.entry("char -> specialChar", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     rt.put("nfa", NfaUtils.oneChar(sonList.get(0).get("tokenRaw")));
                     rt.put("valueList", List.of(sonList.get(0).get("tokenRaw")));
                 }),
-                Map.entry("atLeastOneChar -> char", (rt, sonList, accessAllSon) -> {
+                Map.entry("atLeastOneChar -> char", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     rt.put("valueList", sonList.get(0).get("valueList"));
                 }),
-                Map.entry("atLeastOneChar -> atLeastOneChar char", (rt, sonList, accessAllSon) -> {
+                Map.entry("atLeastOneChar -> atLeastOneChar char", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     List<String> values = toListString(sonList.get(0).get("valueList"));
                     values = new ArrayList<>(values);
@@ -127,26 +127,26 @@ public class RegSyntaxDirectedTranslation {
                     rt.put("valueList", values);
 
                 }),
-                Map.entry("unit -> char", (rt, sonList, accessAllSon) -> {
+                Map.entry("unit -> char", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     rt.put("nfa", sonList.get(0).get("nfa"));
                 }),
-                Map.entry("unit -> unit star", (rt, sonList, accessAllSon) -> {
+                Map.entry("unit -> unit star", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     Nfa<Object, String> nfa = toNfa(sonList.get(0).get("nfa"));
                     rt.put("nfa", NfaUtils.parallel(NfaUtils.selfLoop(nfa, Nfa.EMPTY_TRANS), NfaUtils.oneChar(Nfa.EMPTY_TRANS), Nfa.EMPTY_TRANS));
                 }),
-                Map.entry("unit -> unit add", (rt, sonList, accessAllSon) -> {
+                Map.entry("unit -> unit add", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     Nfa<Object, String> nfa = toNfa(sonList.get(0).get("nfa"));
                     rt.put("nfa", NfaUtils.series(nfa, NfaUtils.selfLoop(nfa, Nfa.EMPTY_TRANS), Nfa.EMPTY_TRANS));
                 }),
-                Map.entry("unit -> unit questionMark", (rt, sonList, accessAllSon) -> {
+                Map.entry("unit -> unit questionMark", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     Nfa<Object, String> nfa = toNfa(sonList.get(0).get("nfa"));
                     rt.put("nfa", NfaUtils.parallel(nfa, NfaUtils.oneChar(Nfa.EMPTY_TRANS), Nfa.EMPTY_TRANS));
                 }),
-                Map.entry("unit -> unit leftCurlyBracket number rightCurlyBracket", (rt, sonList, accessAllSon) -> {
+                Map.entry("unit -> unit leftCurlyBracket number rightCurlyBracket", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     Nfa<Object, String> nfa = toNfa(sonList.get(0).get("nfa"));
                     List<Nfa<Object, String>> nfaList = IntStream.range(0, Integer.parseInt(toString(sonList.get(2).get("tokenRaw"))))
@@ -154,36 +154,36 @@ public class RegSyntaxDirectedTranslation {
                             .collect(Collectors.toList());
                     rt.put("nfa", NfaUtils.series(nfaList, Nfa.EMPTY_TRANS));
                 }),
-                Map.entry("unit -> leftSquareBracket atLeastOneChar rightSquareBracket", (rt, sonList, accessAllSon) -> {
+                Map.entry("unit -> leftSquareBracket atLeastOneChar rightSquareBracket", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     final List<String> values = toListString(sonList.get(1).get("valueList"));
                     rt.put("nfa", NfaUtils.someCharParallel(values));
                 }),
-                Map.entry("unit -> leftBracket unitSeq rightBracket", (rt, sonList, accessAllSon) -> {
+                Map.entry("unit -> leftBracket unitSeq rightBracket", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     rt.put("nfa", sonList.get(1).get("nfa"));
                 }),
-                Map.entry("atLeastOneUnit -> unit", (rt, sonList, accessAllSon) -> {
+                Map.entry("atLeastOneUnit -> unit", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     rt.put("nfa", sonList.get(0).get("nfa"));
                 }),
-                Map.entry("atLeastOneUnit -> atLeastOneUnit unit", (rt, sonList, accessAllSon) -> {
+                Map.entry("atLeastOneUnit -> atLeastOneUnit unit", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     Nfa<Object, String> nfa1 = toNfa(sonList.get(0).get("nfa"));
                     Nfa<Object, String> nfa2 = toNfa(sonList.get(1).get("nfa"));
                     rt.put("nfa", NfaUtils.series(nfa1, nfa2, Nfa.EMPTY_TRANS));
                 }),
-                Map.entry("unitSeq -> atLeastOneUnit", (rt, sonList, accessAllSon) -> {
+                Map.entry("unitSeq -> atLeastOneUnit", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     rt.put("nfa", sonList.get(0).get("nfa"));
                 }),
-                Map.entry("unitSeq -> unitSeq or atLeastOneUnit", (rt, sonList, accessAllSon) -> {
+                Map.entry("unitSeq -> unitSeq or atLeastOneUnit", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     Nfa<Object, String> nfa1 = toNfa(sonList.get(0).get("nfa"));
                     Nfa<Object, String> nfa2 = toNfa(sonList.get(2).get("nfa"));
                     rt.put("nfa", NfaUtils.parallel(nfa1, nfa2, Nfa.EMPTY_TRANS));
                 }),
-                Map.entry("target -> unitSeq", (rt, sonList, accessAllSon) -> {
+                Map.entry("target -> unitSeq", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     rt.put("nfa", sonList.get(0).get("nfa"));
                 })
