@@ -9,7 +9,7 @@ public class PvmImplTest {
 
         PavaCodeImpl pavaCode = new PavaCodeImpl(code);
 
-        new PvmImpl().run(pavaCode, null);
+        System.out.println(new PvmImpl().run(pavaCode, null));
     }
 
     class Config {
@@ -81,7 +81,10 @@ public class PvmImplTest {
                 defineSymbol         saveReg_17           null                 null               \s
                 defineSymbol         saveReg_18           null                 null               \s
                 defineSymbol         saveReg_20           null                 null               \s
-                assignNumber         saveReg_17           12                   null               \s
+                defineSymbol         a                    null                 null               \s
+                defineSymbol         saveReg_21           null                 null               \s
+                loadFromStack        saveReg_returnJump   null                 null               \s
+                assignNumber         saveReg_17           5                    null               \s
                 saveAllRegToStack    null                 null                 null               \s
                 saveToStack          saveReg_17           null                 null               \s
                 assignString         saveReg_20           label_19             null               \s
@@ -91,12 +94,17 @@ public class PvmImplTest {
                 label                label_19             null                 null               \s
                 loadAllFromStack     null                 null                 null               \s
                 assign               saveReg_18           pvmReg_returnValue   null               \s
-                assign               pvmReg_returnValue   saveReg_18           null               \s
+                assign               a                    saveReg_18           null               \s
+                assignNumber         saveReg_21           1                    null               \s
+                assign               pvmReg_returnValue   saveReg_21           null               \s
                 jump                 returnLabel_16       null                 null               \s
                 label                returnLabel_16       null                 null               \s
                 undefineSymbol       saveReg_17           null                 null               \s
                 undefineSymbol       saveReg_18           null                 null               \s
                 undefineSymbol       saveReg_20           null                 null               \s
+                undefineSymbol       a                    null                 null               \s
+                undefineSymbol       saveReg_21           null                 null               \s
+                jumpReg              saveReg_returnJump   null                 null               \s
                 """;
     }
 }

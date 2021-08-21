@@ -33,6 +33,12 @@ public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
         private Map<String, Object> register;
         private final Stack<Object> stack;
         private Object returnValueRegister = nullObj;
+        private final Object exitObj = new Object() {
+            @Override
+            public String toString() {
+                return "exitObj";
+            }
+        };
 
 
         public Context(PavaCode<List<PavaDefaultThreeAddressCode>> pavaCode) {
@@ -41,6 +47,8 @@ public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
             stack = new Stack<>();
             register = new HashMap<>();
             register.put(PavaDefaultThreeAddressCode.Reg.returnJumpRegister, nullObj);
+
+            stack.push(exitObj);
 
             IntStream.range(0, pavaCode.pavaCode().size()).forEach(i -> {
                 PavaDefaultThreeAddressCode threeAddressCode = pavaCode.pavaCode().get(i);
@@ -213,7 +221,11 @@ public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
                 context.nextPc();
             }),
             Map.entry(PavaDefaultThreeAddressCode.JUMP_REG, (code, context) -> {
-                context.jumpReg(code.getTarget());
+                if (context.getReg(code.getTarget()) == context.exitObj) {
+                    context.pc = -1;
+                } else {
+                    context.jumpReg(code.getTarget());
+                }
             }),
             Map.entry(PavaDefaultThreeAddressCode.LOAD_ALL_REG_FROM_STACK, (code, context) -> {
                 context.loadAllRegister();
@@ -228,7 +240,7 @@ public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
 
         // 运行pava代码
         List<PavaDefaultThreeAddressCode> pavaDefaultThreeAddressCodes = pavaCode.pavaCode();
-        while (context.getPc() < pavaDefaultThreeAddressCodes.size()) {
+        while (context.getPc() != -1 && context.getPc() < pavaDefaultThreeAddressCodes.size()) {
             PavaDefaultThreeAddressCode threeAddressCode = pavaDefaultThreeAddressCodes.get(context.getPc());
             System.out.print("tac: " + threeAddressCode + ", ");
 

@@ -173,7 +173,8 @@ public class CppLR1Test {
                 }
                 
                 int main(){
-                    return fib(5);
+                    int a = fib(5);
+                    return 1;
                 }
                 """;
         Cpp.parse(code, "CppLR1Test.functionInvokerTest4");

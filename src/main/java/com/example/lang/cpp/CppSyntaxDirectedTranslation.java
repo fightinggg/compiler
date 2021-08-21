@@ -82,13 +82,11 @@ public class CppSyntaxDirectedTranslation {
 
                     accessAllSon.run();
 
-                    //List<String> parmasAddressList = new ArrayList<>(toStringCollection(sonList.get(3).get("addressList")));
-                    //Collections.reverse(parmasAddressList);
+                    List<String> parmasAddressList = new ArrayList<>(); //没有参数
 
                     String funcionName = toString(sonList.get(1).get("tokenRaw"));
 
-                    Collection<String> allFunctionSymbol = toStringCollection(sonList.get(5).get("scope"));
-                    //allFunctionSymbol.addAll(parmasAddressList);
+                    Collection<String> allFunctionSymbol = MergeableCollection.merge(toStringCollection(sonList.get(5).get("scope")), parmasAddressList);
 
 
                     Collection<PavaDefaultThreeAddressCode> functionLabelCodes = List.of(new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.LABEL, funcionName, null, null));
@@ -98,9 +96,15 @@ public class CppSyntaxDirectedTranslation {
                             .map(o -> new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.DEFINE_REG, o, null, null))
                             .toList();
 
-                    //Collection<PavaDefaultThreeAddressCode> loadParmas = parmasAddressList.stream()
-                    //        .map(o -> new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.LOAD_FROM_STACK, o, null, null))
-                    //        .toList();
+
+                    Collection<PavaDefaultThreeAddressCode> loadReturnJumpRegister = List.of(
+                            new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.LOAD_FROM_STACK, PavaDefaultThreeAddressCode.Reg.returnJumpRegister, null, null)
+                    );
+
+                    Collection<PavaDefaultThreeAddressCode> loadParmas = IntStream.range(1 - parmasAddressList.size(), 1).map(o -> -o).boxed()
+                            .map(parmasAddressList::get)
+                            .map(o -> new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.LOAD_FROM_STACK, o, null, null))
+                            .toList();
 
                     Collection<PavaDefaultThreeAddressCode> blockCodes = toCodes(sonList.get(5).get("codes"));
 
@@ -112,14 +116,19 @@ public class CppSyntaxDirectedTranslation {
                             .map(o -> new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.UNDEFINE_SYMBOL, o, null, null))
                             .toList();
 
+                    Collection<PavaDefaultThreeAddressCode> returnJump = List.of(
+                            new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.JUMP_REG, PavaDefaultThreeAddressCode.Reg.returnJumpRegister, null, null)
+                    );
 
                     Collection<PavaDefaultThreeAddressCode> codes = MergeableCollection.merge(
                             functionLabelCodes,
                             defineAllFunctionSymbol,
-                            //        loadParmas,
+                            loadReturnJumpRegister,
+                            loadParmas,
                             blockCodes,
                             functionExitAndReturnLabelCodes,
-                            undefineAllFunctionSymbol
+                            undefineAllFunctionSymbol,
+                            returnJump
                     );
 
                     rt.put("codes", codes);
@@ -210,15 +219,49 @@ public class CppSyntaxDirectedTranslation {
                     rt.put("scope", scope);
                 }),
                 entry("functionInvoke -> symbol leftBracket rightBracket", (fa, rt, sonList, accessAllSon) -> {
-//                    accessAllSon.run();
-//                    String address = saveRegisterPrefix + tmpId[0]++;
-//                    String functionName = toString(sonList.get(0).get("tokenRaw"));
-//
-//                    Collection<PavaDefaultThreeAddressCode> callCodes = List.of(new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.CALL, address, functionName, null));
-//
-//                    rt.put("codes", callCodes);
-//                    rt.put("address", address);
-//                    rt.put("scope", List.of(address));
+                    accessAllSon.run();
+                    String address = saveRegisterPrefix + tmpId[0]++;
+                    String returnJumpLabel = labelPrefix + tmpId[0]++;
+                    String returnJumpLabelAddress = saveRegisterPrefix + tmpId[0]++;
+                    String functionName = toString(sonList.get(0).get("tokenRaw"));
+
+                    Collection<PavaDefaultThreeAddressCode> parmaCodes = new ArrayList<>(); // 没有代码
+
+                    Collection<PavaDefaultThreeAddressCode> allRegisterToStack = List.of(
+                            new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.SAVE_ALL_REG_TO_STACK, null, null, null)
+                    );
+
+                    Collection<PavaDefaultThreeAddressCode> parmaToStackCodes = new ArrayList<>(); //没有参数
+
+
+                    Collection<PavaDefaultThreeAddressCode> returnJumpLabelToStack = List.of(
+                            new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.ASSIGN_STRING, returnJumpLabelAddress, returnJumpLabel, null),
+                            new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.SAVE_TO_STACK, returnJumpLabelAddress, null, null)
+                    );
+
+
+                    Collection<PavaDefaultThreeAddressCode> callCodes = List.of(
+                            new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.CLEAR_REG, functionName, null, null), // 调用
+                            new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.JUMP, functionName, null, null), // 调用
+                            new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.LABEL, returnJumpLabel, null, null),// 返回标记
+                            new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.LOAD_ALL_REG_FROM_STACK, null, null, null),
+                            new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.ASSIGN, address, PavaDefaultThreeAddressCode.Reg.returnValueRegisterName, null)// 返回
+                    );
+
+                    Collection<PavaDefaultThreeAddressCode> codes = MergeableCollection.merge(
+                            parmaCodes,
+                            allRegisterToStack,
+                            parmaToStackCodes,
+                            returnJumpLabelToStack,
+                            callCodes
+                    );
+
+                    Collection<String> parmasScope = toStringCollection(sonList.get(2).get("scope"));
+                    Collection<String> scope = MergeableCollection.merge(parmasScope, List.of(address, returnJumpLabelAddress));
+
+                    rt.put("codes", codes);
+                    rt.put("address", address);
+                    rt.put("scope", scope);
                 }),
                 entry("functionInvoke -> symbol leftBracket someRightSymbolJoinByCommaNotEmpty rightBracket", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
