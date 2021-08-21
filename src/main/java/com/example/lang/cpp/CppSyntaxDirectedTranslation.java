@@ -392,7 +392,7 @@ public class CppSyntaxDirectedTranslation {
                     List<PavaDefaultThreeAddressCode> currentCode = List.of(new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.UPDATE, address, rightSymbolAddress, null));
                     Collection<PavaDefaultThreeAddressCode> codes = MergeableCollection.merge(rightSymbolCodes, currentCode);
 
-                    Collection<String> rightSymbolScope = toStringCollection(sonList.get(3).get("scope"));
+                    Collection<String> rightSymbolScope = toStringCollection(sonList.get(2).get("scope"));
 
 
                     rt.put("codes", codes);
@@ -528,7 +528,7 @@ public class CppSyntaxDirectedTranslation {
                     String endLabel = returnLabelPrefix + tmpId[0]++;
                     String beginLabel = returnLabelPrefix + tmpId[0]++;
 
-                    Collection<PavaDefaultThreeAddressCode> beginCodes = List.of(new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.LABEL, beginLabel, null, null));
+                    Collection<PavaDefaultThreeAddressCode> beginLabelCodes = List.of(new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.LABEL, beginLabel, null, null));
 
 
                     Collection<PavaDefaultThreeAddressCode> rightSymbolCodes = toCodes(sonList.get(2).get("codes"));
@@ -537,14 +537,25 @@ public class CppSyntaxDirectedTranslation {
                     Collection<PavaDefaultThreeAddressCode> jFalseCodes = List.of(new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.JFALSE, endLabel, rightSymbolAddress, null));
 
                     Collection<PavaDefaultThreeAddressCode> blockCodes = toCodes(sonList.get(4).get("codes"));
-                    Collection<PavaDefaultThreeAddressCode> whileLoopCodes = List.of(new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.LABEL, beginLabel, null, null));
+                    Collection<PavaDefaultThreeAddressCode> whileLoopCodes = List.of(new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.JUMP, beginLabel, null, null));
 
-                    Collection<PavaDefaultThreeAddressCode> endCodes = List.of(new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.LABEL, endLabel, null, null));
+                    Collection<PavaDefaultThreeAddressCode> endLabelCodes = List.of(new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.LABEL, endLabel, null, null));
 
-                    Collection<PavaDefaultThreeAddressCode> codes = MergeableCollection.merge(beginCodes,
-                            rightSymbolCodes, jFalseCodes, blockCodes, whileLoopCodes, endCodes);
+                    Collection<PavaDefaultThreeAddressCode> codes = MergeableCollection.merge(
+                            beginLabelCodes,
+                            rightSymbolCodes,
+                            jFalseCodes,
+                            blockCodes,
+                            whileLoopCodes,
+                            endLabelCodes
+                    );
+
+                    Collection<String> scopeRightSymbol = toStringCollection(sonList.get(2).get("scope"));
+                    Collection<String> scopeBlock = toStringCollection(sonList.get(4).get("scope"));
+                    Collection<String> scope = MergeableCollection.merge(scopeRightSymbol, scopeBlock);
+
                     rt.put("codes", codes);
-                    rt.put("scope", List.of());
+                    rt.put("scope", scope);
 
                 }),
                 entry("blockUnit -> sentence semicolon", (fa, rt, sonList, accessAllSon) -> {
@@ -564,23 +575,9 @@ public class CppSyntaxDirectedTranslation {
                     rt.putAll(sonList.get(0));
                 }),
                 entry("blockUnit -> leftCurlyBracket block rightCurlyBracket", (fa, rt, sonList, accessAllSon) -> {
+                    // TODO 作用域
                     accessAllSon.run();
-                    // TODO
-                    Collection<String> scope = toStringCollection(sonList.get(1).get("scope"));
-                    Collection<PavaDefaultThreeAddressCode> scopeDefineCodes = scope.stream()
-                            .map(o -> new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.DEFINE_REG, o, null, null))
-                            .toList();
-
-                    Collection<PavaDefaultThreeAddressCode> blockCodes = toCodes(sonList.get(1).get("codes"));
-
-                    Collection<PavaDefaultThreeAddressCode> scopeUnDefineCodes = scope.stream()
-                            .map(o -> new PavaDefaultThreeAddressCode(PavaDefaultThreeAddressCode.UNDEFINE_SYMBOL, o, null, null))
-                            .toList();
-
-                    Collection<PavaDefaultThreeAddressCode> codes = MergeableCollection.merge(scopeDefineCodes, blockCodes, scopeUnDefineCodes);
-
-                    rt.put("codes", codes);
-                    rt.put("scope", List.of());
+                    rt.putAll(sonList.get(1));
                 }),
                 entry("block -> blockUnit", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();

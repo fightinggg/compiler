@@ -124,10 +124,17 @@ public class CppLR1Test {
     @Test
     public void whileTest() {
         String code = """
-                void ifFunc(int x){
-                    while(a==1){
-                        return 1;
+                int main(){
+                    int a1 = 1;
+                    int a2 = 1;
+                    int i = 2;
+                    while(i<10){
+                        i = i +1;
+                        int sum = a1 + a2;
+                        a1 = a2;
+                        a2 = sum;
                     }
+                    return a2;
                 }
                 """;
         Cpp.parse(code, "CppLR1Test.whileTest");

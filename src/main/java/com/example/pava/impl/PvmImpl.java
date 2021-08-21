@@ -53,7 +53,10 @@ public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
             IntStream.range(0, pavaCode.pavaCode().size()).forEach(i -> {
                 PavaDefaultThreeAddressCode threeAddressCode = pavaCode.pavaCode().get(i);
                 if (threeAddressCode.getOperator().equals(PavaDefaultThreeAddressCode.LABEL)) {
-                    labelPoint.put(threeAddressCode.getTarget(), i);
+                    Integer put = labelPoint.put(threeAddressCode.getTarget(), i);
+                    if (put != null) {
+                        throw new RuntimeException("错误的Pava代码，代码中多次出现label %s ".formatted(threeAddressCode.getTarget()));
+                    }
                 }
             });
 
@@ -230,6 +233,10 @@ public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
             Map.entry(PavaDefaultThreeAddressCode.LOAD_ALL_REG_FROM_STACK, (code, context) -> {
                 context.loadAllRegister();
                 context.nextPc();
+            }),
+            Map.entry(PavaDefaultThreeAddressCode.UPDATE, (code, context) -> {
+                context.putReg(code.getTarget(), context.getReg(code.getOp1()));
+                context.nextPc();
             })
     );
 
@@ -242,7 +249,7 @@ public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
         List<PavaDefaultThreeAddressCode> pavaDefaultThreeAddressCodes = pavaCode.pavaCode();
         while (context.getPc() != -1 && context.getPc() < pavaDefaultThreeAddressCodes.size()) {
             PavaDefaultThreeAddressCode threeAddressCode = pavaDefaultThreeAddressCodes.get(context.getPc());
-            System.out.print("tac: " + threeAddressCode + ", ");
+            System.out.print("current code : " + threeAddressCode + ", ");
 
             BiConsumer<PavaDefaultThreeAddressCode, Context> consumer = map.get(threeAddressCode.getOperator());
             if (consumer == null) {
@@ -251,7 +258,6 @@ public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
             consumer.accept(threeAddressCode, context);
             System.out.println("context: " + context);
         }
-        // 1 1 2 3 5 8
         return context.getRegInt(PavaDefaultThreeAddressCode.Reg.returnValueRegisterName);
     }
 }
