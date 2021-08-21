@@ -30,21 +30,25 @@ public class Pavac {
         }
 
 
-        if (commandLine.hasOption("pava")) {
+        if (commandLine.hasOption("pava") && commandLine.getOptionValue("pava") != null) {
             try (InputStream inputStream = new FileInputStream(commandLine.getOptionValue("pava"))) {
 
                 boolean target = new File("target").mkdir();
 
                 String code = new String(inputStream.readAllBytes());
 
-                System.out.println(code);
                 String parCode = Cpp.parse(code, "pava").stream().map(Object::toString).collect(Collectors.joining("\n"));
 
-                try (OutputStream outputStream = new FileOutputStream(commandLine.getOptionValue("output"))) {
-                    outputStream.write(parCode.getBytes(StandardCharsets.UTF_8));
+                if (commandLine.hasOption("output") && commandLine.getOptionValue("output") != null) {
+                    System.out.println(commandLine.getOptionValue("output"));
+                    try (OutputStream outputStream = new FileOutputStream(commandLine.getOptionValue("output"))) {
+                        outputStream.write(parCode.getBytes(StandardCharsets.UTF_8));
+                    }
+                } else {
+                    System.out.println(parCode);
                 }
 
-                System.out.println("success!");
+                System.exit(0);
 
             } catch (FileNotFoundException e) {
                 System.out.println("could not find file " + commandLine.getOptionValue("par"));
@@ -62,6 +66,8 @@ public class Pavac {
                 $ java -jar pavac.jar -pava code.pava
                 you can debug pava code like this :
                 $ java -jar pavac.jar -pava code.pava -debug
+                you can output to file like this :
+                $ java -jar pavac.jar -pava code.pava -output a.par
                 """);
         System.exit(0);
     }
