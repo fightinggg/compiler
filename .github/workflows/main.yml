@@ -36,7 +36,7 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            $app
+            ${{ env.app }}
           # name/app
           # ghcr.io/username/app
           # generate Docker tags based on the following events/attributes
@@ -80,10 +80,10 @@ jobs:
       - name: push README to Dockerhub
         uses: christian-korneck/update-container-description-action@v1
         env:
-          DOCKER_USER: $dockerhub_username
-          DOCKER_PASS: $dockerhub_password
+          DOCKER_USER: ${{ env.dockerhub_username }}
+          DOCKER_PASS: ${{ env.dockerhub_password }}
         with:
-          destination_container_repo: $app
+          destination_container_repo: ${{ env.app }}
           provider: dockerhub
-          short_description: $short_description
-          readme_file: $readme_file
+          short_description: ${{ env.short_description }}
+          readme_file: ${{ env.readme_file }}
