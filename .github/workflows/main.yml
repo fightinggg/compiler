@@ -59,8 +59,8 @@ jobs:
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v1
         with:
-          username: ${{ dockerhub_username }}
-          password: ${{ dockerhub_password }}
+          username: ${{ env.dockerhub_username }}
+          password: ${{ env.dockerhub_password }}
       -
         name: Login to GHCR
         if: github.event_name != 'pull_request'
