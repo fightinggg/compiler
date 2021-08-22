@@ -2,6 +2,9 @@ name: Docker
 
 on:
   push:
+    branches:
+      - master
+      - test
     tags:
       - .*
 
@@ -35,8 +38,9 @@ jobs:
           # 从 tag 名字中替换 v 字符
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
 
-          # Use Docker `latest` tag convention
+          # Use Docker `latest/test` tag convention
           [ "$VERSION" == "master" ] && VERSION=latest
+          [ "$VERSION" == "test" ] && VERSION=test
 
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
