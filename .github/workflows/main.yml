@@ -19,7 +19,7 @@ env:
   app: fightinggg/pdk
   dockerhub_username: fightinggg
   dockerhub_password: ${{ secrets.DOCKERHUB_PASSWORD }}
-  short_description: 'welcome to github 😊 $GITHUB_SERVER_URL/$GITHUB_REPOSITORY'
+  short_description: 'welcome to github 😊' $GITHUB_SERVER_URL/$GITHUB_REPOSITORY
   readme_file: 'README.md'
 
 jobs:
