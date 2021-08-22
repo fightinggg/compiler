@@ -67,7 +67,7 @@ public class Pavac {
                 you can debug pava code like this :
                 $ java -jar pavac.jar -pava code.pava -debug
                 you can output to file like this :
-                $ java -jar pavac.jar -pava code.pava -output a.par
+                $ java -jar pavac.jar -pava code.pava -output code.par
                 """);
         System.exit(0);
     }
