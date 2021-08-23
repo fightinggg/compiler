@@ -16,11 +16,12 @@ on:
       - 'master'
 
 env:
-  app: fightinggg/pdk
+  app: fightinggg/pre
   dockerhub_username: fightinggg
   dockerhub_password: ${{ secrets.DOCKERHUB_PASSWORD }}
   short_description: '😊 https://github.com/fightinggg/compiler'
   readme_file: 'README.md'
+  Dockerfile: 'pre.Dockerfile'
 
 jobs:
   docker:
@@ -47,7 +48,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-#            type=sha
+      #            type=sha
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -77,6 +78,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          file: ${{ env.Dockerfile }}
       - name: push README to Dockerhub
         uses: christian-korneck/update-container-description-action@v1
         env:

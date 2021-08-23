@@ -1,0 +1,91 @@
+# see https://github.com/docker/build-push-action/blob/master/docs/advanced/tags-labels.md
+# see https://github.com/marketplace/actions/update-container-description-action
+
+name: ci
+
+on:
+  schedule:
+    - cron: '0 10 * * *' # everyday at 10am
+  push:
+    branches:
+      - '**'
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - 'master'
+
+env:
+  app: fightinggg/pdk
+  dockerhub_username: fightinggg
+  dockerhub_password: ${{ secrets.DOCKERHUB_PASSWORD }}
+  short_description: '😊 https://github.com/fightinggg/compiler'
+  readme_file: 'README.md'
+  Dockerfile: 'pdk.Dockerfile'
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            ${{ env.app }}
+          # name/app
+          # ghcr.io/username/app
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+#            type=sha
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v1
+        with:
+          username: ${{ env.dockerhub_username }}
+          password: ${{ env.dockerhub_password }}
+      -
+        name: Login to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      -
+        name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          file: ${{ env.Dockerfile }}
+      - name: push README to Dockerhub
+        uses: christian-korneck/update-container-description-action@v1
+        env:
+          DOCKER_USER: ${{ env.dockerhub_username }}
+          DOCKER_PASS: ${{ env.dockerhub_password }}
+        with:
+          destination_container_repo: ${{ env.app }}
+          provider: dockerhub
+          short_description: ${{ env.short_description }}
+          readme_file: ${{ env.readme_file }}
