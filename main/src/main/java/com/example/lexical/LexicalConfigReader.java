@@ -1,6 +1,8 @@
 package com.example.lexical;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.example.LanguageConfig;
 
 import java.io.IOException;
@@ -20,7 +22,19 @@ public class LexicalConfigReader {
             throw new RuntimeException(e);
         }
 
-        LanguageConfig languageConfig = JSON.parseObject(new String(code), LanguageConfig.class);
+        // 不要使用反射
+        JSONObject jsonObject = JSON.parseObject(new String(code));
+        LanguageConfig languageConfig = new LanguageConfig();
+        languageConfig.setName(jsonObject.getString("name"));
+        languageConfig.setTarget(jsonObject.getString("target"));
+        languageConfig.setBlankToken(jsonObject.getString("blankToken"));
+        JSONArray tokenJsonArray = jsonObject.getJSONArray("tokens");
+        languageConfig.setTokens(IntStream.range(0, tokenJsonArray.size())
+                .mapToObj(tokenJsonArray::getJSONObject)
+                .map(o -> o.getInnerMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, v -> v.getValue().toString())))
+                .collect(Collectors.toList())
+        );
+        //languageConfig.setProductionsTable(jsonObject.getString("blankToken"));
 
         final List<Map<String, String>> tokens = languageConfig.getTokens();
 

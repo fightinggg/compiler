@@ -1,8 +1,8 @@
 package com.example.visiable;
 
 
-import com.alibaba.fastjson.JSON;
 import com.example.syntaxtree.SyntaxTree;
+import com.example.utils.ToStringUtils;
 
 public class SyntaxTreeVisiable {
 
@@ -20,7 +20,7 @@ public class SyntaxTreeVisiable {
             }
         } else {
             String raw = node.getToken().raw();
-            stringBuilder.append("%d[ label = %s]\n".formatted(res, JSON.toJSONString(raw)));
+            stringBuilder.append("%d[ label = %s]\n".formatted(res, ToStringUtils.toString(raw)));
         }
         return res;
     }

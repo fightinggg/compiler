@@ -31,10 +31,6 @@ public class LanguageConfig {
      */
     private String target;
 
-    /**
-     * 产生式重点关注对象
-     */
-    private Set<String> keys;
 
     private String name;
 

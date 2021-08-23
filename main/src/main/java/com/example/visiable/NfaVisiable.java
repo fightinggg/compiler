@@ -1,7 +1,7 @@
 package com.example.visiable;
 
-import com.alibaba.fastjson.JSON;
 import com.example.nfa.Nfa;
+import com.example.utils.ToStringUtils;
 
 import java.util.*;
 import java.util.function.Function;
@@ -16,7 +16,7 @@ public class NfaVisiable {
         nfa.allTrans().forEach((start, edges) -> edges.forEach((edge, toList) -> toList.forEach(to -> {
             String fromString = "\"%d\"".formatted(start.hashCode());
             String toString = "\"%d\"".formatted(to.hashCode());
-            edgeList.add(List.of(fromString, toString, JSON.toJSONString(edge)));
+            edgeList.add(List.of(fromString, toString, ToStringUtils.toString(edge)));
         })));
 
         String edgesString = edgeList.stream()
@@ -34,7 +34,7 @@ public class NfaVisiable {
                             .collect(Collectors.joining("\n"));
                     return List.of(edge.getKey().get(0), edge.getKey().get(1), collect);
                 })
-                .map(o -> " %s -> %s [ label = %s]".formatted(o.get(0), o.get(1), JSON.toJSONString(o.get(2))))
+                .map(o -> " %s -> %s [ label = %s]".formatted(o.get(0), o.get(1), ToStringUtils.toString(o.get(2))))
                 .collect(Collectors.joining("\n"));
 
 

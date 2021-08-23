@@ -1,6 +1,8 @@
 package com.example.grammar;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.example.LanguageConfig;
 import com.example.lexical.Token;
 
@@ -53,6 +55,10 @@ public class GrammarReader {
         return new ProductionImpl(left, right, order[0], leftCombination[0], grammarConfig);
     }
 
+    private static Set<String> toSet(String s) {
+        return JSON.parseArray(s).stream().map(Objects::toString).collect(Collectors.toSet());
+    }
+
     public static GrammarConfigImpl read(String path, String tag) {
         byte[] code;
         try (InputStream inputStream = GrammarReader.class.getClassLoader().getResourceAsStream(path)) {
@@ -63,7 +69,22 @@ public class GrammarReader {
         }
 
 
-        LanguageConfig languageConfig = JSON.parseObject(new String(code), LanguageConfig.class);
+        JSONObject jsonObject = JSON.parseObject(new String(code));
+        LanguageConfig languageConfig = new LanguageConfig();
+        languageConfig.setName(jsonObject.getString("name"));
+        languageConfig.setTarget(jsonObject.getString("target"));
+        languageConfig.setBlankToken(jsonObject.getString("blankToken"));
+        JSONArray tokenJsonArray = jsonObject.getJSONArray("tokens");
+        languageConfig.setTokens(IntStream.range(0, tokenJsonArray.size())
+                .mapToObj(tokenJsonArray::getJSONObject)
+                .map(o -> o.getInnerMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, v -> v.getValue().toString())))
+                .collect(Collectors.toList())
+        );
+        languageConfig.setProductionsTable(jsonObject.getJSONObject("productionsTable").getInnerMap()
+                .entrySet().stream()
+                .map(kv -> Map.entry(kv.getKey(), toSet(kv.getValue().toString())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+        );
 
         List<String> terminal = languageConfig.getTokens().stream().map(Map::keySet).flatMap(Collection::stream).collect(Collectors.toList());
         terminal.add(Token.END);
