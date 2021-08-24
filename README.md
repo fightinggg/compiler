@@ -1,12 +1,16 @@
-# compiler
-[compiler for c++ and java](https://github.com/fightinggg/compiler)
+# pava
+[github link](https://github.com/fightinggg/compiler)
 
-# pdk
-[github](https://github.com/fightinggg/compiler)
-[dockerhub](https://hub.docker.com/r/fightinggg/pdk)
+[pdk in dockerhub link](https://hub.docker.com/r/fightinggg/pdk)
+
+[pre in dockerhub link](https://hub.docker.com/r/fightinggg/pre)
 
 ## pdk1.0.0 preview
-step1. run pdk containe
+what is pdk ?
+
+pdk is a pava language development kits, in pdk , you can use command `pava` and command `pavac`
+
+step1. run pdk container
 ```shell
 $ docker run -it fightinggg/pdk:1.0.0 bash
 ```
@@ -26,40 +30,40 @@ int main(){
 
 step3. look the pavac
 ```shell
-$ java -jar pavac.jar
+$ pavac
 ```
 then you can see this output
 ```txt
 welcome to pavac 1.0 ...
 you can compile pavac code like this :
-$ java -jar pavac.jar -pava code.pava
+$ pavac -pava code.pava
 you can debug pava code like this :
-$ java -jar pavac.jar -pava code.pava -debug
+$ pavac -pava code.pava -debug
 you can output to file like this :
-$ java -jar pavac.jar -pava code.pava -output code.par
+$ pavac -pava code.pava -output code.par
 ```
 
 step4. compile pava code using pavac
 ```shell
-$ java -jar pavac.jar -pava code.pava -output code.par
+$ pavac -pava code.pava -output code.par
 ```
 
 step5. look the PVM (Pava Virtual Machine)
 ```shell
-$ java -jar pava.jar
+$ pava
 ```
 then you can see this output 
 ```txt
 welcome to pava 1.0 ...
 you can run pava code like this :
-$ java -jar pava.jar -par code.par
+$ pava -par code.par
 you can debug pava code like this :
-$ java -jar pava.jar -par code.par -debug
+$ pava -par code.par -debug
 ```
 
 step6. run par code using Pava Virtual Machine
 ```shell
-$ java -jar pava.jar -par code.par
+$ pava -par code.par
 ```
 then you can see the output 
 ```txt
