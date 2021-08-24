@@ -3,13 +3,14 @@ package com.example.lang.reg;
 import com.example.nfa.Nfa;
 import com.example.nfa.NfaUtils;
 import com.example.sdt.SyntaxDirectedTranslation;
+import com.example.sdt.SyntaxDirectedTranslationUtils;
 import com.example.syntaxtree.SyntaxTree;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class RegSyntaxDirectedTranslation {
+public class RegSyntaxDirectedTranslation implements SyntaxDirectedTranslation<Nfa<Object, String>> {
     public static List<String> toListString(Object o) {
         return (List<String>) o;
     }
@@ -23,8 +24,9 @@ public class RegSyntaxDirectedTranslation {
         return (Nfa<Object, String>) o;
     }
 
-    public static Nfa<Object, String> toNfa(SyntaxTree syntaxTree) {
-        final Map<String, SyntaxDirectedTranslation.SyntaxDirectedTranslationConsumer> innerNodeConfig = Map.ofEntries(
+    @Override
+    public Nfa<Object, String> translation(SyntaxTree syntaxTree) {
+        final Map<String, SyntaxDirectedTranslationUtils.SyntaxDirectedTranslationConsumer> innerNodeConfig = Map.ofEntries(
                 Map.entry("numberSeq -> number sub number", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     int from = Integer.parseInt((toString(sonList.get(0).get("tokenRaw"))));
@@ -187,7 +189,7 @@ public class RegSyntaxDirectedTranslation {
                     rt.put("nfa", sonList.get(0).get("nfa"));
                 })
         );
-        Map<SyntaxTree.Node, Map<String, Object>> translation = SyntaxDirectedTranslation.translation(new HashMap<>(), syntaxTree, innerNodeConfig);
+        Map<SyntaxTree.Node, Map<String, Object>> translation = SyntaxDirectedTranslationUtils.translation(new HashMap<>(), syntaxTree, innerNodeConfig);
         return toNfa(translation.get(syntaxTree.getRoot()).get("nfa"));
     }
 }

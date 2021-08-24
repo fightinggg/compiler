@@ -18,7 +18,7 @@ public class LexicalAnalysisImpl implements LexicalAnalysis {
         final List<Nfa<Object, String>> nfaList = lexicalConfig.getTokens().entrySet().stream()
                 .map(kv -> {
 //                    System.out.println(kv.getValue());
-                    final Nfa<Object, String> nfa = Reg.parse(kv.getValue());
+                    final Nfa<Object, String> nfa = Reg.parse(kv.getValue(), lexicalConfig.name() + " " + kv.getKey());
                     if (nfa instanceof NfaImpl) {
                         Map<Object, Function<List<String>, Object>> invoker = nfa.endStateSet().stream()
                                 .collect(Collectors.toMap(end -> end, end -> strings -> new TokenImpl(kv.getKey(), String.join("", strings))));

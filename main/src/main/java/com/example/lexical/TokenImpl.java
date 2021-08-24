@@ -1,6 +1,6 @@
 package com.example.lexical;
 
-import com.alibaba.fastjson.JSON;
+import com.example.utils.ToStringUtils;
 
 public class TokenImpl implements Token {
     private final String type;
@@ -13,7 +13,7 @@ public class TokenImpl implements Token {
 
     @Override
     public String toString() {
-        return "%s(%s)".formatted(JSON.toJSONString(raw), type);
+        return "%s(%s)".formatted(ToStringUtils.toString(raw), type);
     }
 
     @Override

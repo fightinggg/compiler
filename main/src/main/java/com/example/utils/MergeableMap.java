@@ -1,20 +1,24 @@
 package com.example.utils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-public class MergeableCollection<T> implements Collection<T> {
-    private final Collection<T>[] c;
-    private final Integer size;
+public class MergeableMap<K, V> implements Map<K, V> {
+    private final Map<K, V>[] maps;
+    private final int size;
 
     @SafeVarargs
-    private MergeableCollection(Collection<T>... c) {
-        this.c = c;
-        this.size = Arrays.stream(c).mapToInt(Collection::size).sum();
+    private MergeableMap(Map<K, V>... maps) {
+        this.maps = maps;
+        this.size = Arrays.stream(maps).mapToInt(Map::size).sum();
+        if (size != Arrays.stream(maps).map(Map::keySet).mapToLong(Collection::size).sum()) {
+            throw new RuntimeException("error merge map");
+        }
     }
 
     @SafeVarargs
-    public static <T> Collection<T> merge(Collection<T>... c) {
-        return new MergeableCollection<T>(c);
+    public static <K, V> Map<K, V> merge(Map<K, V>... maps) {
+        return new MergeableMap<>(maps);
     }
 
     @Override
@@ -28,58 +32,58 @@ public class MergeableCollection<T> implements Collection<T> {
     }
 
     @Override
-    public boolean contains(Object o) {
-        throw new RuntimeException("unsupport for contains");
+    public boolean containsKey(Object key) {
+        return Arrays.stream(maps).anyMatch(o -> o.containsKey(key));
     }
 
     @Override
-    public Iterator<T> iterator() {
-        return Arrays.stream(c).flatMap(Collection::stream).iterator();
+    public boolean containsValue(Object value) {
+        return Arrays.stream(maps).anyMatch(o -> o.containsValue(value));
     }
 
     @Override
-    public Object[] toArray() {
-        return Arrays.stream(c).flatMap(Collection::stream).toArray();
+    public V get(Object key) {
+        return Arrays.stream(maps)
+                .filter(o -> o.containsKey(key))
+                .map(o -> o.get(key))
+                .findAny()
+                .get();
     }
 
     @Override
-    public <T1> T1[] toArray(T1[] a) {
-        return Arrays.stream(c).flatMap(Collection::stream).toList().toArray(a);
+    public V put(K key, V value) {
+        throw new RuntimeException("unsupport");
     }
 
     @Override
-    public boolean add(T t) {
-        throw new RuntimeException("unsupport for add");
+    public V remove(Object key) {
+        throw new RuntimeException("unsupport");
     }
 
     @Override
-    public boolean remove(Object o) {
-        throw new RuntimeException("unsupport for remove");
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        throw new RuntimeException("unsupport for containsAll");
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends T> c) {
-        throw new RuntimeException("unsupport for addAll");
-    }
-
-
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        throw new RuntimeException("unsupport for removeAll");
-    }
-
-    @Override
-    public boolean retainAll(Collection<?> c) {
-        throw new RuntimeException("unsupport for retainAll");
+    public void putAll(Map<? extends K, ? extends V> m) {
+        throw new RuntimeException("unsupport");
     }
 
     @Override
     public void clear() {
-        throw new RuntimeException("unsupport for clear");
+        throw new RuntimeException("unsupport");
+    }
+
+    @Override
+    public Set<K> keySet() {
+        return Arrays.stream(maps).map(Map::keySet).flatMap(Collection::stream).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Collection<V> values() {
+        return Arrays.stream(maps).map(Map::values).flatMap(Collection::stream).collect(Collectors.toSet());
+
+    }
+
+    @Override
+    public Set<Entry<K, V>> entrySet() {
+        return Arrays.stream(maps).map(Map::entrySet).flatMap(Collection::stream).collect(Collectors.toSet());
+
     }
 }

@@ -1,6 +1,7 @@
 package com.example.lang.cpp;
 
 import com.example.sdt.SyntaxDirectedTranslation;
+import com.example.sdt.SyntaxDirectedTranslationUtils;
 import com.example.syntaxtree.SyntaxTree;
 import com.example.utils.MergeableCollection;
 import com.example.pava.impl.PavaDefaultThreeAddressCode;
@@ -11,7 +12,7 @@ import java.util.stream.IntStream;
 import static java.util.Map.entry;
 
 
-public class CppSyntaxDirectedTranslation {
+public class CppSyntaxDirectedTranslation implements SyntaxDirectedTranslation<List<PavaDefaultThreeAddressCode>> {
 
 
     private static Collection<String> toStringCollection(Object o) {
@@ -46,14 +47,15 @@ public class CppSyntaxDirectedTranslation {
         rt.put("scope", scope);
     }
 
-    public static Collection<PavaDefaultThreeAddressCode> translation(SyntaxTree syntaxTree) {
+    @Override
+    public List<PavaDefaultThreeAddressCode> translation(SyntaxTree syntaxTree) {
         final int[] tmpId = {0};
         String saveRegisterPrefix = "saveReg_"; // 保存寄存器
         String labelPrefix = "label_";
         String returnLabelPrefix = "returnLabel_";
 
 
-        final Map<String, SyntaxDirectedTranslation.SyntaxDirectedTranslationConsumer> innerNodeConfig = Map.ofEntries(
+        final Map<String, SyntaxDirectedTranslationUtils.SyntaxDirectedTranslationConsumer> innerNodeConfig = Map.ofEntries(
                 entry("type -> symbol", (fa, rt, sonList, accessAllSon) -> {
                     accessAllSon.run();
                     rt.put("typeName", sonList.get(0).get("tokenRaw"));
@@ -620,9 +622,10 @@ public class CppSyntaxDirectedTranslation {
                 })
         );
 
-        Map<SyntaxTree.Node, Map<String, Object>> translation = SyntaxDirectedTranslation.translation(new HashMap<>(), syntaxTree, innerNodeConfig);
+        Map<SyntaxTree.Node, Map<String, Object>> translation = SyntaxDirectedTranslationUtils.translation(new HashMap<>(), syntaxTree, innerNodeConfig);
 
-        return toCodes(translation.get(syntaxTree.getRoot()).get("codes"));
+        return toCodes(translation.get(syntaxTree.getRoot()).get("codes"))
+                .stream().toList();
     }
 
 

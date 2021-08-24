@@ -49,9 +49,9 @@ public class Pava {
         System.out.println("""
                 welcome to pava 1.0 ...
                 you can run pava code like this :
-                $ java -jar pava.jar -par code.par
+                $ pava -par code.par
                 you can debug pava code like this :
-                $ java -jar pava.jar -par code.par -debug
+                $ pava -par code.par -debug
                 """);
         System.exit(0);
     }

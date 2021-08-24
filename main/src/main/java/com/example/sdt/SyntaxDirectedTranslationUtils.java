@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 /**
  * S型语法制导翻译
  */
-public class SyntaxDirectedTranslation {
+public class SyntaxDirectedTranslationUtils {
 
     @FunctionalInterface
     public interface SyntaxDirectedTranslationConsumer {

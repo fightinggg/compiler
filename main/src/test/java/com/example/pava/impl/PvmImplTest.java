@@ -13,14 +13,14 @@ public class PvmImplTest {
                     if(x<2) return 1;
                     return fib(x-1) + fib(x-2);
                 }
-                
+                                
                 int main(){
                     int a = fib(5);
                     return a;
                 }
                 """;
 
-        test(code,"CppLR1Test.functionData");
+        test(code, "CppLR1Test.functionData");
     }
 
     @Test
@@ -37,7 +37,7 @@ public class PvmImplTest {
                     return a2;
                 }
                 """;
-        test(code,"CppLR1Test.forData");
+        test(code, "CppLR1Test.forData");
     }
 
     @Test
@@ -56,11 +56,11 @@ public class PvmImplTest {
                     return a2;
                 }
                 """;
-        test(code,"CppLR1Test.whileCode");
+        test(code, "CppLR1Test.whileCode");
     }
 
 
-    private void test(String code,String tag){
+    private void test(String code, String tag) {
         code = Cpp.parse(code, tag).stream().map(Object::toString).collect(Collectors.joining("\n"));
         System.out.println("code: \n" + code);
 

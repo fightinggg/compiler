@@ -74,24 +74,24 @@ public class CppSLRTest {
     }
 
     private void test(String code, String tag) {
-        // 1. 获取词法和文法配置
-        LexicalConfig lexicalConfig = LexicalConfigReader.read("cpp.json", tag);
-        GrammarConfig grammarConfig = GrammarReader.read("cpp.json", tag);
-
-        // 2. 执行词法分析
-        List<Token> tokes = new LexicalAnalysisImpl().parsing(code, lexicalConfig);
-        FileUtils.writeFile("target/%s-tokens.txt".formatted(grammarConfig.name()),
-                tokes.stream().map(Objects::toString).collect(Collectors.joining("\n")));
-
-
-        // 3. 根据文法构建SLR语法分析器
-        LRTable lrTable = new LR1TableAnalyzer().analyze(grammarConfig);
-
-        // 4. 执行语法分析
-        final SyntaxTree syntaxTree = new LRAnalyzerImpl().analyze(lrTable, tokes);
-
-        final String syntaxTreeString = SyntaxTreeVisiable.toDot(syntaxTree);
-        FileUtils.writeFile("target/%s-syntaxTree.dot".formatted(grammarConfig.name()), syntaxTreeString);
+//        // 1. 获取词法和文法配置
+//        LexicalConfig lexicalConfig = LexicalConfigReader.read("cpp.json", tag);
+//        GrammarConfig grammarConfig = GrammarReader.read("cpp.json", tag);
+//
+//        // 2. 执行词法分析
+//        List<Token> tokes = new LexicalAnalysisImpl().parsing(code, lexicalConfig);
+//        FileUtils.writeFile("target/%s-tokens.txt".formatted(grammarConfig.name()),
+//                tokes.stream().map(Objects::toString).collect(Collectors.joining("\n")));
+//
+//
+//        // 3. 根据文法构建SLR语法分析器
+//        LRTable lrTable = new LR1TableAnalyzer().analyze(grammarConfig);
+//
+//        // 4. 执行语法分析
+//        final SyntaxTree syntaxTree = new LRAnalyzerImpl().analyze(lrTable, tokes);
+//
+//        final String syntaxTreeString = SyntaxTreeVisiable.toDot(syntaxTree);
+//        FileUtils.writeFile("target/%s-syntaxTree.dot".formatted(grammarConfig.name()), syntaxTreeString);
 
     }
 }

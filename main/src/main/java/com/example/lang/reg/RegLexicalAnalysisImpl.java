@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 这一块负责正则文法的词法分析<br/>
@@ -56,6 +57,6 @@ public class RegLexicalAnalysisImpl implements LexicalAnalysis {
         }
         list.add(new TokenImpl(Token.END, Token.END));
 
-        return list.stream().toList();
+        return list.stream().filter(o -> !o.type().equals(lexicalConfig.getBlankToken())).collect(Collectors.toList());
     }
 }

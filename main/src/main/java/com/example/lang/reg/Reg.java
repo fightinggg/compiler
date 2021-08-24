@@ -1,34 +1,38 @@
 package com.example.lang.reg;
 
+import com.example.config.LanguageConfig;
+import com.example.config.Reader;
 import com.example.grammar.GrammarConfig;
 import com.example.grammar.GrammarReader;
 import com.example.grammar.augment.lr.LRAnalyzerImpl;
 import com.example.grammar.augment.lr.LRTable;
+import com.example.grammar.augment.lr.lr1.LR1TableAnalyzer;
 import com.example.grammar.augment.lr.slr.SLRTableAnalyzer;
+import com.example.lang.Lang;
+import com.example.lang.cpp.CppSyntaxDirectedTranslation;
+import com.example.lexical.LexicalAnalysisImpl;
 import com.example.lexical.LexicalConfig;
 import com.example.lexical.LexicalConfigReader;
 import com.example.lexical.Token;
 import com.example.nfa.Nfa;
+import com.example.pava.impl.PavaDefaultThreeAddressCode;
 import com.example.syntaxtree.SyntaxTree;
+import com.example.visiable.FileUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Reg {
-    public static Nfa<Object, String> parse(String code) {
-        // 1. 获取词法和文法配置
-        LexicalConfig lexicalConfig = LexicalConfigReader.read("reg.json", "");
-        GrammarConfig grammarConfig = GrammarReader.read("reg.json", "");
+    public static Nfa<Object, String> parse(String code, String tag) {
+        return Lang.parse(
+                Reader.read(System.getenv("PAVA_HOME") + "/config/reg.json"),
+                new SLRTableAnalyzer(),
+                new LRAnalyzerImpl(),
+                new RegLexicalAnalysisImpl(),
+                new RegSyntaxDirectedTranslation(),
+                code,
+                tag
+        );
 
-        // 2. 根据文法构建SLR语法分析器
-        LRTable lrTable = new SLRTableAnalyzer().analyze(grammarConfig);
-
-        // 3. 执行词法分析
-        List<Token> tokes = new RegLexicalAnalysisImpl().parsing(code, lexicalConfig);
-
-        // 4. 执行语法分析
-        SyntaxTree syntaxTree = new LRAnalyzerImpl().analyze(lrTable, tokes);
-
-        // 5. 执行语法制导翻译
-        return RegSyntaxDirectedTranslation.toNfa(syntaxTree);
     }
 }

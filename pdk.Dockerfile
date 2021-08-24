@@ -4,10 +4,10 @@ RUN yum install wget -y
 RUN wget https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-21.2.0/graalvm-ce-java16-linux-amd64-21.2.0.tar.gz
 
 FROM maven:3.8.2-openjdk-16
-#COPY pom.xml /app/pom.xml
-#RUN mvn dependency:go-offline
-COPY . /app
 WORKDIR /app
+COPY dockerCache.xml /app/pom.xml
+RUN mvn dependency:go-offline
+COPY . /app
 RUN mvn clean package -Dmaven.test.skip=true
 
 FROM centos:8
@@ -22,7 +22,12 @@ COPY --from=1 /app/pavac/target/pavac-1.0-SNAPSHOT-jar-with-dependencies.jar /ap
 RUN native-image -cp pava.jar -H:Class=com.example.client.pava.Pava -H:Name=pava -H:+ReportUnsupportedElementsAtRuntime
 RUN native-image -cp pavac.jar -H:Class=com.example.client.pava.Pavac -H:Name=pavac -H:+ReportUnsupportedElementsAtRuntime
 
-#FROM centos:8
-#COPY --from=2 /app/pava /usr/bin/pava
-#COPY --from=2 /app/pavac /usr/bin/pavac
-#
+FROM centos:8
+COPY --from=2 /app/pava /usr/local/pdk/bin/pava
+COPY --from=2 /app/pavac /usr/local/pdk/bin/pavac
+COPY pavac/src/main/resources/code.pava /usr/local/pdk/example/code.pava
+COPY pava/src/main/resources/code.par /usr/local/pdk/example/code.par
+COPY main/src/main/resources /usr/local/pdk/config
+ENV PAVA_HOME /usr/local/pdk
+ENV PATH /usr/local/pdk/bin:$PATH
+WORKDIR /usr/local/pdk/example

@@ -1,9 +1,9 @@
 package com.example.grammar.augment.lr.slr;
 
-import com.alibaba.fastjson.JSON;
 import com.example.grammar.GrammarConfig;
 import com.example.grammar.Production;
 import com.example.grammar.ProductionImpl;
+import com.example.utils.ToStringUtils;
 import lombok.EqualsAndHashCode;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public class SLRAugmentProductionImpl extends ProductionImpl implements SLRAugme
     public String toString() {
         List<String> strings = rightSymbol().stream().map(grammarConfig().symbol()::get).collect(Collectors.toList());
         strings.add(pos, "·");
-        String s = JSON.toJSONString(String.join(" ", strings));
+        String s = ToStringUtils.toString(String.join(" ", strings));
         return "%s -> %s".formatted(raw().split("->")[0], s.substring(1, s.length() - 1));
     }
 }

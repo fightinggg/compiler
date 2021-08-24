@@ -14,6 +14,12 @@ import java.util.stream.Collectors;
 public class Pavac {
     public static void main(String[] args) {
 
+
+        if (System.getenv().get("PAVA_HOME") == null) {
+            System.out.println("please set PAVA_HOME in your environment");
+            System.exit(-1);
+        }
+
         CommandLineParser parser = new GnuParser();
 
         Options options = new Options();
@@ -29,7 +35,6 @@ public class Pavac {
             System.exit(-1);
         }
 
-
         if (commandLine.hasOption("pava") && commandLine.getOptionValue("pava") != null) {
             try (InputStream inputStream = new FileInputStream(commandLine.getOptionValue("pava"))) {
 
@@ -37,7 +42,8 @@ public class Pavac {
 
                 String code = new String(inputStream.readAllBytes());
 
-                String parCode = Cpp.parse(code, "pava").stream().map(Object::toString).collect(Collectors.joining("\n"));
+                String parCode = Cpp.parse(code, "pava")
+                        .stream().map(Object::toString).collect(Collectors.joining("\n"));
 
                 if (commandLine.hasOption("output") && commandLine.getOptionValue("output") != null) {
                     System.out.println(commandLine.getOptionValue("output"));
@@ -63,11 +69,11 @@ public class Pavac {
         System.out.println("""
                 welcome to pavac 1.0 ...
                 you can compile pavac code like this :
-                $ java -jar pavac.jar -pava code.pava
+                $ pavac -pava code.pava
                 you can debug pava code like this :
-                $ java -jar pavac.jar -pava code.pava -debug
+                $ pavac -pava code.pava -debug
                 you can output to file like this :
-                $ java -jar pavac.jar -pava code.pava -output code.par
+                $ pavac -pava code.pava -output code.par
                 """);
         System.exit(0);
     }

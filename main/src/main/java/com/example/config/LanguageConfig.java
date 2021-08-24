@@ -1,7 +1,8 @@
-package com.example;
+package com.example.config;
 
 import lombok.Data;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,7 +12,7 @@ public class LanguageConfig {
     /**
      * tokens的定义
      */
-    List<Map<String, String>> tokens;
+    Collection<Map<String, String>> tokens;
 
 
     /**
@@ -24,7 +25,7 @@ public class LanguageConfig {
      * k->[v1,v2,v3]
      * 所有的k必须为小写字母和大写字母组合，不允许使用其他的字符
      */
-    private Map<String, Set<String>> productionsTable;
+    private Map<String, Collection<String>> productionsTable;
 
     /**
      * 文法目标
