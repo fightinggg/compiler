@@ -21,13 +21,26 @@ COPY --from=1 /app/pava/target/pava-1.0-SNAPSHOT-jar-with-dependencies.jar /app/
 COPY --from=1 /app/pavac/target/pavac-1.0-SNAPSHOT-jar-with-dependencies.jar /app/pavac.jar
 RUN native-image -cp pava.jar -H:Class=com.example.client.pava.Pava -H:Name=pava -H:+ReportUnsupportedElementsAtRuntime
 RUN native-image -cp pavac.jar -H:Class=com.example.client.pava.Pavac -H:Name=pavac -H:+ReportUnsupportedElementsAtRuntime
+COPY main/src/main/resources /target/config
+#COPY pavac/src/main/resources/code.pava /target/example/code.pava
+COPY pava/src/main/resources/code.par /target/example/code.par
+RUN mkdir /target/bin
+RUN mv pava /target/bin/pava
+#RUN mv pavac /target/bin/pavac
 
-FROM centos:8
-COPY --from=2 /app/pava /usr/local/pre/bin/pava
-#COPY --from=2 /app/pavac /usr/local/pre/bin/pavac
-#COPY pavac/src/main/resources/code.pava /usr/local/pre/example/code.pava
-COPY pava/src/main/resources/code.par /usr/local/pre/example/code.par
-COPY main/src/main/resources /usr/local/pre/config
-ENV PAVA_HOME /usr/local/pre
-ENV PATH /usr/local/pre/bin:$PATH
-WORKDIR /usr/local/pre/example
+FROM alpine:3.14
+ENV GLIBC_VERSION=2.27-r0 \
+    PAVA_HOME=/usr/local/pre \
+    PATH=/usr/local/pdk/bin:$PATH
+RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
+    &&  wget "https://github.com/sgerrand/alpine-pkg-glibc/releases/download/$GLIBC_VERSION/glibc-$GLIBC_VERSION.apk" \
+    &&  apk --no-cache add "glibc-$GLIBC_VERSION.apk" \
+    &&  rm "glibc-$GLIBC_VERSION.apk" \
+    &&  wget "https://github.com/sgerrand/alpine-pkg-glibc/releases/download/$GLIBC_VERSION/glibc-bin-$GLIBC_VERSION.apk" \
+    &&  apk --no-cache add "glibc-bin-$GLIBC_VERSION.apk" \
+    &&  rm "glibc-bin-$GLIBC_VERSION.apk" \
+    &&  wget "https://github.com/sgerrand/alpine-pkg-glibc/releases/download/$GLIBC_VERSION/glibc-i18n-$GLIBC_VERSION.apk" \
+    &&  apk --no-cache add "glibc-i18n-$GLIBC_VERSION.apk" \
+    &&  rm "glibc-i18n-$GLIBC_VERSION.apk"
+COPY --from=2 /target $PAVA_HOME
+WORKDIR $PAVA_HOME/example
