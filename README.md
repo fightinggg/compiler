@@ -12,7 +12,7 @@ pdk is a pava language development kits, in pdk , you can use command `pava` and
 
 step1. run pdk container
 ```shell
-$ docker run -it fightinggg/pdk:1.0.0 bash
+$ docker run -it fightinggg/pdk:1.0.0 sh
 ```
 
 step2. look the pava code
