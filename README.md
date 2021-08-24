@@ -74,6 +74,6 @@ so , is it amazing ? the code code.pava is a pava code and it compute the fifth 
 
 Fibonacci Number is 1 2 3 5 8 13 21 34 ...
 
-enjoy the pdk 1.0.0 
+enjoy the pdk 1.0.0 and pre 1.0.0
 
 for more study about pdk , just see [fightinggg's blog](https://fightinggg.github.io/QV7MPO.html)
