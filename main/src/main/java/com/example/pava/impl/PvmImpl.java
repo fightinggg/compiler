@@ -166,6 +166,24 @@ public class PvmImpl implements Pvm<List<PavaDefaultThreeAddressCode>> {
                 context.putReg(code.getTarget(), op1 - op2);
                 context.nextPc();
             }),
+            Map.entry(PavaDefaultThreeAddressCode.MUL, (code, context) -> {
+                int op1 = context.getRegInt(code.getOp1());
+                int op2 = context.getRegInt(code.getOp2());
+                context.putReg(code.getTarget(), op1 * op2);
+                context.nextPc();
+            }),
+            Map.entry(PavaDefaultThreeAddressCode.DIV, (code, context) -> {
+                int op1 = context.getRegInt(code.getOp1());
+                int op2 = context.getRegInt(code.getOp2());
+                context.putReg(code.getTarget(), op1 / op2);
+                context.nextPc();
+            }),
+            Map.entry(PavaDefaultThreeAddressCode.MOD, (code, context) -> {
+                int op1 = context.getRegInt(code.getOp1());
+                int op2 = context.getRegInt(code.getOp2());
+                context.putReg(code.getTarget(), op1 % op2);
+                context.nextPc();
+            }),
             Map.entry(PavaDefaultThreeAddressCode.LT, (code, context) -> {
                 int op1 = context.getRegInt(code.getOp1());
                 int op2 = context.getRegInt(code.getOp2());

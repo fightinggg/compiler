@@ -24,6 +24,9 @@ import java.util.stream.Collectors;
 
 public class Reg {
     public static Nfa<Object, String> parse(String code, String tag) {
+        if (System.getenv("PAVA_HOME") == null) {
+            throw new RuntimeException("请在环境变量中配置PAVA_HOME");
+        }
         return Lang.parse(
                 Reader.read(System.getenv("PAVA_HOME") + "/config/reg.json"),
                 new SLRTableAnalyzer(),
