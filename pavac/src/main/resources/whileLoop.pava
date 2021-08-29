@@ -1,6 +1,6 @@
 int main(){
     int b=1;
-    whlile(b<1000){
+    while(b<1000){
         b = b      * 2;
     }
     return b;
