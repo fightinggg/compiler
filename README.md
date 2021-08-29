@@ -26,7 +26,7 @@ how to do compiler pava language in this project
 which feature for pava language
 1. support for function
 2. support for int type
-3. support for `+ - * \`
+3. support for `+ - \ *`
 4. support for if,if else, while, for, do while
 
 ## pdk1.0.0 preview
