@@ -5,6 +5,24 @@
 
 [pre in dockerhub link](https://hub.docker.com/r/fightinggg/pre)
 
+## compiler
+what does this project can do? 
+- do lexical analysis for any language if you write all token using regular grammar
+- do parsing analysis for any language if you write the Context free grammar
+- do syntax directed translation for pava language
+- do syntax directed translation for regular language
+- do syntax directed translation for json language
+
+which algorithm does this prject has implements ?
+- SLR algorithm
+- LR1 algorithm
+
+how to do compiler pava language in this project
+1. using json language compiler reading language configuration from files for regular language and pava language, in this part , json language compiler using manually constructed lexical analyzer do lexical analysis, using slr algorithm do parsing analysis and using syntax directed translation to translate syntax tree to json object.
+2. using regular language compiler do  lexical analyzer for pava language, in this part , regular language compiler using manually constructed lexical analyzer do lexical analysis, using slr algorithm do parsing analysis and using syntax directed translation to translate syntax tree to dfa
+3. using lr1 algorithm do parsing analysis and using syntax directed translation to translate syntax tree to three address code.
+4. using Pava Virtual Machine to reading three address code and execute three address code.
+ 
 ## pdk1.0.0 preview
 what is pdk ?
 
