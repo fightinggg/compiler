@@ -21,7 +21,7 @@ COPY --from=1 /app/pava/target/pava-1.0-SNAPSHOT-jar-with-dependencies.jar /app/
 COPY --from=1 /app/pavac/target/pavac-1.0-SNAPSHOT-jar-with-dependencies.jar /app/pavac.jar
 RUN native-image -cp pava.jar -H:Class=com.example.client.pava.Pava -H:Name=pava -H:+ReportUnsupportedElementsAtRuntime
 RUN native-image -cp pavac.jar -H:Class=com.example.client.pava.Pavac -H:Name=pavac -H:+ReportUnsupportedElementsAtRuntime
-COPY main/src/main/resources /target/config
+COPY main/src/main/resources/config /target/config
 #COPY pavac/src/main/resources/code.pava /target/example/code.pava
 COPY pava/src/main/resources/code.par /target/example/code.par
 RUN mkdir /target/bin

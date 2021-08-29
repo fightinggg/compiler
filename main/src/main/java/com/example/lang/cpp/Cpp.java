@@ -25,6 +25,9 @@ import java.util.stream.Collectors;
 
 public class Cpp {
     public static List<PavaDefaultThreeAddressCode> parse(String code, String tag) {
+        if (System.getenv("PAVA_HOME") == null) {
+            throw new RuntimeException("请在环境变量中配置PAVA_HOME");
+        }
         List<PavaDefaultThreeAddressCode> pavaDefaultThreeAddressCodes = Lang.parse(
                 Reader.read(System.getenv("PAVA_HOME") + "/config/cpp.json"),
                 new LR1TableAnalyzer(),

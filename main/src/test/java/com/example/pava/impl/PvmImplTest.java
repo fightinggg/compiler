@@ -60,6 +60,20 @@ public class PvmImplTest {
     }
 
 
+    @Test
+    public void binaryOpCode() {
+        String code = """
+                int main(){
+                    int a1 = 1;
+                    int a2 = 1;
+                    int i = 2;
+                    return a1+a2*a1/a2-a1*a2;
+                }
+                """;
+        test(code, "CppLR1Test.whileCode");
+    }
+
+
     private void test(String code, String tag) {
         code = Cpp.parse(code, tag).stream().map(Object::toString).collect(Collectors.joining("\n"));
         System.out.println("code: \n" + code);
