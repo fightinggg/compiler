@@ -22,7 +22,13 @@ how to do compiler pava language in this project
 2. using regular language compiler do  lexical analyzer for pava language, in this part , regular language compiler using manually constructed lexical analyzer do lexical analysis, using slr algorithm do parsing analysis and using syntax directed translation to translate syntax tree to dfa
 3. using lr1 algorithm do parsing analysis and using syntax directed translation to translate syntax tree to three address code.
 4. using Pava Virtual Machine to reading three address code and execute three address code.
- 
+
+which feature for pava language
+1. support for function
+2. support for int type
+3. support for `+ - * \`
+4. support for if,if else, while, for, do while
+
 ## pdk1.0.0 preview
 what is pdk ?
 
