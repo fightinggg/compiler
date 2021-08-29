@@ -23,6 +23,8 @@ RUN native-image -cp pava.jar -H:Class=com.example.client.pava.Pava -H:Name=pava
 RUN native-image -cp pavac.jar -H:Class=com.example.client.pava.Pavac -H:Name=pavac -H:+ReportUnsupportedElementsAtRuntime
 COPY main/src/main/resources/config /target/config
 COPY pavac/src/main/resources/code.pava /target/example/code.pava
+COPY pavac/src/main/resources/forLoop.pava /target/example/forLoop.pava
+COPY pavac/src/main/resources/whileLoop.pava /target/example/whileLoop.pava
 COPY pava/src/main/resources/code.par /target/example/code.par
 RUN mkdir /target/bin
 RUN mv pava /target/bin/pava
